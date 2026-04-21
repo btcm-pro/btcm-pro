@@ -7,471 +7,105 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: #0a0e1a;
-            color: #ffffff; 
-            overflow-x: hidden;
-        }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 20% 50%, rgba(30, 60, 120, 0.4), transparent 50%),
-                        radial-gradient(circle at 80% 80%, rgba(100, 50, 150, 0.3), transparent 50%);
-            z-index: -1;
-        }
-        
-        :root { 
-            --primary: #6366f1; 
-            --primary-dark: #4f46e5; 
-            --primary-light: #818cf8;
-            --secondary: #06b6d4; 
-            --success: #10b981; 
-            --danger: #ef4444; 
-            --warning: #f59e0b;
-            --purple: #8b5cf6;
-            --pink: #ec4899;
-            --bg-card: rgba(255, 255, 255, 0.05);
-            --border-glow: rgba(99, 102, 241, 0.3);
-            --glass: rgba(255, 255, 255, 0.03);
-        }
-        
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        body { font-family: 'Inter', sans-serif; background: #0a0e1a; color: #ffffff; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 20% 50%, rgba(30,60,120,0.4), transparent 50%), radial-gradient(circle at 80% 80%, rgba(100,50,150,0.3), transparent 50%); z-index: -1; }
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #06b6d4; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6; --pink: #ec4899; --glass: rgba(255,255,255,0.03); }
+        @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.5;} }
         @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes glow { 0%, 100% { box-shadow: 0 0 5px var(--primary); } 50% { box-shadow: 0 0 25px var(--primary); } }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
-        @keyframes shine { 0% { background-position: -100% 0; } 100% { background-position: 200% 0; } }
         @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-100%); } }
-        
-        .glass-card { 
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            border-radius: 28px; 
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 24px; 
-            animation: slideIn 0.4s ease;
-            transition: all 0.3s ease;
-        }
-        .glass-card:hover {
-            border-color: rgba(99, 102, 241, 0.3);
-            transform: translateY(-2px);
-        }
-        
-        .highlight-card { 
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.1));
-            border: 1px solid var(--primary);
-            animation: glow 3s infinite;
-            position: relative; 
-            overflow: hidden; 
-            border-radius: 28px;
-        }
-        .highlight-card::before { 
-            content: ''; 
-            position: absolute; 
-            top: 0; 
-            left: -100%; 
-            width: 100%; 
-            height: 100%; 
-            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.2), transparent); 
-            animation: shine 4s infinite; 
-        }
-        
-        .bonus-badge { 
-            display: inline-block; 
-            background: linear-gradient(135deg, var(--primary), var(--purple));
-            color: #fff; 
-            padding: 6px 14px; 
-            border-radius: 40px; 
-            font-weight: 600;
-            font-size: 13px; 
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        .btn { 
-            padding: 14px 28px; 
-            border-radius: 16px; 
-            border: none; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: all 0.3s ease; 
-            font-family: inherit;
-            font-size: 14px;
-        }
-        .btn-primary { 
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #fff; 
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-        }
-        .btn-primary:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
-        }
-        .btn-secondary { 
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            color: #fff; 
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .btn-secondary:hover { 
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        input, select, textarea { 
-            width: 100%; 
-            padding: 14px 16px; 
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px; 
-            color: #fff; 
-            font-family: inherit; 
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-        }
-        input:focus, select:focus { 
-            outline: none; 
-            border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
-        }
-        
-        .bottom-nav { 
-            position: fixed; 
-            bottom: 20px; 
-            left: 50%;
-            transform: translateX(-50%);
-            max-width: 400px;
-            width: calc(100% - 40px);
-            margin: 0 auto; 
-            background: rgba(10, 14, 26, 0.95);
-            backdrop-filter: blur(20px);
-            display: flex; 
-            justify-content: space-around; 
-            padding: 12px 20px;
-            border-radius: 60px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 100; 
-        }
-        .nav-item { 
-            text-align: center; 
-            color: #888; 
-            cursor: pointer; 
-            transition: all 0.3s ease; 
-            padding: 8px 0;
-            border-radius: 40px;
-            flex: 1;
-        }
-        .nav-item.active { 
-            color: var(--primary);
-            background: rgba(99, 102, 241, 0.15);
-        }
+        .glass-card { background: var(--glass); backdrop-filter: blur(12px); border-radius: 28px; border: 1px solid rgba(255,255,255,0.08); padding: 24px; animation: slideIn 0.4s ease; transition: all 0.3s ease; }
+        .glass-card:hover { border-color: rgba(99,102,241,0.3); transform: translateY(-2px); }
+        .highlight-card { background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.1)); border: 1px solid var(--primary); animation: pulse 3s infinite; border-radius: 28px; }
+        .bonus-badge { display: inline-block; background: linear-gradient(135deg, var(--primary), var(--purple)); color: #fff; padding: 6px 14px; border-radius: 40px; font-weight: 600; font-size: 13px; }
+        .btn { padding: 14px 28px; border-radius: 16px; border: none; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-family: inherit; font-size: 14px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.4); }
+        .btn-secondary { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+        input, select, textarea { width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; color: #fff; font-family: inherit; margin-bottom: 12px; transition: all 0.3s ease; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); background: rgba(255,255,255,0.1); box-shadow: 0 0 20px rgba(99,102,241,0.2); }
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); max-width: 400px; width: calc(100% - 40px); background: rgba(10,14,26,0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 12px 20px; border-radius: 60px; border: 1px solid rgba(255,255,255,0.1); z-index: 100; }
+        .nav-item { text-align: center; color: #888; cursor: pointer; transition: all 0.3s ease; padding: 8px 0; border-radius: 40px; flex: 1; }
+        .nav-item.active { color: var(--primary); background: rgba(99,102,241,0.15); }
         .nav-icon { font-size: 22px; }
         .nav-label { font-size: 11px; margin-top: 4px; font-weight: 500; }
-        
         .page { display: none; padding: 20px; padding-bottom: 100px; max-width: 500px; margin: 0 auto; }
         .page.active { display: block; animation: slideIn 0.4s ease; }
-        
-        .notification { 
-            position: fixed; 
-            top: 20px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            background: #1a1f2e;
-            border-left: 4px solid var(--success);
-            padding: 14px 24px; 
-            border-radius: 20px; 
-            z-index: 1000; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            backdrop-filter: blur(20px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            animation: slideIn 0.3s ease;
-        }
-        
-        .mine-btn { 
-            width: 200px; 
-            height: 200px; 
-            background: radial-gradient(circle at 30% 30%, #1a1f2e, #0a0e1a);
-            border: 2px solid var(--primary);
-            border-radius: 50%; 
-            margin: 0 auto; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            cursor: pointer; 
-            transition: all 0.3s ease;
-            box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
-        }
-        .mine-btn.mining { 
-            animation: pulse 1.5s infinite; 
-            box-shadow: 0 0 50px rgba(99, 102, 241, 0.6);
-            border-color: var(--success);
-        }
-        
-        .live-ticker { 
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(10px);
-            border-radius: 60px; 
-            padding: 10px 16px; 
-            margin-bottom: 16px; 
-            overflow: hidden; 
-            white-space: nowrap; 
-            font-size: 13px; 
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
+        .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1a1f2e; border-left: 4px solid var(--success); padding: 14px 24px; border-radius: 20px; z-index: 1000; display: flex; align-items: center; gap: 12px; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: slideIn 0.3s ease; }
+        .mine-btn { width: 200px; height: 200px; background: radial-gradient(circle at 30% 30%, #1a1f2e, #0a0e1a); border: 2px solid var(--primary); border-radius: 50%; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 30px rgba(99,102,241,0.2); }
+        .mine-btn.mining { animation: pulse 1.5s infinite; box-shadow: 0 0 50px rgba(99,102,241,0.6); border-color: var(--success); }
+        .live-ticker { background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); border-radius: 60px; padding: 10px 16px; margin-bottom: 16px; overflow: hidden; white-space: nowrap; font-size: 13px; border: 1px solid rgba(255,255,255,0.08); }
         .ticker-content { display: inline-block; animation: marquee 25s linear infinite; }
         .ticker-content span { margin-right: 28px; display: inline-block; }
-        
-        .package-card { 
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));
-            border-radius: 24px; 
-            padding: 20px; 
-            margin-bottom: 12px; 
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .package-card:hover {
-            transform: translateX(4px);
-            border-color: rgba(99, 102, 241, 0.3);
-        }
-        
-        .countdown-timer { 
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
-            border-radius: 24px; 
-            padding: 20px; 
-            text-align: center; 
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .timer-digits { 
-            font-size: 32px; 
-            font-weight: 800; 
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: 2px;
-        }
-        
-        .modal { 
-            display: none; 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(8px);
-            z-index: 1000; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px; 
-        }
+        .package-card { background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.05)); border-radius: 24px; padding: 20px; margin-bottom: 12px; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05); }
+        .package-card:hover { transform: translateX(4px); border-color: rgba(99,102,241,0.3); }
+        .countdown-timer { background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(139,92,246,0.1)); border-radius: 24px; padding: 20px; text-align: center; margin-bottom: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .timer-digits { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: 2px; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
-        .modal-content { 
-            background: linear-gradient(135deg, #1a1f2e, #0f1422);
-            border-radius: 32px; 
-            padding: 28px; 
-            max-width: 400px; 
-            width: 100%; 
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            max-height: 80vh; 
-            overflow-y: auto;
-        }
-        
-        .leaderboard-item { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 14px 0; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
+        .modal-content { background: linear-gradient(135deg, #1a1f2e, #0f1422); border-radius: 32px; padding: 28px; max-width: 400px; width: 100%; border: 1px solid rgba(99,102,241,0.3); max-height: 80vh; overflow-y: auto; }
+        .leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .rank-1 { color: var(--primary); font-weight: bold; }
         .rank-2 { color: #C0C0C0; font-weight: bold; }
         .rank-3 { color: #CD7F32; font-weight: bold; }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, var(--primary), var(--pink), var(--secondary));
-            background-size: 200% 200%;
-            animation: gradientShift 3s ease infinite;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .balance-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.05));
-            border-radius: 32px;
-            padding: 28px;
-            text-align: center;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-        }
-        
-        .balance-amount {
-            font-size: 56px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, var(--primary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .app-header {
-            padding: 16px 20px;
-            background: rgba(10, 14, 26, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
+        .gradient-text { background: linear-gradient(135deg, var(--primary), var(--pink), var(--secondary)); background-size: 200% 200%; animation: pulse 3s ease infinite; -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .balance-card { background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.05)); border-radius: 32px; padding: 28px; text-align: center; border: 1px solid rgba(99,102,241,0.2); }
+        .balance-amount { font-size: 56px; font-weight: 800; background: linear-gradient(135deg, #fff, var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .app-header { padding: 16px 20px; background: rgba(10,14,26,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .coin-selector { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .coin-btn { 
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .coin-btn.active { 
-            background: linear-gradient(135deg, var(--primary), var(--purple));
-            color: #fff;
-            border-color: transparent;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 10px;
-            transition: width 0.3s ease;
-        }
-        
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
-        
-        .whitepaper-link {
-            text-align: center;
-            margin: 20px 0 10px 0;
-            padding: 12px;
-        }
-        .whitepaper-link a {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 13px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
-        }
-        .whitepaper-link a:hover {
-            opacity: 1;
-        }
-        
-        /* Settings List View */
-        .settings-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .setting-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .setting-item:hover {
-            background: rgba(99, 102, 241, 0.1);
-            border-color: rgba(99, 102, 241, 0.3);
-            transform: translateX(4px);
-        }
-        .setting-icon {
-            font-size: 28px;
-            width: 50px;
-            text-align: center;
-        }
-        .setting-info {
-            flex: 1;
-        }
-        .setting-name {
-            font-weight: 600;
-            font-size: 16px;
-        }
-        .setting-desc {
-            font-size: 12px;
-            opacity: 0.6;
-            margin-top: 2px;
-        }
-        .setting-arrow {
-            opacity: 0.4;
-            font-size: 14px;
-        }
+        .coin-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 60px; cursor: pointer; transition: 0.2s; font-size: 14px; font-weight: 500; }
+        .coin-btn.active { background: linear-gradient(135deg, var(--primary), var(--purple)); color: #fff; border-color: transparent; }
+        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 0.3s ease; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        .whitepaper-link { text-align: center; margin: 20px 0 10px 0; padding: 12px; }
+        .whitepaper-link a { color: var(--primary); text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; opacity: 0.7; transition: opacity 0.3s ease; }
+        .whitepaper-link a:hover { opacity: 1; }
+        .admin-footer { text-align: center; padding: 20px 0 30px 0; margin-top: 10px; }
+        .admin-footer a { color: var(--primary); text-decoration: none; font-size: 12px; opacity: 0.5; transition: opacity 0.3s ease; }
+        .admin-footer a:hover { opacity: 1; }
+        .settings-list { display: flex; flex-direction: column; gap: 8px; }
+        .setting-item { display: flex; align-items: center; gap: 16px; padding: 16px; background: rgba(255,255,255,0.03); border-radius: 20px; cursor: pointer; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05); }
+        .setting-item:hover { background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.3); transform: translateX(4px); }
+        .setting-icon { font-size: 28px; width: 50px; text-align: center; }
+        .setting-info { flex: 1; }
+        .setting-name { font-weight: 600; font-size: 16px; }
+        .setting-desc { font-size: 12px; opacity: 0.6; margin-top: 2px; }
+        .setting-arrow { opacity: 0.4; font-size: 14px; }
     </style>
 </head>
 <body>
 <div id="app">
-    <!-- Auth Page with Ticker -->
     <div id="authPage">
         <div class="page active" style="padding-top: 30px;">
             <div class="live-ticker" style="margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto;">
                 <div class="ticker-content" id="authTickerText"></div>
             </div>
-            
             <div class="glass-card" style="text-align: center; max-width: 400px; margin: 0 auto;">
                 <div class="balance-card" style="background: transparent; padding: 0 0 20px 0;">
                     <i class="fas fa-chart-line" style="font-size: 60px; background: linear-gradient(135deg, var(--primary), var(--pink)); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
                     <h1 style="font-size: 36px; margin: 15px 0;" class="gradient-text">BTCM PRO</h1>
                     <p style="color: #aaa;">Advanced Cloud Mining Platform</p>
                 </div>
-                
                 <div class="highlight-card" style="margin-bottom: 30px; padding: 20px;">
                     <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
                         <div class="bonus-badge"><i class="fas fa-gift"></i> $200 BONUS</div>
                         <div class="bonus-badge" style="background: linear-gradient(135deg, var(--success), #059669);"><i class="fas fa-money-bill-wave"></i> $10 MIN WITHDRAW</div>
                     </div>
                 </div>
-                
                 <div id="loginForm">
                     <input type="email" id="loginEmail" placeholder="Email Address">
                     <input type="password" id="loginPassword" placeholder="Password">
                     <button class="btn btn-primary" onclick="handleLogin()" style="width: 100%;"><i class="fas fa-arrow-right"></i> Login</button>
                     <p style="margin-top: 24px; color: #888;">New member? <span style="color: var(--primary); cursor: pointer;" onclick="toggleAuth(false)">Create Account</span></p>
                 </div>
-                
                 <div id="registerForm" style="display: none;">
                     <input type="text" id="regName" placeholder="Full Name">
                     <input type="email" id="regEmail" placeholder="Email Address">
@@ -484,7 +118,6 @@
         </div>
     </div>
 
-    <!-- Main App -->
     <div id="mainApp" style="display: none;">
         <div class="app-header" style="display: flex; justify-content: space-between; align-items: center;">
             <div><i class="fas fa-chart-line" style="color: var(--primary);"></i> <strong style="font-size: 18px;"> BTCM PRO</strong></div>
@@ -493,7 +126,6 @@
                 <i class="fas fa-sign-out-alt" onclick="logout()" style="cursor: pointer; font-size: 18px;"></i>
             </div>
         </div>
-        
         <div class="live-ticker" style="margin: 12px 16px;">
             <div class="ticker-content" id="tickerText"></div>
         </div>
@@ -514,13 +146,11 @@
                     <div class="progress-bar" style="margin-top: 8px;"><div class="progress-fill" id="withdrawProgress" style="width: 0%;"></div></div>
                 </div>
             </div>
-            
             <div class="countdown-timer">
                 <p style="font-size: 12px; opacity: 0.7;">⏰ Mining Session Remaining</p>
                 <div class="timer-digits" id="countdownTimer">20d 00h 00m 00s</div>
                 <div class="progress-bar" style="margin-top: 12px;"><div class="progress-fill" id="miningProgressBar" style="width: 100%;"></div></div>
             </div>
-            
             <div style="text-align: center; margin: 20px 0;">
                 <div class="mine-btn" id="mineBtn" onclick="toggleMining()">
                     <i class="fas fa-microchip" style="font-size: 55px;"></i>
@@ -528,7 +158,6 @@
                 </div>
                 <p style="margin-top: 16px; color: var(--secondary);" id="hashrateText">Hashrate: 0 TH/s</p>
             </div>
-            
             <div class="glass-card" style="margin-bottom: 20px;">
                 <h3 style="margin-bottom: 16px;">📈 Today's Statistics</h3>
                 <div style="display: flex; justify-content: space-between;">
@@ -537,7 +166,6 @@
                     <div><p style="color: #aaa; font-size: 12px;">Referral Bonus</p><p style="color: var(--secondary); font-size: 20px; font-weight: 600;" id="referralBonus">$0.00</p></div>
                 </div>
             </div>
-            
             <div style="display: flex; gap: 12px;">
                 <button class="btn btn-secondary" onclick="switchPage('packages')" style="flex:1;"><i class="fas fa-box"></i> Invest</button>
                 <button class="btn btn-primary" onclick="switchPage('wallet')" style="flex:1;"><i class="fas fa-wallet"></i> Wallet</button>
@@ -553,10 +181,9 @@
                 <div style="background: rgba(0,0,0,0.3); padding: 14px; border-radius: 16px; margin: 15px 0;" id="referralLinkDisplay"></div>
                 <button class="btn btn-secondary" onclick="copyReferralLink()" style="width: 100%;"><i class="fas fa-copy"></i> Copy Link</button>
             </div>
-            
             <div class="whitepaper-link">
                 <a href="#" id="whitepaperLink">
-                    <i class="fas fa-file-alt"></i> 📄 Read Whitepaper
+                    <i class="fas fa-file-alt"></i> 📄 Coming Soon
                 </a>
             </div>
         </div>
@@ -607,10 +234,12 @@
             <div class="nav-item" onclick="switchPage('leaderboard')"><div class="nav-icon"><i class="fas fa-trophy"></i></div><div class="nav-label">Leaderboard</div></div>
             <div class="nav-item" onclick="switchPage('settings')"><div class="nav-icon"><i class="fas fa-cog"></i></div><div class="nav-label">Settings</div></div>
         </div>
+        <div class="admin-footer">
+            <a href="admin.html" target="_blank"><i class="fas fa-shield-alt"></i> Admin Panel</a>
+        </div>
     </div>
 </div>
 
-<!-- MODALS -->
 <div id="kycModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">📄 KYC Verification</h3><p style="margin-bottom: 20px;">Verify your identity to unlock higher limits</p><input type="text" id="kycFullName" placeholder="Full Name as per ID"><input type="text" id="kycIdNumber" placeholder="National ID / Passport"><input type="file" id="kycFile" accept="image/*"><button class="btn btn-primary" onclick="submitKYC()" style="width: 100%; margin-top: 10px;">Submit Verification</button><button class="btn btn-secondary" onclick="closeModal('kycModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
 <div id="changePasswordModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">🔐 Change Password</h3><input type="password" id="oldPassword" placeholder="Current Password"><input type="password" id="newPassword" placeholder="New Password"><input type="password" id="confirmNewPassword" placeholder="Confirm Password"><button class="btn btn-primary" onclick="changePassword()" style="width: 100%;">Update Password</button><button class="btn btn-secondary" onclick="closeModal('changePasswordModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
 <div id="walletAddressModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">💳 Wallet Addresses</h3><input type="text" id="userBtcAddress" placeholder="Bitcoin Address"><input type="text" id="userUsdtAddress" placeholder="USDT (TRC20) Address"><input type="text" id="userEthAddress" placeholder="Ethereum Address"><button class="btn btn-primary" onclick="saveUserWalletAddresses()" style="width: 100%;">Save Addresses</button><button class="btn btn-secondary" onclick="closeModal('walletAddressModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
@@ -618,7 +247,6 @@
 <div id="notifyModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">🔔 Notification Settings</h3><label style="display:block;margin:15px 0;"><input type="checkbox" id="notifyEmail"> Email Alerts</label><label style="display:block;margin:15px 0;"><input type="checkbox" id="notifyPush"> Push Notifications</label><button class="btn btn-primary" onclick="saveNotifySettings()" style="width: 100%;">Save</button><button class="btn btn-secondary" onclick="closeModal('notifyModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
 
 <script>
-    // ======================== Firebase Configuration ========================
     const firebaseConfig = {
         apiKey: "AIzaSyDegGMXh3i3TgC_FhbG_Rx6SUm8fHMZFxI",
         authDomain: "btcm-pro-app.firebaseapp.com",
@@ -627,55 +255,23 @@
         messagingSenderId: "770958307322",
         appId: "1:770958307322:web:3b5488c6e3f23ea1127e43"
     };
-    
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    
-    // ======================== Ticker Names ========================
+
     const tickerNames = ["Michael J.","Sarah W.","David K.","Priya M.","Rahul S.","Oliver T.","Emma L.","Deepak V.","Anjali R.","Vikram S.","Kavita P.","Arjun N.","Sneha K.","Daniel P.","Alex T.","Jessica R."];
-    
-    function generateRandomTransaction(){ 
-        const name = tickerNames[Math.floor(Math.random() * tickerNames.length)]; 
-        const isDeposit = Math.random() > 0.6; 
-        let amount = isDeposit ? (Math.random() * 40 + 10).toFixed(2) : (Math.random() * 300 + 100).toFixed(2); 
-        return `${name} ${isDeposit ? `deposited $${amount}` : `withdrew $${amount}`} 💸`; 
-    }
-    
-    function generateTickerHTML() {
-        let items = []; 
-        for(let i = 0; i < 12; i++) items.push(generateRandomTransaction()); 
-        return items.map(t => `<span>✨ ${t}</span>`).join('');
-    }
-    
-    function updateAuthTicker() { 
-        const tickerElement = document.getElementById('authTickerText');
-        if(tickerElement) {
-            tickerElement.innerHTML = generateTickerHTML();
-        }
-        setTimeout(updateAuthTicker, 8000);
-    }
-    
-    function updateMainAppTicker() { 
-        const tickerElement = document.getElementById('tickerText');
-        if(tickerElement) {
-            tickerElement.innerHTML = generateTickerHTML();
-        }
-        setTimeout(updateMainAppTicker, 8000);
-    }
-    
-    updateAuthTicker();
-    updateMainAppTicker();
-    
-    // ======================== Whitepaper Link ========================
+    function generateRandomTransaction(){ const name = tickerNames[Math.floor(Math.random() * tickerNames.length)]; const isDeposit = Math.random() > 0.6; let amount = isDeposit ? (Math.random() * 40 + 10).toFixed(2) : (Math.random() * 300 + 100).toFixed(2); return `${name} ${isDeposit ? `deposited $${amount}` : `withdrew $${amount}`} 💸`; }
+    function generateTickerHTML() { let items = []; for(let i = 0; i < 12; i++) items.push(generateRandomTransaction()); return items.map(t => `<span>✨ ${t}</span>`).join(''); }
+    function updateAuthTicker() { const e = document.getElementById('authTickerText'); if(e) e.innerHTML = generateTickerHTML(); setTimeout(updateAuthTicker, 8000); }
+    function updateMainAppTicker() { const e = document.getElementById('tickerText'); if(e) e.innerHTML = generateTickerHTML(); setTimeout(updateMainAppTicker, 8000); }
+    updateAuthTicker(); updateMainAppTicker();
+
+    // ==================== COMING SOON POPUP ====================
     document.getElementById('whitepaperLink')?.addEventListener('click', (e) => {
         e.preventDefault();
-        alert(`📄 BTCM PRO Whitepaper\n\nThis is a DEMO project created for learning purposes.\nNo real mining or financial transactions occur.\n\nAll features are simulated for demonstration.\n\n© 2026 BTCM Pro Demo`);
+        alert('📄 Coming Soon!\n\nWhitepaper will be available soon.\n\nStay tuned for updates! 🚀');
     });
-    
-    // ======================== CONFIG ========================
+
     const COINS = [
         { name: "BTC", symbol: "BTC", address: "bc1qkrz2dneyyumah9chxud3x5hf02jjcjmy4rlrkp", network: "Bitcoin" },
         { name: "ETH", symbol: "ETH", address: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B", network: "ERC20" },
@@ -683,294 +279,39 @@
         { name: "BNB", symbol: "BNB", address: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B", network: "BEP20" },
         { name: "SOL", symbol: "SOL", address: "6GsA7n4DByumVnTjMGkhYieHy2xfU2ykYi1jd4RKCTo7", network: "Solana" }
     ];
-    let currentCoinIndex = 0;
-    let currentUser = null, btcPrice = 62650, remainingSeconds = 20 * 24 * 60 * 60;
-    let miningInterval = null, countdownInterval = null, marketInterval = null;
-    
-    const investmentPackages = [
-        { name:"Starter", minAmount:20, dailyReturn:2.5, duration:20, totalReturn:150 },
-        { name:"Basic", minAmount:51, dailyReturn:3, duration:20, totalReturn:180 },
-        { name:"Premium", minAmount:101, dailyReturn:3.5, duration:20, totalReturn:210 },
-        { name:"Pro", minAmount:200, dailyReturn:4, duration:20, totalReturn:240 }
-    ];
-    
+    let currentCoinIndex = 0, currentUser = null, btcPrice = 62650, remainingSeconds = 20*24*60*60, miningInterval = null, countdownInterval = null, marketInterval = null;
+    const investmentPackages = [{ name:"Starter", minAmount:20, dailyReturn:2.5, duration:20, totalReturn:150 },{ name:"Basic", minAmount:51, dailyReturn:3, duration:20, totalReturn:180 },{ name:"Premium", minAmount:101, dailyReturn:3.5, duration:20, totalReturn:210 },{ name:"Pro", minAmount:200, dailyReturn:4, duration:20, totalReturn:240 }];
     function selectCoin(idx){ currentCoinIndex=idx; renderCoinSelector(); }
-    function renderCoinSelector(){ let container=document.getElementById('coinSelector'); if(!container) return; container.innerHTML=COINS.map((c,i)=>`<div class="coin-btn ${i===currentCoinIndex?'active':''}" onclick="selectCoin(${i})">${c.symbol}</div>`).join(''); updateDepositUI(); }
+    function renderCoinSelector(){ let c=document.getElementById('coinSelector'); if(c) c.innerHTML=COINS.map((c,i)=>`<div class="coin-btn ${i===currentCoinIndex?'active':''}" onclick="selectCoin(${i})">${c.symbol}</div>`).join(''); updateDepositUI(); }
     function updateDepositUI(){ let coin=COINS[currentCoinIndex]; document.getElementById('depositAddressDisplay').innerHTML=`${coin.address}<br><small>Network: ${coin.network}</small>`; let qrDiv=document.getElementById('qrCodeContainer'); qrDiv.innerHTML=''; new QRCode(qrDiv,{text:coin.address,width:150,height:150}); }
     function copyDepositAddress(){ navigator.clipboard.writeText(COINS[currentCoinIndex].address); showNotification('Address copied!'); }
     function toggleAuth(isLogin){ document.getElementById('loginForm').style.display=isLogin?'block':'none'; document.getElementById('registerForm').style.display=isLogin?'none':'block'; }
-    
-    async function handleRegister(){
-        let name = document.getElementById('regName').value.trim();
-        let email = document.getElementById('regEmail').value.trim().toLowerCase();
-        let pass = document.getElementById('regPass').value;
-        let refCode = document.getElementById('refCode').value.trim();
-        
-        if(!name || !email || !pass){
-            showNotification('Please fill all fields!', 'error');
-            return;
-        }
-        if(pass.length < 6){
-            showNotification('Password must be at least 6 characters', 'error');
-            return;
-        }
-        
-        try {
-            const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
-            const user = userCredential.user;
-            
-            let referralBonus = 0;
-            if(refCode) {
-                const referrerQuery = await db.collection('users').where('refCode', '==', refCode).get();
-                if(!referrerQuery.empty) {
-                    const referrerDoc = referrerQuery.docs[0];
-                    await db.collection('users').doc(referrerDoc.id).update({
-                        balance: firebase.firestore.FieldValue.increment(10),
-                        referralBonus: firebase.firestore.FieldValue.increment(10),
-                        referrals: firebase.firestore.FieldValue.arrayUnion({name, date: new Date()})
-                    });
-                    referralBonus = 10;
-                }
-            }
-            
-            const userRef = db.collection('users').doc(user.uid);
-            await userRef.set({
-                uid: user.uid,
-                name: name,
-                email: email,
-                balance: 200,
-                totalInvested: 0,
-                referralBonus: referralBonus,
-                todayEarnings: 0,
-                isMining: false,
-                hashrate: 12.5,
-                activePackage: null,
-                refCode: Math.random().toString(36).substring(2,8).toUpperCase(),
-                referredBy: refCode || null,
-                kycStatus: 'pending',
-                kycData: null,
-                twoFactorEnabled: false,
-                notificationEmail: true,
-                notificationPush: true,
-                walletAddresses: {btc:'', usdt:'', eth:''},
-                transactions: [{type:'bonus', amount:200, description:'Signup Bonus $200', date:new Date()}],
-                hasDeposited: false,
-                referrals: [],
-                createdAt: new Date()
-            });
-            
-            showNotification('Account created successfully! +$200 bonus', 'success');
-            currentUser = { uid: user.uid, name, email, balance: 200, totalInvested: 0, referralBonus: referralBonus, todayEarnings: 0, isMining: false, hashrate: 12.5, activePackage: null, refCode: userRef.refCode, kycStatus: 'pending', walletAddresses: {btc:'', usdt:'', eth:''}, transactions: [], hasDeposited: false };
-            showApp();
-        } catch(error) {
-            if(error.code === 'auth/email-already-in-use') {
-                showNotification('Email already registered. Please login.', 'error');
-            } else {
-                showNotification('Registration failed: ' + error.message, 'error');
-            }
-        }
-    }
-    
-    async function handleLogin(){
-        let email = document.getElementById('loginEmail').value.trim().toLowerCase();
-        let pass = document.getElementById('loginPassword').value;
-        
-        if(!email || !pass){
-            showNotification('Please enter email and password', 'error');
-            return;
-        }
-        
-        try {
-            const userCredential = await auth.signInWithEmailAndPassword(email, pass);
-            const user = userCredential.user;
-            const doc = await db.collection('users').doc(user.uid).get();
-            if(doc.exists) {
-                currentUser = { uid: user.uid, ...doc.data() };
-                showNotification('Welcome back!', 'success');
-                showApp();
-            } else {
-                showNotification('User data not found!', 'error');
-            }
-        } catch(error) {
-            if(error.code === 'auth/user-not-found') {
-                showNotification('No account found with this email.', 'error');
-            } else if(error.code === 'auth/wrong-password') {
-                showNotification('Incorrect password.', 'error');
-            } else {
-                showNotification('Login failed: ' + error.message, 'error');
-            }
-        }
-    }
-    
-    function requestDeposit() {
-        showNotification('📨 Deposit request sent. After deposit, your withdrawal limit will be unlocked.', 'success');
-        // Simulate deposit activation (in real app, this would be after payment confirmation)
-        // For demo purposes, we'll add a button to simulate deposit completion
-        if(confirm('Demo: Simulate deposit completion? Click OK to unlock withdrawal.')) {
-            simulateDeposit();
-        }
-    }
-    
-    // Simulate deposit for demo purposes
-    async function simulateDeposit() {
-        await db.collection('users').doc(currentUser.uid).update({
-            hasDeposited: true
-        });
-        currentUser.hasDeposited = true;
-        showNotification('✅ Deposit confirmed! Withdrawal is now unlocked.', 'success');
-        updateDashboard();
-    }
-    
-    function showApp(){
-        document.getElementById('authPage').style.display='none'; 
-        document.getElementById('mainApp').style.display='block';
-        loadPackages(); 
-        loadLeaderboard(); 
-        loadSettingsUI(); 
-        updateDashboard(); 
-        updateReferralDisplay(); 
-        startCountdown(); 
-        fetchMarketPrices(); 
-        marketInterval = setInterval(fetchMarketPrices, 30000); 
-        if(currentUser.isMining) startMiningSimulation();
-        renderCoinSelector(); 
-        if(currentUser && currentUser.uid) {
-            db.collection('users').doc(currentUser.uid).onSnapshot((doc) => {
-                if(doc.exists) {
-                    currentUser = { uid: currentUser.uid, ...doc.data() };
-                    updateDashboard();
-                }
-            });
-        }
-    }
-    
+    async function handleRegister(){ let name=document.getElementById('regName').value.trim(), email=document.getElementById('regEmail').value.trim().toLowerCase(), pass=document.getElementById('regPass').value, refCode=document.getElementById('refCode').value.trim(); if(!name||!email||!pass){ showNotification('Please fill all fields!','error'); return; } if(pass.length<6){ showNotification('Password must be at least 6 characters','error'); return; } try { const userCredential=await auth.createUserWithEmailAndPassword(email,pass); const user=userCredential.user; let referralBonus=0; if(refCode){ const referrerQuery=await db.collection('users').where('refCode','==',refCode).get(); if(!referrerQuery.empty){ const referrerDoc=referrerQuery.docs[0]; await db.collection('users').doc(referrerDoc.id).update({ balance:firebase.firestore.FieldValue.increment(10), referralBonus:firebase.firestore.FieldValue.increment(10), referrals:firebase.firestore.FieldValue.arrayUnion({name,date:new Date()}) }); referralBonus=10; } } const userRef=db.collection('users').doc(user.uid); await userRef.set({ uid:user.uid, name, email, balance:200, totalInvested:0, referralBonus, todayEarnings:0, isMining:false, hashrate:12.5, activePackage:null, refCode:Math.random().toString(36).substring(2,8).toUpperCase(), referredBy:refCode||null, kycStatus:'pending', kycData:null, twoFactorEnabled:false, notificationEmail:true, notificationPush:true, walletAddresses:{btc:'',usdt:'',eth:''}, transactions:[{type:'bonus',amount:200,description:'Signup Bonus $200',date:new Date()}], hasDeposited:false, referrals:[], createdAt:new Date() }); showNotification('Account created successfully! +$200 bonus','success'); currentUser={ uid:user.uid, name, email, balance:200, totalInvested:0, referralBonus, todayEarnings:0, isMining:false, hashrate:12.5, activePackage:null, refCode:userRef.refCode, kycStatus:'pending', walletAddresses:{btc:'',usdt:'',eth:''}, transactions:[], hasDeposited:false }; showApp(); } catch(error){ if(error.code==='auth/email-already-in-use') showNotification('Email already registered. Please login.','error'); else showNotification('Registration failed: '+error.message,'error'); } }
+    async function handleLogin(){ let email=document.getElementById('loginEmail').value.trim().toLowerCase(), pass=document.getElementById('loginPassword').value; if(!email||!pass){ showNotification('Please enter email and password','error'); return; } try { const userCredential=await auth.signInWithEmailAndPassword(email,pass); const user=userCredential.user; const doc=await db.collection('users').doc(user.uid).get(); if(doc.exists){ currentUser={ uid:user.uid, ...doc.data() }; showNotification('Welcome back!','success'); showApp(); } else showNotification('User data not found!','error'); } catch(error){ if(error.code==='auth/user-not-found') showNotification('No account found with this email.','error'); else if(error.code==='auth/wrong-password') showNotification('Incorrect password.','error'); else showNotification('Login failed: '+error.message,'error'); } }
+    function requestDeposit(){ showNotification('📨 Deposit request sent. After deposit, your withdrawal limit will be unlocked.','success'); if(confirm('Demo: Simulate deposit completion? Click OK to unlock withdrawal.')) simulateDeposit(); }
+    async function simulateDeposit(){ await db.collection('users').doc(currentUser.uid).update({ hasDeposited:true }); currentUser.hasDeposited=true; showNotification('✅ Deposit confirmed! Withdrawal is now unlocked.','success'); updateDashboard(); }
+    function showApp(){ document.getElementById('authPage').style.display='none'; document.getElementById('mainApp').style.display='block'; loadPackages(); loadLeaderboard(); loadSettingsUI(); updateDashboard(); updateReferralDisplay(); startCountdown(); fetchMarketPrices(); marketInterval=setInterval(fetchMarketPrices,30000); if(currentUser.isMining) startMiningSimulation(); renderCoinSelector(); if(currentUser&&currentUser.uid) db.collection('users').doc(currentUser.uid).onSnapshot((doc)=>{ if(doc.exists){ currentUser={ uid:currentUser.uid, ...doc.data() }; updateDashboard(); } }); }
     function startCountdown(){ if(countdownInterval) clearInterval(countdownInterval); countdownInterval=setInterval(()=>{ if(remainingSeconds>0){ remainingSeconds--; let d=Math.floor(remainingSeconds/86400), h=Math.floor((remainingSeconds%86400)/3600), m=Math.floor((remainingSeconds%3600)/60), s=remainingSeconds%60; document.getElementById('countdownTimer').innerHTML=`${d}d ${h}h ${m}m ${s}s`; document.getElementById('miningProgressBar').style.width=(remainingSeconds/(20*86400))*100+'%'; } },1000); }
     async function fetchMarketPrices(){ try { const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd'); const d=await r.json(); btcPrice=d.bitcoin.usd; updateDashboard(); } catch(e){ btcPrice*=(1+(Math.random()-0.5)*0.005); updateDashboard(); } }
     function loadPackages(){ document.getElementById('packagesList').innerHTML=investmentPackages.map(p=>`<div class="package-card"><div><strong style="color:var(--primary); font-size:18px;">${p.name}</strong><p style="margin-top:5px;">$${p.minAmount}+ | Daily ${p.dailyReturn}% | Total ${p.totalReturn}%</p></div><button class="btn btn-primary" onclick="investPackage(${p.minAmount},'${p.name}')">Invest $${p.minAmount}+</button></div>`).join(''); }
-    async function investPackage(amount,pkg){ if(currentUser.balance>=amount){ 
-        const newBalance = currentUser.balance - amount;
-        const newTotalInvested = currentUser.totalInvested + amount;
-        await db.collection('users').doc(currentUser.uid).update({
-            balance: newBalance,
-            totalInvested: newTotalInvested,
-            activePackage: {name:pkg,amount,startDate:new Date()},
-            hashrate: currentUser.hashrate + (amount * 0.5),
-            transactions: firebase.firestore.FieldValue.arrayUnion({type:'investment',amount,description:`Invested ${pkg} Package`,date:new Date()})
-        });
-        currentUser.balance = newBalance;
-        currentUser.totalInvested = newTotalInvested;
-        currentUser.hashrate += amount * 0.5;
-        showNotification(`Invested $${amount} in ${pkg}!`);
-    } else showNotification('Insufficient balance','error'); }
-    async function toggleMining(){ if(!currentUser.isMining){ 
-        await db.collection('users').doc(currentUser.uid).update({ isMining: true });
-        currentUser.isMining = true;
-        document.getElementById('mineBtn').classList.add('mining'); 
-        document.getElementById('mineText').innerHTML='<i class="fas fa-spinner fa-spin"></i> MINING...'; 
-        startMiningSimulation(); 
-        showNotification('Mining started!'); 
-    } else { 
-        await db.collection('users').doc(currentUser.uid).update({ isMining: false });
-        currentUser.isMining = false; 
-        document.getElementById('mineBtn').classList.remove('mining'); 
-        document.getElementById('mineText').innerHTML='START MINING'; 
-        if(miningInterval) clearInterval(miningInterval); 
-        showNotification('Mining stopped.'); 
-    } }
-    function startMiningSimulation(){ if(miningInterval) clearInterval(miningInterval); miningInterval=setInterval(async ()=>{ if(currentUser&&currentUser.isMining&&remainingSeconds>0){ let earn=(currentUser.hashrate*0.0005)*(1+(btcPrice-60000)/60000*0.1); const newBalance = currentUser.balance + earn; const newTodayEarnings = (currentUser.todayEarnings || 0) + earn; await db.collection('users').doc(currentUser.uid).update({ balance: newBalance, todayEarnings: newTodayEarnings }); currentUser.balance = newBalance; currentUser.todayEarnings = newTodayEarnings; updateDashboard(); } },5000); }
-    async function updateDashboard(){ if(!currentUser) return; document.getElementById('balanceAmount').innerHTML=`$${currentUser.balance.toFixed(2)}`; document.getElementById('btcBalance').innerHTML=(currentUser.balance/btcPrice).toFixed(8); document.getElementById('estimatedEarnings').innerHTML=`$${(currentUser.hashrate*0.008).toFixed(2)}`; document.getElementById('hashrateText').innerHTML=`Hashrate: ${currentUser.hashrate.toFixed(1)} TH/s`; document.getElementById('todayEarnings').innerHTML=`$${(currentUser.todayEarnings || 0).toFixed(2)}`; document.getElementById('totalInvested').innerHTML=`$${(currentUser.totalInvested || 0).toFixed(2)}`; document.getElementById('referralBonus').innerHTML=`$${(currentUser.referralBonus || 0).toFixed(2)}`; 
-        
-        let prog = 0;
-        if(currentUser.hasDeposited) {
-            prog = (currentUser.balance / 10) * 100;
-            if(prog > 100) prog = 100;
-        }
-        document.getElementById('withdrawProgress').style.width=prog+'%';
-        
-        if(!currentUser.hasDeposited) {
-            document.getElementById('withdrawStatus').innerHTML='⚠️ Deposit Required First';
-        } else if(currentUser.balance >= 10) {
-            document.getElementById('withdrawStatus').innerHTML='✅ Withdraw Available';
-        } else {
-            document.getElementById('withdrawStatus').innerHTML='⚠️ Need More Balance (Min $10)';
-        }
-    }
-    
-    async function requestWithdraw(){ 
-        let addr = document.getElementById('withdrawAddress').value; 
-        let amt = parseFloat(document.getElementById('withdrawAmount').value); 
-        
-        if(!currentUser.hasDeposited){ 
-            showNotification('❌ You must make a deposit first before withdrawing.', 'error'); 
-            return; 
-        }
-        
-        if(!addr || amt < 10){ 
-            showNotification('Minimum withdrawal amount is $10', 'error'); 
-            return; 
-        }
-        
-        if(currentUser.balance < amt){ 
-            showNotification('Insufficient balance', 'error'); 
-            return; 
-        }
-        
-        let fee = amt * 0.02; 
-        const newBalance = currentUser.balance - (amt + fee); 
-        await db.collection('users').doc(currentUser.uid).update({ 
-            balance: newBalance, 
-            transactions: firebase.firestore.FieldValue.arrayUnion({type:'withdraw', amount: amt, description: `Withdrawal - Fee $${fee.toFixed(2)}`, date: new Date()}) 
-        }); 
-        currentUser.balance = newBalance; 
-        updateDashboard(); 
-        showNotification(`$${amt} withdrawal requested.`); 
-        document.getElementById('withdrawAmount').value = ''; 
-    }
-    
-    async function loadLeaderboard(){ const usersSnapshot = await db.collection('users').orderBy('totalInvested', 'desc').limit(10).get(); let users = []; usersSnapshot.forEach(doc => users.push({ id: doc.id, ...doc.data() })); document.getElementById('leaderboardList').innerHTML=users.map((u,i)=>`<div class="leaderboard-item"><div><span class="${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':''}">${i+1}. </span>${(u.name || 'User').substring(0,15)}</div><div>$${(u.totalInvested || 0).toFixed(2)}</div></div>`).join(''); const allUsersSnapshot = await db.collection('users').get(); let allUsers = []; allUsersSnapshot.forEach(doc => allUsers.push({ id: doc.id, ...doc.data() })); allUsers.sort((a,b) => (b.totalInvested || 0) - (a.totalInvested || 0)); let idx = allUsers.findIndex(u => u.id === currentUser.uid) + 1; document.getElementById('userRank').innerHTML=idx>0?`🏆 Your Rank: #${idx} | Invested: $${(currentUser.totalInvested || 0).toFixed(2)}`:''; }
-    
-    // Settings - List View
-    function loadSettingsUI(){
-        const settingsList = [
-            { icon:"👤", name:"Profile Info", desc:"Update your personal information", action:"openProfileModal()" },
-            { icon:"🔐", name:"Change Password", desc:"Secure your account", action:"openModal('changePasswordModal')" },
-            { icon:"🆔", name:"KYC Verification", desc:"Verify your identity", action:"openModal('kycModal')" },
-            { icon:"🔒", name:"2FA Security", desc:"Two-factor authentication", action:"openModal('2faModal')" },
-            { icon:"💳", name:"Wallet Addresses", desc:"Set withdrawal addresses", action:"openModal('walletAddressModal')" },
-            { icon:"📜", name:"Transaction History", desc:"View all transactions", action:"showTransactionHistory()" },
-            { icon:"🤝", name:"Referral Status", desc:"Track your referrals", action:"showReferralStatus()" },
-            { icon:"🔔", name:"Notifications", desc:"Manage alerts", action:"openModal('notifyModal')" },
-            { icon:"🌐", name:"Language", desc:"Change language", action:"changeLanguage()" },
-            { icon:"❓", name:"Support Center", desc:"Get help", action:"showSupport()" }
-        ];
-        document.getElementById('settingsList').innerHTML = settingsList.map(s => `
-            <div class="setting-item" onclick="${s.action}">
-                <div class="setting-icon">${s.icon}</div>
-                <div class="setting-info">
-                    <div class="setting-name">${s.name}</div>
-                    <div class="setting-desc">${s.desc}</div>
-                </div>
-                <div class="setting-arrow"><i class="fas fa-chevron-right"></i></div>
-            </div>
-        `).join('');
-        updateKycPanel();
-    }
-    
+    async function investPackage(amount,pkg){ if(currentUser.balance>=amount){ const newBalance=currentUser.balance-amount; const newTotalInvested=currentUser.totalInvested+amount; await db.collection('users').doc(currentUser.uid).update({ balance:newBalance, totalInvested:newTotalInvested, activePackage:{name:pkg,amount,startDate:new Date()}, hashrate:currentUser.hashrate+(amount*0.5), transactions:firebase.firestore.FieldValue.arrayUnion({type:'investment',amount,description:`Invested ${pkg} Package`,date:new Date()}) }); currentUser.balance=newBalance; currentUser.totalInvested=newTotalInvested; currentUser.hashrate+=amount*0.5; showNotification(`Invested $${amount} in ${pkg}!`); } else showNotification('Insufficient balance','error'); }
+    async function toggleMining(){ if(!currentUser.isMining){ await db.collection('users').doc(currentUser.uid).update({ isMining:true }); currentUser.isMining=true; document.getElementById('mineBtn').classList.add('mining'); document.getElementById('mineText').innerHTML='<i class="fas fa-spinner fa-spin"></i> MINING...'; startMiningSimulation(); showNotification('Mining started!'); } else { await db.collection('users').doc(currentUser.uid).update({ isMining:false }); currentUser.isMining=false; document.getElementById('mineBtn').classList.remove('mining'); document.getElementById('mineText').innerHTML='START MINING'; if(miningInterval) clearInterval(miningInterval); showNotification('Mining stopped.'); } }
+    function startMiningSimulation(){ if(miningInterval) clearInterval(miningInterval); miningInterval=setInterval(async ()=>{ if(currentUser&&currentUser.isMining&&remainingSeconds>0){ let earn=(currentUser.hashrate*0.0005)*(1+(btcPrice-60000)/60000*0.1); const newBalance=currentUser.balance+earn; const newTodayEarnings=(currentUser.todayEarnings||0)+earn; await db.collection('users').doc(currentUser.uid).update({ balance:newBalance, todayEarnings:newTodayEarnings }); currentUser.balance=newBalance; currentUser.todayEarnings=newTodayEarnings; updateDashboard(); } },5000); }
+    async function updateDashboard(){ if(!currentUser) return; document.getElementById('balanceAmount').innerHTML=`$${currentUser.balance.toFixed(2)}`; document.getElementById('btcBalance').innerHTML=(currentUser.balance/btcPrice).toFixed(8); document.getElementById('estimatedEarnings').innerHTML=`$${(currentUser.hashrate*0.008).toFixed(2)}`; document.getElementById('hashrateText').innerHTML=`Hashrate: ${currentUser.hashrate.toFixed(1)} TH/s`; document.getElementById('todayEarnings').innerHTML=`$${(currentUser.todayEarnings||0).toFixed(2)}`; document.getElementById('totalInvested').innerHTML=`$${(currentUser.totalInvested||0).toFixed(2)}`; document.getElementById('referralBonus').innerHTML=`$${(currentUser.referralBonus||0).toFixed(2)}`; let prog=currentUser.hasDeposited?Math.min((currentUser.balance/10)*100,100):0; document.getElementById('withdrawProgress').style.width=prog+'%'; if(!currentUser.hasDeposited) document.getElementById('withdrawStatus').innerHTML='⚠️ Deposit Required First'; else if(currentUser.balance>=10) document.getElementById('withdrawStatus').innerHTML='✅ Withdraw Available'; else document.getElementById('withdrawStatus').innerHTML='⚠️ Need More Balance (Min $10)'; }
+    async function requestWithdraw(){ let addr=document.getElementById('withdrawAddress').value, amt=parseFloat(document.getElementById('withdrawAmount').value); if(!currentUser.hasDeposited){ showNotification('❌ You must make a deposit first before withdrawing.','error'); return; } if(!addr||amt<10){ showNotification('Minimum withdrawal amount is $10','error'); return; } if(currentUser.balance<amt){ showNotification('Insufficient balance','error'); return; } let fee=amt*0.02; const newBalance=currentUser.balance-(amt+fee); await db.collection('users').doc(currentUser.uid).update({ balance:newBalance, transactions:firebase.firestore.FieldValue.arrayUnion({type:'withdraw',amount:amt,description:`Withdrawal - Fee $${fee.toFixed(2)}`,date:new Date()}) }); currentUser.balance=newBalance; updateDashboard(); showNotification(`$${amt} withdrawal requested.`); document.getElementById('withdrawAmount').value=''; }
+    async function loadLeaderboard(){ const usersSnapshot=await db.collection('users').orderBy('totalInvested','desc').limit(10).get(); let users=[]; usersSnapshot.forEach(doc=>users.push({id:doc.id,...doc.data()})); document.getElementById('leaderboardList').innerHTML=users.map((u,i)=>`<div class="leaderboard-item"><div><span class="${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':''}">${i+1}. </span>${(u.name||'User').substring(0,15)}</div><div>$${(u.totalInvested||0).toFixed(2)}</div></div>`).join(''); const allUsersSnapshot=await db.collection('users').get(); let allUsers=[]; allUsersSnapshot.forEach(doc=>allUsers.push({id:doc.id,...doc.data()})); allUsers.sort((a,b)=>(b.totalInvested||0)-(a.totalInvested||0)); let idx=allUsers.findIndex(u=>u.id===currentUser.uid)+1; document.getElementById('userRank').innerHTML=idx>0?`🏆 Your Rank: #${idx} | Invested: $${(currentUser.totalInvested||0).toFixed(2)}`:''; }
+    function loadSettingsUI(){ const settingsList=[{icon:"👤",name:"Profile Info",desc:"Update your personal information",action:"openProfileModal()"},{icon:"🔐",name:"Change Password",desc:"Secure your account",action:"openModal('changePasswordModal')"},{icon:"🆔",name:"KYC Verification",desc:"Verify your identity",action:"openModal('kycModal')"},{icon:"🔒",name:"2FA Security",desc:"Two-factor authentication",action:"openModal('2faModal')"},{icon:"💳",name:"Wallet Addresses",desc:"Set withdrawal addresses",action:"openModal('walletAddressModal')"},{icon:"📜",name:"Transaction History",desc:"View all transactions",action:"showTransactionHistory()"},{icon:"🤝",name:"Referral Status",desc:"Track your referrals",action:"showReferralStatus()"},{icon:"🔔",name:"Notifications",desc:"Manage alerts",action:"openModal('notifyModal')"},{icon:"🌐",name:"Language",desc:"Change language",action:"changeLanguage()"},{icon:"❓",name:"Support Center",desc:"Get help",action:"showSupport()"}]; document.getElementById('settingsList').innerHTML=settingsList.map(s=>`<div class="setting-item" onclick="${s.action}"><div class="setting-icon">${s.icon}</div><div class="setting-info"><div class="setting-name">${s.name}</div><div class="setting-desc">${s.desc}</div></div><div class="setting-arrow"><i class="fas fa-chevron-right"></i></div></div>`).join(''); updateKycPanel(); }
     function changeLanguage(){ let lang=prompt('Select Language: English / বাংলা'); if(lang) showNotification(`Language changed to ${lang}`); }
     function showSupport(){ alert('📞 Support Center\nEmail: support@btcmpro.com\nTelegram: @btcmpro_support\nResponse: 24h'); }
-    function updateKycPanel(){ 
-        let statusText = currentUser.kycStatus === 'verified' ? '✅ Verified' : (currentUser.kycStatus === 'submitted' ? '⏳ Pending' : '⚠️ Not Verified'); 
-        let statusClass = currentUser.kycStatus === 'verified' ? 'status-verified' : 'status-pending'; 
-        document.getElementById('kycStatusPanel').innerHTML = `<div><strong>📄 KYC Status:</strong> <span class="status-badge ${statusClass}">${statusText}</span></div>${currentUser.kycStatus !== 'verified' ? '<small>Complete KYC to increase withdrawal limits.</small>' : '<small>Identity verified. Daily limit: $50,000</small>'}`; 
-    }
-    async function submitKYC(){ let fullName = document.getElementById('kycFullName').value; let idNumber = document.getElementById('kycIdNumber').value; let file = document.getElementById('kycFile').files[0]; if(!fullName || !idNumber || !file){ showNotification('Fill all fields','error'); return; } await db.collection('users').doc(currentUser.uid).update({ kycStatus: 'submitted', kycData: { fullName, idNumber, submittedAt: new Date().toISOString() } }); currentUser.kycStatus = 'submitted'; updateKycPanel(); closeModal('kycModal'); showNotification('KYC submitted for review.'); }
-    async function changePassword(){ let oldP = document.getElementById('oldPassword').value; let newP = document.getElementById('newPassword').value; let confirmP = document.getElementById('confirmNewPassword').value; if(newP !== confirmP){ showNotification('Passwords do not match','error'); return; } if(newP.length < 6){ showNotification('Password too short','error'); return; } try { const user = auth.currentUser; const credential = firebase.auth.EmailAuthProvider.credential(user.email, oldP); await user.reauthenticateWithCredential(credential); await user.updatePassword(newP); showNotification('Password changed!'); closeModal('changePasswordModal'); } catch(e){ showNotification('Current password incorrect','error'); } }
-    async function saveUserWalletAddresses(){ let btc = document.getElementById('userBtcAddress').value; let usdt = document.getElementById('userUsdtAddress').value; let eth = document.getElementById('userEthAddress').value; await db.collection('users').doc(currentUser.uid).update({ walletAddresses: { btc, usdt, eth } }); currentUser.walletAddresses = { btc, usdt, eth }; showNotification('Addresses saved'); closeModal('walletAddressModal'); }
-    async function toggle2FA(){ const newStatus = !currentUser.twoFactorEnabled; await db.collection('users').doc(currentUser.uid).update({ twoFactorEnabled: newStatus }); currentUser.twoFactorEnabled = newStatus; showNotification(`2FA ${newStatus ? 'Enabled' : 'Disabled'}`); closeModal('2faModal'); }
-    async function saveNotifySettings(){ let email = document.getElementById('notifyEmail').checked; let push = document.getElementById('notifyPush').checked; await db.collection('users').doc(currentUser.uid).update({ notificationEmail: email, notificationPush: push }); currentUser.notificationEmail = email; currentUser.notificationPush = push; showNotification('Settings saved'); closeModal('notifyModal'); }
-    function openProfileModal(){ let newName = prompt('Enter your full name:', currentUser.name); if(newName && newName.trim()){ db.collection('users').doc(currentUser.uid).update({ name: newName.trim() }); currentUser.name = newName.trim(); showNotification('Profile updated!'); } }
-    async function showTransactionHistory(){ const userDoc = await db.collection('users').doc(currentUser.uid).get(); const transactions = userDoc.data().transactions || []; let history = transactions.map(t => `${t.type.toUpperCase()}: $${t.amount} - ${t.description} (${new Date(t.date).toLocaleString()})`).join('\n'); alert('📜 Transaction History:\n\n' + (history || 'No transactions yet.')); }
-    function showReferralStatus(){ alert(`🔗 Your Referral Code: ${currentUser.refCode}\n👥 Total Referrals: ${(currentUser.referrals || []).length}\n💰 Bonus Earned: $${(currentUser.referralBonus || 0)}\n\nShare your link to earn $10 per referral!`); }
+    function updateKycPanel(){ let statusText=currentUser.kycStatus==='verified'?'✅ Verified':(currentUser.kycStatus==='submitted'?'⏳ Pending':'⚠️ Not Verified'); let statusClass=currentUser.kycStatus==='verified'?'status-verified':'status-pending'; document.getElementById('kycStatusPanel').innerHTML=`<div><strong>📄 KYC Status:</strong> <span class="status-badge ${statusClass}">${statusText}</span></div>${currentUser.kycStatus!=='verified'?'<small>Complete KYC to increase withdrawal limits.</small>':'<small>Identity verified. Daily limit: $50,000</small>'}`; }
+    async function submitKYC(){ let fullName=document.getElementById('kycFullName').value, idNumber=document.getElementById('kycIdNumber').value, file=document.getElementById('kycFile').files[0]; if(!fullName||!idNumber||!file){ showNotification('Fill all fields','error'); return; } await db.collection('users').doc(currentUser.uid).update({ kycStatus:'submitted', kycData:{fullName,idNumber,submittedAt:new Date().toISOString()} }); currentUser.kycStatus='submitted'; updateKycPanel(); closeModal('kycModal'); showNotification('KYC submitted for review.'); }
+    async function changePassword(){ let oldP=document.getElementById('oldPassword').value, newP=document.getElementById('newPassword').value, confirmP=document.getElementById('confirmNewPassword').value; if(newP!==confirmP){ showNotification('Passwords do not match','error'); return; } if(newP.length<6){ showNotification('Password too short','error'); return; } try { const user=auth.currentUser; const credential=firebase.auth.EmailAuthProvider.credential(user.email,oldP); await user.reauthenticateWithCredential(credential); await user.updatePassword(newP); showNotification('Password changed!'); closeModal('changePasswordModal'); } catch(e){ showNotification('Current password incorrect','error'); } }
+    async function saveUserWalletAddresses(){ let btc=document.getElementById('userBtcAddress').value, usdt=document.getElementById('userUsdtAddress').value, eth=document.getElementById('userEthAddress').value; await db.collection('users').doc(currentUser.uid).update({ walletAddresses:{btc,usdt,eth} }); currentUser.walletAddresses={btc,usdt,eth}; showNotification('Addresses saved'); closeModal('walletAddressModal'); }
+    async function toggle2FA(){ const newStatus=!currentUser.twoFactorEnabled; await db.collection('users').doc(currentUser.uid).update({ twoFactorEnabled:newStatus }); currentUser.twoFactorEnabled=newStatus; showNotification(`2FA ${newStatus?'Enabled':'Disabled'}`); closeModal('2faModal'); }
+    async function saveNotifySettings(){ let email=document.getElementById('notifyEmail').checked, push=document.getElementById('notifyPush').checked; await db.collection('users').doc(currentUser.uid).update({ notificationEmail:email, notificationPush:push }); currentUser.notificationEmail=email; currentUser.notificationPush=push; showNotification('Settings saved'); closeModal('notifyModal'); }
+    function openProfileModal(){ let newName=prompt('Enter your full name:',currentUser.name); if(newName&&newName.trim()){ db.collection('users').doc(currentUser.uid).update({ name:newName.trim() }); currentUser.name=newName.trim(); showNotification('Profile updated!'); } }
+    async function showTransactionHistory(){ const userDoc=await db.collection('users').doc(currentUser.uid).get(); const transactions=userDoc.data().transactions||[]; let history=transactions.map(t=>`${t.type.toUpperCase()}: $${t.amount} - ${t.description} (${new Date(t.date).toLocaleString()})`).join('\n'); alert('📜 Transaction History:\n\n'+(history||'No transactions yet.')); }
+    function showReferralStatus(){ alert(`🔗 Your Referral Code: ${currentUser.refCode}\n👥 Total Referrals: ${(currentUser.referrals||[]).length}\n💰 Bonus Earned: $${(currentUser.referralBonus||0)}\n\nShare your link to earn $10 per referral!`); }
     function copyReferralLink(){ let link=`https://btcm-pro.github.io/btcm-mining-pro/?ref=${currentUser.refCode}`; navigator.clipboard.writeText(link); showNotification('Referral link copied!'); }
     function updateReferralDisplay(){ document.getElementById('referralLinkDisplay').innerHTML=`https://btcm-pro.github.io/btcm-mining-pro/?ref=${currentUser.refCode}`; }
     function switchPage(pageId){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); if(pageId==='leaderboard') loadLeaderboard(); if(pageId==='packages') loadPackages(); if(pageId==='wallet') renderCoinSelector(); if(pageId==='settings') loadSettingsUI(); }
@@ -979,23 +320,7 @@
     function showNotifications(){ alert('📢 BTCM PRO Updates:\n• Min Withdrawal: $10\n• Referral Bonus: $10\n• KYC unlocks limits\n• 24/7 Support'); }
     function closeModal(id){ document.getElementById(id).classList.remove('active'); }
     window.openModal = (id) => document.getElementById(id).classList.add('active');
-    
-    window.onload = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const refCode = urlParams.get('ref');
-        if(refCode) {
-            document.getElementById('refCode').value = refCode;
-        }
-        auth.onAuthStateChanged(async (user) => {
-            if(user) {
-                const doc = await db.collection('users').doc(user.uid).get();
-                if(doc.exists) {
-                    currentUser = { uid: user.uid, ...doc.data() };
-                    showApp();
-                }
-            }
-        });
-    };
+    window.onload = () => { const urlParams = new URLSearchParams(window.location.search); const refCode = urlParams.get('ref'); if(refCode) document.getElementById('refCode').value = refCode; auth.onAuthStateChanged(async (user) => { if(user){ const doc=await db.collection('users').doc(user.uid).get(); if(doc.exists){ currentUser={ uid:user.uid, ...doc.data() }; showApp(); } } }); };
 </script>
 </body>
 </html>

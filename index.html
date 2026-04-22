@@ -377,11 +377,11 @@
         }
     }
     
-    // শুরু করার ফাংশন - প্রতি ১২ সেকেন্ডে কল করবে (১ মিনিটে ৫ বার)
+    // শুরু করার ফাংশন - প্রতি ২ সেকেন্ডে কল করবে (১ মিনিটে 30 বার)
     function startLivePriceUpdates() {
         if (livePriceInterval) clearInterval(livePriceInterval);
         fetchLivePrices(); // তাৎক্ষণিক কল
-        livePriceInterval = setInterval(fetchLivePrices, 12000); // ১২ সেকেন্ড = ১ মিনিটে ৫ বার
+        livePriceInterval = setInterval(fetchLivePrices, 12000); // ২ সেকেন্ড = ১ মিনিটে 30 বার
     }
     
     function stopLivePriceUpdates() {
@@ -525,7 +525,7 @@
         startCountdown(); 
         fetchMarketPrices(); 
         
-        // ✅ লাইভ প্রাইস আপডেট শুরু করুন (প্রতি ১২ সেকেন্ড = ১ মিনিটে ৫ বার)
+        // ✅ লাইভ প্রাইস আপডেট শুরু করুন (প্রতি ২ সেকেন্ড = ১ মিনিটে 30 বার)
         startLivePriceUpdates();
         
         marketInterval=setInterval(fetchMarketPrices,30000); 
@@ -596,7 +596,7 @@
     
     function showNotifications(){ alert('📢 BTCM PRO Updates:\n• Min Withdrawal: $10\n• Referral Bonus: $5\n• KYC unlocks limits\n• 24/7 Support'); }
     
-    function closeModal(id){ document.getElementById(id).classList.remove('active'); }
+    function closeModal(i5d){ document.getElementById(id).classList.remove('active'); }
     window.openModal = (id) => document.getElementById(id).classList.add('active');
     
     window.onload = () => { const urlParams = new URLSearchParams(window.location.search); const refCode = urlParams.get('ref'); if(refCode) document.getElementById('refCode').value = refCode; auth.onAuthStateChanged(async (user) => { if(user){ const doc=await db.collection('users').doc(user.uid).get(); if(doc.exists){ currentUser={ uid:user.uid, ...doc.data() }; await loadWalletAddresses(); showApp(); } } }); };

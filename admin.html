@@ -180,7 +180,7 @@
             <div id="packagesList"></div>
             <div class="glass-card" style="margin-top: 20px;">
                 <h3 style="margin-bottom: 12px;">💰 Referral Program</h3>
-                <p>Get <strong style="color:var(--primary);">$10 bonus</strong> per referral!</p>
+                <p>Get <strong style="color:var(--primary);">$5 bonus</strong> per referral!</p>
                 <div style="background: rgba(0,0,0,0.3); padding: 14px; border-radius: 16px; margin: 15px 0;" id="referralLinkDisplay"></div>
                 <button class="btn btn-secondary" onclick="copyReferralLink()" style="width: 100%;"><i class="fas fa-copy"></i> Copy Link</button>
             </div>
@@ -234,7 +234,7 @@
                     <option value="ETH">Ethereum (ERC20)</option>
                 </select>
                 <button class="btn btn-primary" onclick="requestWithdraw()" style="width: 100%;"><i class="fas fa-arrow-up"></i> Request Withdrawal</button>
-                <p style="font-size:11px; opacity:0.6; margin-top: 12px;">Fee: 2% | Processing: 24-48 hours</p>
+                <p style="font-size:11px; opacity:0.6; margin-top: 12px;">Fee: 2% | Processing: 0.1-24 hours</p>
             </div>
         </div>
 
@@ -267,7 +267,7 @@
     </div>
 </div>
 
-<div id="kycModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">📄 KYC Verification</h3><p style="margin-bottom: 20px;">Verify your identity to unlock higher limits</p><input type="text" id="kycFullName" placeholder="Full Name as per ID"><input type="text" id="kycIdNumber" placeholder="National ID / Passport"><input type="file" id="kycFile" accept="image/*"><button class="btn btn-primary" onclick="submitKYC()" style="width: 100%; margin-top: 10px;">Submit Verification</button><button class="btn btn-secondary" onclick="closeModal('kycModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
+<div id="kycModal" class="modal"><di⁷v class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">📄 KYC Verification</h3><p style="margin-bottom: 20px;">Verify your identity to unlock higher limits</p><input type="text" id="kycFullName" placeholder="Full Name as per ID"><input type="text" id="kycIdNumber" placeholder="National ID / Passport"><input type="file" id="kycFile" accept="image/*"><button class="btn btn-primary" onclick="submitKYC()" style="width: 100%; margin-top: 10px;">Submit Verification</button><button class="btn btn-secondary" onclick="closeModal('kycModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
 <div id="changePasswordModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">🔐 Change Password</h3><input type="password" id="oldPassword" placeholder="Current Password"><input type="password" id="newPassword" placeholder="New Password"><input type="password" id="confirmNewPassword" placeholder="Confirm Password"><button class="btn btn-primary" onclick="changePassword()" style="width: 100%;">Update Password</button><button class="btn btn-secondary" onclick="closeModal('changePasswordModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
 <div id="walletAddressModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">💳 Wallet Addresses</h3><input type="text" id="userBtcAddress" placeholder="Bitcoin Address"><input type="text" id="userUsdtAddress" placeholder="USDT (BEP20) Address"><input type="text" id="userEthAddress" placeholder="Ethereum Address"><button class="btn btn-primary" onclick="saveUserWalletAddresses()" style="width: 100%;">Save Addresses</button><button class="btn btn-secondary" onclick="closeModal('walletAddressModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
 <div id="2faModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">🔒 Two-Factor Authentication</h3><p>Secure your account with 2FA</p><button class="btn btn-primary" onclick="toggle2FA()" style="width: 100%; margin-top: 20px;">Enable 2FA</button><button class="btn btn-secondary" onclick="closeModal('2faModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
@@ -318,7 +318,7 @@
     let currentCoinIndex = 0, currentUser = null, btcPrice = 62650, remainingSeconds = 20*24*60*60, miningInterval = null, countdownInterval = null, marketInterval = null;
     const investmentPackages = [{ name:"Starter", minAmount:20, dailyReturn:2.5, duration:20, totalReturn:150 },{ name:"Basic", minAmount:51, dailyReturn:3, duration:20, totalReturn:180 },{ name:"Premium", minAmount:101, dailyReturn:3.5, duration:20, totalReturn:210 },{ name:"Pro", minAmount:200, dailyReturn:4, duration:20, totalReturn:240 }];
     
-    const tickerNames = ["Michael J.","Sarah W.","David K.","Priya M.","Rahul S.","Oliver T.","Emma L.","Deepak V.","Anjali R.","Vikram S.","Kavita P.","Arjun N.","Sneha K.","Daniel P.","Alex T.","Jessica R."];
+    const tickerNames = ["Michael J.","Sarah W.","David K.","Priya M.","Rahul S.","Oliver T.","Emma L.","Deepak V.","Maruf.","Vikram S.","Kavita P.","Anik","Sneha K.","Daniel P.","Alex T.","Jessica R."];
     function generateRandomTransaction(){ const name = tickerNames[Math.floor(Math.random() * tickerNames.length)]; const isDeposit = Math.random() > 0.6; let amount = isDeposit ? (Math.random() * 40 + 10).toFixed(2) : (Math.random() * 300 + 100).toFixed(2); return `${name} ${isDeposit ? `deposited $${amount}` : `withdrew $${amount}`} 💸`; }
     function generateTickerHTML() { let items = []; for(let i = 0; i < 12; i++) items.push(generateRandomTransaction()); return items.map(t => `<span>✨ ${t}</span>`).join(''); }
     function updateAuthTicker() { const e = document.getElementById('authTickerText'); if(e) e.innerHTML = generateTickerHTML(); setTimeout(updateAuthTicker, 8000); }
@@ -336,8 +336,8 @@
         let amount = document.getElementById('depositAmountUsd')?.value;
         let txHash = document.getElementById('depositTxHash')?.value;
         
-        if (!amount || parseFloat(amount) < 20) {
-            showNotification('❌ Please enter amount of at least $20 USD', 'error');
+        if (!amount || parseFloat(amount) < 10) {
+            showNotification('❌ Please enter amount of at least $10 USD', 'error');
             return;
         }
         if (!txHash || txHash.trim() === '') {
@@ -472,7 +472,7 @@
     function loadSettingsUI(){ const settingsList=[{icon:"👤",name:"Profile Info",desc:"Update your personal information",action:"openProfileModal()"},{icon:"🔐",name:"Change Password",desc:"Secure your account",action:"openModal('changePasswordModal')"},{icon:"🆔",name:"KYC Verification",desc:"Verify your identity",action:"openModal('kycModal')"},{icon:"🔒",name:"2FA Security",desc:"Two-factor authentication",action:"openModal('2faModal')"},{icon:"💳",name:"Wallet Addresses",desc:"Set withdrawal addresses",action:"openModal('walletAddressModal')"},{icon:"📜",name:"Transaction History",desc:"View all transactions",action:"showTransactionHistory()"},{icon:"🤝",name:"Referral Status",desc:"Track your referrals",action:"showReferralStatus()"},{icon:"🔔",name:"Notifications",desc:"Manage alerts",action:"openModal('notifyModal')"},{icon:"🌐",name:"Language",desc:"Change language",action:"changeLanguage()"},{icon:"❓",name:"Support Center",desc:"Get help",action:"showSupport()"}]; document.getElementById('settingsList').innerHTML=settingsList.map(s=>`<div class="setting-item" onclick="${s.action}"><div class="setting-icon">${s.icon}</div><div class="setting-info"><div class="setting-name">${s.name}</div><div class="setting-desc">${s.desc}</div></div><div class="setting-arrow"><i class="fas fa-chevron-right"></i></div></div>`).join(''); updateKycPanel(); }
     
     function changeLanguage(){ let lang=prompt('Select Language: English / বাংলা'); if(lang) showNotification(`Language changed to ${lang}`); }
-    function showSupport(){ alert('📞 Support Center\nEmail: support@btcmpro.com\nTelegram: @btcmpro_support\nResponse: 24h'); }
+    function showSupport(){ alert('📞 Support Center\nEmail: btcmpro.admin@gmail.comcom\nTelegram: @btcmpro_support\nResponse: 24h'); }
     function updateKycPanel(){ let statusText=currentUser.kycStatus==='verified'?'✅ Verified':(currentUser.kycStatus==='submitted'?'⏳ Pending':'⚠️ Not Verified'); let statusClass=currentUser.kycStatus==='verified'?'status-verified':'status-pending'; document.getElementById('kycStatusPanel').innerHTML=`<div><strong>📄 KYC Status:</strong> <span class="status-badge ${statusClass}">${statusText}</span></div>${currentUser.kycStatus!=='verified'?'<small>Complete KYC to increase withdrawal limits.</small>':'<small>Identity verified. Daily limit: $50,000</small>'}`; }
     
     async function submitKYC(){ let fullName=document.getElementById('kycFullName').value, idNumber=document.getElementById('kycIdNumber').value, file=document.getElementById('kycFile').files[0]; if(!fullName||!idNumber||!file){ showNotification('Fill all fields','error'); return; } await db.collection('users').doc(currentUser.uid).update({ kycStatus:'submitted', kycData:{fullName,idNumber,submittedAt:new Date().toISOString()} }); currentUser.kycStatus='submitted'; updateKycPanel(); closeModal('kycModal'); showNotification('KYC submitted for review.'); }
@@ -489,7 +489,7 @@
     
     async function showTransactionHistory(){ const userDoc=await db.collection('users').doc(currentUser.uid).get(); const transactions=userDoc.data().transactions||[]; let history=transactions.map(t=>`${t.type.toUpperCase()}: $${t.amount} - ${t.description} (${new Date(t.date).toLocaleString()})`).join('\n'); alert('📜 Transaction History:\n\n'+(history||'No transactions yet.')); }
     
-    function showReferralStatus(){ alert(`🔗 Your Referral Code: ${currentUser.refCode}\n👥 Total Referrals: ${(currentUser.referrals||[]).length}\n💰 Bonus Earned: $${(currentUser.referralBonus||0)}\n\nShare your link to earn $10 per referral!`); }
+    function showReferralStatus(){ alert(`🔗 Your Referral Code: ${currentUser.refCode}\n👥 Total Referrals: ${(currentUser.referrals||[]).length}\n💰 Bonus Earned: $${(currentUser.referralBonus||0)}\n\nShare your link to earn $5 per referral!`); }
     
     function copyReferralLink(){ let link=`https://btcm-pro.github.io/btcm-mining-pro/?ref=${currentUser.refCode}`; navigator.clipboard.writeText(link); showNotification('Referral link copied!'); }
     function updateReferralDisplay(){ document.getElementById('referralLinkDisplay').innerHTML=`https://btcm-pro.github.io/btcm-mining-pro/?ref=${currentUser.refCode}`; }
@@ -500,7 +500,7 @@
     
     function showNotification(msg,type='success'){ let n=document.createElement('div'); n.className='notification'; n.innerHTML=`<i class="fas ${type==='success'?'fa-check-circle':'fa-exclamation-circle'}" style="color:${type==='success'?'#10b981':'#f59e0b'}"></i><span>${msg}</span>`; document.body.appendChild(n); setTimeout(()=>n.remove(),3000); }
     
-    function showNotifications(){ alert('📢 BTCM PRO Updates:\n• Min Withdrawal: $10\n• Referral Bonus: $10\n• KYC unlocks limits\n• 24/7 Support'); }
+    function showNotifications(){ alert('📢 BTCM PRO Updates:\n• Min Withdrawal: $10\n• Referral Bonus: $5\n• KYC unlocks limits\n• 24/7 Support'); }
     
     function closeModal(id){ document.getElementById(id).classList.remove('active'); }
     window.openModal = (id) => document.getElementById(id).classList.add('active');

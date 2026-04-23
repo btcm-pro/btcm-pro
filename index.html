@@ -2,148 +2,350 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BTCM Pro - Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>BTCM Pro - Cloud Mining Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #0a0a2a; color: #fff; padding: 20px; }
-        .glass-card { background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,215,0,0.3); padding: 20px; }
-        .btn { padding: 10px 20px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-primary { background: #FFD700; color: #000; }
-        .btn-primary:hover { background: #ffed4a; transform: translateY(-1px); }
-        .btn-success { background: #00E676; color: #000; }
-        .btn-danger { background: #FF3B30; color: #fff; }
-        .btn-warning { background: #FF9500; color: #000; }
-        .btn-secondary { background: #6c757d; color: #fff; }
-        input, select, textarea { width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,215,0,0.3); border-radius: 10px; color: #fff; margin-bottom: 12px; }
-        input:focus { outline: none; border-color: #FFD700; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 20px; margin-bottom: 20px; }
-        .stat-card { background: linear-gradient(135deg, #1a1a2e, #0f0f1a); border-radius: 16px; padding: 20px; text-align: center; border: 1px solid rgba(255,215,0,0.3); }
-        .stat-value { font-size: 32px; font-weight: bold; color: #FFD700; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab { padding: 10px 20px; background: #1a1a2e; border-radius: 10px; cursor: pointer; transition: 0.2s; }
-        .tab:hover { background: #2a2a3e; }
-        .tab.active { background: #FFD700; color: #000; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .admin-container { max-width: 1400px; margin: 0 auto; }
-        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; }
-        .status-pending { background: #ff950033; color: #FF9500; }
-        .status-approved { background: #00e67633; color: #00E676; }
-        .status-rejected { background: #ff3b3033; color: #FF3B30; }
-        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-box input { flex: 1; margin-bottom: 0; }
+        body { font-family: 'Inter', sans-serif; background: #0a0e1a; color: #ffffff; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 20% 50%, rgba(30,60,120,0.4), transparent 50%), radial-gradient(circle at 80% 80%, rgba(100,50,150,0.3), transparent 50%); z-index: -1; }
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #06b6d4; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6; --pink: #ec4899; --glass: rgba(255,255,255,0.03); }
+        @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.5;} }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-100%); } }
+        @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+        
+        .glass-card { background: var(--glass); backdrop-filter: blur(12px); border-radius: 28px; border: 1px solid rgba(255,255,255,0.08); padding: 24px; animation: slideIn 0.4s ease; transition: all 0.3s ease; }
+        .glass-card:hover { border-color: rgba(99,102,241,0.3); transform: translateY(-2px); }
+        .highlight-card { background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.1)); border: 1px solid var(--primary); animation: pulse 3s infinite; border-radius: 28px; }
+        .bonus-badge { display: inline-block; background: linear-gradient(135deg, var(--primary), var(--purple)); color: #fff; padding: 6px 14px; border-radius: 40px; font-weight: 600; font-size: 13px; }
+        .btn { padding: 14px 28px; border-radius: 16px; border: none; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-family: inherit; font-size: 14px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.4); }
+        .btn-secondary { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+        input, select, textarea { width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; color: #fff; font-family: inherit; margin-bottom: 12px; transition: all 0.3s ease; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); background: rgba(255,255,255,0.1); box-shadow: 0 0 20px rgba(99,102,241,0.2); }
+        .bottom-nav-modern { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 400px; background: rgba(15, 20, 35, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 10px 16px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.08); z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .nav-item-modern { text-align: center; color: #6b7280; cursor: pointer; transition: all 0.3s ease; padding: 8px 0; border-radius: 40px; flex: 1; }
+        .nav-item-modern.active { color: var(--primary); background: rgba(99,102,241,0.12); }
+        .nav-item-modern .nav-icon { font-size: 22px; }
+        .nav-item-modern .nav-label { font-size: 10px; margin-top: 4px; font-weight: 500; }
+        .page { display: none; padding: 20px; padding-bottom: 100px; max-width: 500px; margin: 0 auto; }
+        .page.active { display: block; animation: slideIn 0.4s ease; }
+        .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1a1f2e; border-left: 4px solid var(--success); padding: 14px 24px; border-radius: 20px; z-index: 1000; display: flex; align-items: center; gap: 12px; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: slideIn 0.3s ease; }
+        .mine-btn { width: 200px; height: 200px; background: radial-gradient(circle at 30% 30%, #1a1f2e, #0a0e1a); border: 2px solid var(--primary); border-radius: 50%; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 30px rgba(99,102,241,0.2); }
+        .mine-btn.mining { animation: pulse 1.5s infinite; box-shadow: 0 0 50px rgba(99,102,241,0.6); border-color: var(--success); }
+        .live-ticker { background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); border-radius: 60px; padding: 10px 16px; margin-bottom: 16px; overflow: hidden; white-space: nowrap; font-size: 13px; border: 1px solid rgba(255,255,255,0.08); }
+        .ticker-content { display: inline-block; animation: marquee 25s linear infinite; }
+        .ticker-content span { margin-right: 28px; display: inline-block; }
+        .package-card { background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.05)); border-radius: 24px; padding: 20px; margin-bottom: 12px; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05); }
+        .package-card:hover { transform: translateX(4px); border-color: rgba(99,102,241,0.3); }
+        .countdown-timer { background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(139,92,246,0.1)); border-radius: 24px; padding: 20px; text-align: center; margin-bottom: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .timer-digits { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: 2px; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
-        .modal-content { background: linear-gradient(135deg, #1a1f2e, #0f1422); border-radius: 32px; padding: 28px; max-width: 500px; width: 100%; border: 1px solid rgba(255,215,0,0.3); }
-        .loading { text-align: center; padding: 40px; }
-        .access-denied { text-align: center; padding: 60px 20px; }
-        .access-denied i { font-size: 80px; color: #FF3B30; margin-bottom: 20px; }
-        .toast { position: fixed; bottom: 20px; right: 20px; background: #333; padding: 12px 24px; border-radius: 8px; z-index: 2000; animation: slideIn 0.3s ease; }
-        .toast.success { background: #00E676; color: #000; }
-        .toast.error { background: #FF3B30; color: #fff; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .refresh-btn { background: #2a2a3e; border: none; color: #FFD700; padding: 8px 12px; border-radius: 8px; cursor: pointer; margin-left: 10px; }
+        .modal-content { background: linear-gradient(135deg, #1a1f2e, #0f1422); border-radius: 32px; padding: 28px; max-width: 400px; width: 100%; border: 1px solid rgba(99,102,241,0.3); max-height: 80vh; overflow-y: auto; }
+        .leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .rank-1 { color: var(--primary); font-weight: bold; }
+        .rank-2 { color: #C0C0C0; font-weight: bold; }
+        .rank-3 { color: #CD7F32; font-weight: bold; }
+        .gradient-text { background: linear-gradient(135deg, var(--primary), var(--pink), var(--secondary)); background-size: 200% 200%; animation: pulse 3s ease infinite; -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .balance-card { background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.05)); border-radius: 32px; padding: 28px; text-align: center; border: 1px solid rgba(99,102,241,0.2); }
+        .balance-amount { font-size: 56px; font-weight: 800; background: linear-gradient(135deg, #fff, var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .app-header { padding: 16px 20px; background: rgba(10,14,26,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .coin-selector { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .coin-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 60px; cursor: pointer; transition: 0.2s; font-size: 14px; font-weight: 500; }
+        .coin-btn.active { background: linear-gradient(135deg, var(--primary), var(--purple)); color: #fff; border-color: transparent; }
+        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 0.3s ease; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        .price-box { display: flex; justify-content: space-between; gap: 10px; margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 20px; }
+        .price-item { text-align: center; flex: 1; }
+        .price-symbol { font-size: 12px; color: #aaa; display: block; }
+        .price-value { font-size: 16px; font-weight: 600; margin-top: 4px; }
+        .btc-color { color: #f7931a; }
+        .eth-color { color: #627eea; }
+        .bnb-color { color: #f3ba2f; }
+        
+        /* Settings Page Enhanced CSS */
+        .settings-header { text-align: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .settings-header h2 { font-size: 24px; background: linear-gradient(135deg, #fff, var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 8px; }
+        .settings-header p { font-size: 13px; color: #888; }
+        .settings-list-modern { display: flex; flex-direction: column; gap: 12px; }
+        .setting-card { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 20px; padding: 16px 20px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; }
+        .setting-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(135deg, var(--primary), var(--purple)); transform: scaleY(0); transition: transform 0.3s ease; }
+        .setting-card:hover { transform: translateX(6px); background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.06)); border-color: rgba(99,102,241,0.3); }
+        .setting-card:hover::before { transform: scaleY(1); }
+        .setting-card-content { display: flex; align-items: center; gap: 16px; }
+        .setting-icon-wrapper { width: 52px; height: 52px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08)); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 26px; transition: all 0.3s ease; }
+        .setting-card:hover .setting-icon-wrapper { background: linear-gradient(135deg, rgba(99,102,241,0.25), rgba(139,92,246,0.15)); transform: scale(1.02); }
+        .setting-info-modern { flex: 1; }
+        .setting-name-modern { font-weight: 600; font-size: 16px; color: #fff; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .setting-desc-modern { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 0.3px; }
+        .setting-badge { background: rgba(16,185,129,0.15); color: #10b981; font-size: 10px; padding: 3px 10px; border-radius: 30px; font-weight: 500; }
+        .setting-badge.kyc-pending { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .setting-badge.kyc-verified { background: rgba(16,185,129,0.2); color: #10b981; }
+        .setting-arrow-modern { color: rgba(255,255,255,0.3); font-size: 16px; transition: all 0.3s ease; }
+        .setting-card:hover .setting-arrow-modern { color: var(--primary); transform: translateX(4px); }
+        .kyc-status-card { background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.05)); border-radius: 20px; padding: 20px; margin-top: 20px; border: 1px solid rgba(99,102,241,0.2); }
+        .kyc-status-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .kyc-status-icon { width: 48px; height: 48px; background: rgba(99,102,241,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .kyc-status-text { flex: 1; }
+        .kyc-status-text h4 { font-size: 16px; margin-bottom: 4px; }
+        .kyc-status-text p { font-size: 12px; color: rgba(255,255,255,0.6); }
+        .kyc-status-badge { padding: 6px 14px; border-radius: 40px; font-size: 12px; font-weight: 600; }
+        .kyc-verified-badge { background: rgba(16,185,129,0.2); color: #10b981; }
+        .kyc-pending-badge { background: rgba(245,158,11,0.2); color: #f59e0b; }
+        .kyc-submit-btn { width: 100%; margin-top: 16px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border: none; padding: 12px; border-radius: 16px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .kyc-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(99,102,241,0.3); }
+        .stats-modern { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        .stat-modern-card { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 20px; padding: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .stat-modern-icon { font-size: 28px; margin-bottom: 8px; }
+        .stat-modern-value { font-size: 22px; font-weight: 700; background: linear-gradient(135deg, #fff, var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .stat-modern-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 4px; }
     </style>
 </head>
 <body>
-<div id="adminPanel">
-    <div class="admin-container">
-        <div id="adminLoading" style="text-align:center;padding:50px">
-            <i class="fas fa-spinner fa-spin"></i> Checking access...
-        </div>
-        
-        <div id="accessDenied" style="display:none">
-            <div class="access-denied glass-card">
-                <i class="fas fa-ban"></i>
-                <h2>Access Denied</h2>
-                <p>You are not authorized to access this page.</p>
-                <button class="btn btn-primary" onclick="window.location.href='index.html'">
-                    <i class="fas fa-home"></i> Back to Home
-                </button>
+<div id="app">
+    <div id="authPage">
+        <div class="page active" style="padding-top: 30px;">
+            <div class="live-ticker" style="margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto;">
+                <div class="ticker-content" id="authTickerText"></div>
             </div>
-        </div>
-        
-        <div id="adminContent" style="display:none">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px">
-                <h1><i class="fas fa-shield-alt"></i> BTCM Pro Admin</h1>
-                <div>
-                    <span id="adminEmailDisplay" style="margin-right:15px;color:#FFD700"></span>
-                    <button class="btn btn-danger" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <div class="glass-card" style="text-align: center; max-width: 400px; margin: 0 auto;">
+                <div class="balance-card" style="background: transparent; padding: 0 0 20px 0;">
+                    <i class="fas fa-chart-line" style="font-size: 60px; background: linear-gradient(135deg, var(--primary), var(--pink)); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
+                    <h1 style="font-size: 36px; margin: 15px 0;" class="gradient-text">BTCM PRO</h1>
+                    <p style="color: #aaa;">Advanced Cloud Mining Platform</p>
                 </div>
-            </div>
-            
-            <div class="nav-tabs">
-                <div class="tab active" data-tab="stats">📊 Dashboard</div>
-                <div class="tab" data-tab="deposits">💰 Deposit Requests</div>
-                <div class="tab" data-tab="withdrawals">💸 Withdraw Requests</div>
-                <div class="tab" data-tab="users">👥 Users</div>
-                <div class="tab" data-tab="wallet">🏦 Wallet Settings</div>
-            </div>
-            
-            <div id="adminStats" class="tab-content active">
-                <div class="stats-grid" id="statsGrid">
-                    <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
-                </div>
-                <div class="glass-card">
-                    <h3>📋 Recent Users <button class="refresh-btn" onclick="loadAdminData()"><i class="fas fa-sync-alt"></i></button></h3>
-                    <div id="recentUsers"></div>
-                </div>
-            </div>
-            
-            <div id="adminDeposits" class="tab-content">
-                <div class="glass-card">
-                    <h3>💰 Pending Deposit Requests</h3>
-                    <div id="pendingDepositsList"></div>
-                </div>
-            </div>
-            
-            <div id="adminWithdrawals" class="tab-content">
-                <div class="glass-card">
-                    <h3>💸 Pending Withdrawal Requests</h3>
-                    <div id="pendingWithdrawalsList"></div>
-                </div>
-            </div>
-            
-            <div id="adminUsers" class="tab-content">
-                <div class="glass-card">
-                    <h3>👥 All Users</h3>
-                    <div class="search-box">
-                        <input type="text" id="searchUserInput" placeholder="Search by name or email...">
-                        <button class="btn btn-primary" onclick="loadAdminUsers()"><i class="fas fa-search"></i> Search</button>
+                <div class="highlight-card" style="margin-bottom: 30px; padding: 20px;">
+                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                        <div class="bonus-badge"><i class="fas fa-gift"></i> $200 BONUS</div>
+                        <div class="bonus-badge" style="background: linear-gradient(135deg, var(--success), #059669);"><i class="fas fa-money-bill-wave"></i> $10 MIN WITHDRAW</div>
                     </div>
-                    <div id="adminUsersList"></div>
+                </div>
+                <div id="loginForm">
+                    <input type="email" id="loginEmail" placeholder="Email Address">
+                    <input type="password" id="loginPassword" placeholder="Password">
+                    <button class="btn btn-primary" onclick="handleLogin()" style="width: 100%;"><i class="fas fa-arrow-right"></i> Login</button>
+                    <p style="margin-top: 24px; color: #888;">New member? <span style="color: var(--primary); cursor: pointer;" onclick="toggleAuth(false)">Create Account</span></p>
+                </div>
+                <div id="registerForm" style="display: none;">
+                    <input type="text" id="regName" placeholder="Full Name">
+                    <input type="email" id="regEmail" placeholder="Email Address">
+                    <input type="password" id="regPass" placeholder="Password">
+                    <input type="text" id="refCode" placeholder="Referral Code (Optional)">
+                    <button class="btn btn-primary" onclick="handleRegister()" style="width: 100%;"><i class="fas fa-gift"></i> Get Started</button>
+                    <p style="margin-top: 24px; color: #888;">Already have an account? <span style="color: var(--primary); cursor: pointer;" onclick="toggleAuth(true)">Login</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainApp" style="display: none;">
+        <div class="app-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div><i class="fas fa-chart-line" style="color: var(--primary);"></i> <strong style="font-size: 18px;"> BTCM PRO</strong></div>
+            <div style="display: flex; gap: 20px;">
+                <i class="fas fa-bell" onclick="showNotifications()" style="cursor: pointer; font-size: 18px;"></i>
+                <i class="fas fa-sign-out-alt" onclick="logout()" style="cursor: pointer; font-size: 18px;"></i>
+            </div>
+        </div>
+        <div class="live-ticker" style="margin: 12px 16px;">
+            <div class="ticker-content" id="tickerText"></div>
+        </div>
+
+        <div id="dashboard" class="page active">
+            <div class="balance-card" style="margin-bottom: 20px;">
+                <p style="color: #aaa; margin-bottom: 8px;">Total Balance</p>
+                <div class="balance-amount" id="balanceAmount">$0.00</div>
+                <div style="display: flex; justify-content: space-between; margin-top: 16px;">
+                    <span style="font-size: 13px;">₿ <span id="btcBalance">0.00000000</span></span>
+                    <span style="font-size: 13px;">📊 <span id="estimatedEarnings">$0.00</span>/day</span>
+                </div>
+                
+                <div class="price-box">
+                    <div class="price-item">
+                        <span class="price-symbol"><i class="fab fa-bitcoin"></i> BTC</span>
+                        <p class="price-value btc-color" id="btcLivePrice">$---</p>
+                    </div>
+                    <div class="price-item">
+                        <span class="price-symbol"><i class="fab fa-ethereum"></i> ETH</span>
+                        <p class="price-value eth-color" id="ethLivePrice">$---</p>
+                    </div>
+                    <div class="price-item">
+                        <span class="price-symbol"><i class="fab fa-bnb"></i> BNB</span>
+                        <p class="price-value bnb-color" id="bnbLivePrice">$---</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 20px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                        <span>Withdraw Status:</span>
+                        <span id="withdrawStatus" style="color: var(--warning);">⚠️ Need Deposit</span>
+                    </div>
+                    <div class="progress-bar" style="margin-top: 8px;"><div class="progress-fill" id="withdrawProgress" style="width: 0%;"></div></div>
                 </div>
             </div>
             
-            <div id="adminWallet" class="tab-content">
-                <div class="glass-card">
-                    <h3>🏦 Deposit Wallet Addresses</h3>
-                    <p style="font-size:12px;color:#aaa;margin-bottom:20px">⚠️ এখানে অ্যাড্রেস পরিবর্তন করলেই ইউজার প্যানেলে সাথে সাথে আপডেট হবে</p>
-                    <div id="walletAddressesEditor"></div>
+            <div class="stats-modern">
+                <div class="stat-modern-card">
+                    <div class="stat-modern-icon">📈</div>
+                    <div class="stat-modern-value" id="todayEarningsStat">$0.00</div>
+                    <div class="stat-modern-label">Today's Earnings</div>
                 </div>
+                <div class="stat-modern-card">
+                    <div class="stat-modern-icon">💼</div>
+                    <div class="stat-modern-value" id="totalInvestedStat">$0.00</div>
+                    <div class="stat-modern-label">Total Invested</div>
+                </div>
+                <div class="stat-modern-card">
+                    <div class="stat-modern-icon">👥</div>
+                    <div class="stat-modern-value" id="referralBonusStat">$0.00</div>
+                    <div class="stat-modern-label">Referral Bonus</div>
+                </div>
+                <div class="stat-modern-card">
+                    <div class="stat-modern-icon">⚡</div>
+                    <div class="stat-modern-value" id="hashrateStat">0 TH/s</div>
+                    <div class="stat-modern-label">Hashrate</div>
+                </div>
+            </div>
+            
+            <div class="countdown-timer">
+                <p style="font-size: 12px; opacity: 0.7;">⏰ Mining Session Remaining</p>
+                <div class="timer-digits" id="countdownTimer">20d 00h 00m 00s</div>
+                <div class="progress-bar" style="margin-top: 12px;"><div class="progress-fill" id="miningProgressBar" style="width: 100%;"></div></div>
+            </div>
+            <div style="text-align: center; margin: 20px 0;">
+                <div class="mine-btn" id="mineBtn" onclick="toggleMining()">
+                    <i class="fas fa-microchip" style="font-size: 55px;"></i>
+                    <p id="mineText" style="margin-top: 12px; font-weight: 500;">START MINING</p>
+                </div>
+                <p style="margin-top: 16px; color: var(--secondary);" id="hashrateText">Hashrate: 0 TH/s</p>
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-secondary" onclick="switchPage('packages')" style="flex:1;"><i class="fas fa-box"></i> Invest</button>
+                <button class="btn btn-primary" onclick="switchPage('wallet')" style="flex:1;"><i class="fas fa-wallet"></i> Wallet</button>
+            </div>
+        </div>
+
+        <div id="packages" class="page">
+            <h2 style="margin-bottom: 20px;" class="gradient-text">📦 Investment Plans</h2>
+            <div id="packagesList"></div>
+            <div class="glass-card" style="margin-top: 20px;">
+                <h3 style="margin-bottom: 12px;">💰 Referral Program</h3>
+                <p>Get <strong style="color:var(--primary);">$10 bonus</strong> per referral!</p>
+                <div style="background: rgba(0,0,0,0.3); padding: 14px; border-radius: 16px; margin: 15px 0; word-break: break-all; font-size: 12px;" id="referralLinkDisplay"></div>
+                <button class="btn btn-secondary" onclick="copyReferralLink()" style="width: 100%;"><i class="fas fa-copy"></i> Copy Link</button>
+            </div>
+        </div>
+
+        <div id="wallet" class="page">
+            <h2 style="margin-bottom: 20px;" class="gradient-text">💳 Wallet</h2>
+            <div class="glass-card" style="margin-bottom: 20px;">
+                <h3 style="margin-bottom: 16px;">📥 Deposit Crypto</h3>
+                <div class="coin-selector" id="coinSelector"></div>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: center; margin: 20px 0; background: rgba(0,0,0,0.3); border-radius: 24px; padding: 20px;">
+                    <div id="qrCodeContainer" style="background: white; padding: 10px; border-radius: 16px;"></div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <div style="background: rgba(0,0,0,0.5); padding: 14px; border-radius: 16px; word-break: break-all; font-family: monospace; font-size: 13px;" id="depositAddressDisplay"></div>
+                        <button class="btn btn-secondary" onclick="copyDepositAddress()" style="width: 100%; margin-top: 12px;"><i class="fas fa-copy"></i> Copy Address</button>
+                    </div>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <label style="display: block; margin-bottom: 8px; color: #aaa;">💰 Amount (USD) - Minimum $10</label>
+                    <input type="number" id="depositAmountUsd" placeholder="Enter amount in USD" min="10" step="1">
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <label style="display: block; margin-bottom: 8px; color: #aaa;">🔗 Transaction Hash / Payment ID</label>
+                    <input type="text" id="depositTxHash" placeholder="Paste your transaction hash">
+                </div>
+                
+                <button class="btn btn-primary" onclick="submitDepositRequest()" style="width: 100%;"><i class="fas fa-paper-plane"></i> Submit Deposit Request</button>
+                
+                <div style="margin-top: 16px; padding: 12px; background: rgba(239,68,68,0.1); border-radius: 16px; text-align: center; font-size: 12px; color: #ffaaaa;">
+                    ⚠️ Admin will approve your deposit. Balance updates after approval.
+                </div>
+            </div>
+            
+            <div class="glass-card">
+                <h3 style="margin-bottom: 16px;">📤 Withdraw Funds <span style="font-size:12px;color:var(--warning);">(Min $10)</span></h3>
+                <input type="text" id="withdrawAddress" placeholder="Wallet Address (BTC/USDT/ETH)">
+                <input type="number" id="withdrawAmount" placeholder="Amount (USD)">
+                <select id="withdrawMethod">
+                    <option value="USDT">💵 USDT (BEP20)</option>
+                    <option value="BTC">₿ Bitcoin (BTC)</option>
+                    <option value="ETH">⟠ Ethereum (ERC20)</option>
+                </select>
+                <button class="btn btn-primary" onclick="requestWithdraw()" style="width: 100%;"><i class="fas fa-arrow-up"></i> Request Withdrawal</button>
+                <p style="font-size:11px; opacity:0.6; margin-top: 12px; text-align:center;">
+                    <i class="fas fa-info-circle"></i> Fee: 2% | Processing: 0.1-24 hours<br>
+                    ⚠️ Withdrawals available after first deposit approval
+                </p>
+            </div>
+        </div>
+
+        <div id="leaderboard" class="page">
+            <h2 style="margin-bottom: 20px;" class="gradient-text">🏆 Top Miners</h2>
+            <div class="glass-card">
+                <div id="leaderboardList"></div>
+                <div id="userRank" style="margin-top: 20px; text-align:center; padding: 12px; background: rgba(99,102,241,0.1); border-radius: 20px;"></div>
+            </div>
+        </div>
+
+        <div id="settings" class="page">
+            <div class="settings-header">
+                <h2>⚙️ Settings</h2>
+                <p>Manage your account preferences</p>
+            </div>
+            
+            <div class="glass-card" style="padding: 20px;">
+                <div class="settings-list-modern" id="settingsList"></div>
+                <div id="kycStatusPanel"></div>
+            </div>
+        </div>
+
+        <div class="bottom-nav-modern">
+            <div class="nav-item-modern active" onclick="switchPage('dashboard')">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <div class="nav-label">Home</div>
+            </div>
+            <div class="nav-item-modern" onclick="switchPage('packages')">
+                <div class="nav-icon"><i class="fas fa-box"></i></div>
+                <div class="nav-label">Invest</div>
+            </div>
+            <div class="nav-item-modern" onclick="switchPage('wallet')">
+                <div class="nav-icon"><i class="fas fa-wallet"></i></div>
+                <div class="nav-label">Wallet</div>
+            </div>
+            <div class="nav-item-modern" onclick="switchPage('leaderboard')">
+                <div class="nav-icon"><i class="fas fa-trophy"></i></div>
+                <div class="nav-label">Leaderboard</div>
+            </div>
+            <div class="nav-item-modern" onclick="switchPage('settings')">
+                <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                <div class="nav-label">Settings</div>
             </div>
         </div>
     </div>
 </div>
 
-<div id="editBalanceModal" class="modal">
-    <div class="modal-content">
-        <h3 style="margin-bottom:20px">✏️ Edit User Balance</h3>
-        <input type="number" id="editBalanceAmount" step="0.01" placeholder="New Balance (USD)">
-        <div style="display:flex;gap:10px;margin-top:20px">
-            <button class="btn btn-primary" onclick="updateUserBalance()">Update</button>
-            <button class="btn btn-secondary" onclick="closeModal('editBalanceModal')">Cancel</button>
-        </div>
-    </div>
-</div>
+<div id="kycModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">📄 KYC Verification</h3><p style="margin-bottom: 20px;">Verify your identity to unlock higher limits</p><input type="text" id="kycFullName" placeholder="Full Name as per ID"><input type="text" id="kycIdNumber" placeholder="National ID / Passport"><input type="file" id="kycFile" accept="image/*"><button class="btn btn-primary" onclick="submitKYC()" style="width: 100%; margin-top: 10px;">Submit Verification</button><button class="btn btn-secondary" onclick="closeModal('kycModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
+<div id="changePasswordModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">🔐 Change Password</h3><input type="password" id="oldPassword" placeholder="Current Password"><input type="password" id="newPassword" placeholder="New Password"><input type="password" id="confirmNewPassword" placeholder="Confirm Password"><button class="btn btn-primary" onclick="changePassword()" style="width: 100%;">Update Password</button><button class="btn btn-secondary" onclick="closeModal('changePasswordModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
+<div id="walletAddressModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">💳 Wallet Addresses</h3><input type="text" id="userBtcAddress" placeholder="Bitcoin Address"><input type="text" id="userUsdtAddress" placeholder="USDT (BEP20) Address"><input type="text" id="userEthAddress" placeholder="Ethereum Address"><button class="btn btn-primary" onclick="saveUserWalletAddresses()" style="width: 100%;">Save Addresses</button><button class="btn btn-secondary" onclick="closeModal('walletAddressModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
+<div id="2faModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">🔒 Two-Factor Authentication</h3><p>Secure your account with 2FA</p><button class="btn btn-primary" onclick="toggle2FA()" style="width: 100%; margin-top: 20px;">Enable/Disable 2FA</button><button class="btn btn-secondary" onclick="closeModal('2faModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
+<div id="notifyModal" class="modal"><div class="modal-content"><h3 class="gradient-text" style="margin-bottom: 20px;">🔔 Notification Settings</h3><label style="display:block;margin:15px 0;"><input type="checkbox" id="notifyEmail"> Email Alerts</label><label style="display:block;margin:15px 0;"><input type="checkbox" id="notifyPush"> Push Notifications</label><button class="btn btn-primary" onclick="saveNotifySettings()" style="width: 100%;">Save</button><button class="btn btn-secondary" onclick="closeModal('notifyModal')" style="width: 100%; margin-top: 10px;">Cancel</button></div></div>
 
 <script>
     const firebaseConfig = {
@@ -154,546 +356,829 @@
         messagingSenderId: "770958307322",
         appId: "1:770958307322:web:3b5488c6e3f23ea1127e43"
     };
-    
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
     
-    let currentAdminUser = null;
-    let selectedUserId = null;
-    let currentTab = 'stats';
+    let walletAddresses = {
+        BTC: "bc1qsl8ehutft8v2jpdmnp7x7w9lvrcu7yafw0rk0j",
+        ETH: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B",
+        USDT_BEP20: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B",
+        BNB: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B",
+        SOL: "6GsA7n4DByumVnTjMGkhYieHy2xfU2ykYi1jd4RKCTo7"
+    };
     
-    const ADMIN_EMAILS = ["admin@btcmpro.com", "btcmpro.admin@gmail.com"];
-    
-    function showToast(message, type = 'success') {
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    }
-    
-    async function isAdminUser(user) {
-        if (!user) return false;
-        if (!ADMIN_EMAILS.includes(user.email)) return false;
-        
+    async function loadWalletAddresses() {
         try {
-            const adminDoc = await db.collection('admins').doc(user.uid).get();
-            if (adminDoc.exists && adminDoc.data().role === 'admin') {
-                return true;
-            }
-            
-            if (ADMIN_EMAILS.includes(user.email)) {
-                await db.collection('admins').doc(user.uid).set({
-                    email: user.email,
-                    role: 'admin',
-                    createdAt: new Date()
-                });
-                return true;
+            const settingsDoc = await db.collection('adminSettings').doc('walletAddresses').get();
+            if (settingsDoc.exists) {
+                walletAddresses = { ...walletAddresses, ...settingsDoc.data() };
             }
         } catch(e) {
-            console.error("Admin check error:", e);
+            console.error("Error loading wallet addresses:", e);
         }
-        return false;
     }
     
-    async function checkAdminAccess() {
-        const loadingDiv = document.getElementById('adminLoading');
-        const contentDiv = document.getElementById('adminContent');
-        const deniedDiv = document.getElementById('accessDenied');
+    const COINS = [
+        { name: "BTC", symbol: "BTC", key: "BTC", network: "Bitcoin" },
+        { name: "ETH", symbol: "ETH", key: "ETH", network: "ERC20" },
+        { name: "USDT", symbol: "USDT (BEP20)", key: "USDT_BEP20", network: "BEP20" },
+        { name: "BNB", symbol: "BNB", key: "BNB", network: "BEP20" },
+        { name: "SOL", symbol: "SOL", key: "SOL", network: "Solana" }
+    ];
+    
+    let currentCoinIndex = 0, currentUser = null, btcPrice = 62650, ethPrice = 3400, bnbPrice = 580;
+    let remainingSeconds = 20*24*60*60, miningInterval = null, countdownInterval = null, livePriceInterval = null;
+    let qrCodeInstance = null;
+    
+    const investmentPackages = [
+        { name:"Starter", minAmount:20, dailyReturn:2.5, duration:20, totalReturn:150 },
+        { name:"Basic", minAmount:51, dailyReturn:3, duration:20, totalReturn:180 },
+        { name:"Premium", minAmount:101, dailyReturn:3.5, duration:20, totalReturn:210 },
+        { name:"Pro", minAmount:200, dailyReturn:4, duration:20, totalReturn:240 }
+    ];
+    
+    const tickerNames = ["Michael J.","Sarah W.","David K.","Priya M.","Rahul S.","Oliver T.","Emma L.","Deepak V.","Mruf","Vikram S.","Kavita P.","Anik","Sneha K.","Daniel P.","Alex T.","Jessica R."];
+    
+    function generateRandomTransaction(){ 
+        const name = tickerNames[Math.floor(Math.random() * tickerNames.length)]; 
+        const isDeposit = Math.random() > 0.6; 
+        let amount = isDeposit ? (Math.random() * 40 + 10).toFixed(2) : (Math.random() * 300 + 100).toFixed(2); 
+        return `${name} ${isDeposit ? `deposited $${amount}` : `withdrew $${amount}`} 💸`; 
+    }
+    
+    function generateTickerHTML() { 
+        let items = []; 
+        for(let i = 0; i < 12; i++) items.push(generateRandomTransaction()); 
+        return items.map(t => `<span>✨ ${t}</span>`).join(''); 
+    }
+    
+    function updateAuthTicker() { 
+        const e = document.getElementById('authTickerText'); 
+        if(e) e.innerHTML = generateTickerHTML(); 
+        setTimeout(updateAuthTicker, 8000); 
+    }
+    
+    function updateMainAppTicker() { 
+        const e = document.getElementById('tickerText'); 
+        if(e) e.innerHTML = generateTickerHTML(); 
+        setTimeout(updateMainAppTicker, 8000); 
+    }
+    
+    updateAuthTicker(); 
+    updateMainAppTicker();
+    
+    async function fetchLivePrices() {
+        try {
+            const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd');
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            const data = await response.json();
+            
+            if (data.bitcoin) {
+                btcPrice = data.bitcoin.usd;
+                document.getElementById('btcLivePrice').innerHTML = `$${btcPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            }
+            if (data.ethereum) {
+                ethPrice = data.ethereum.usd;
+                document.getElementById('ethLivePrice').innerHTML = `$${ethPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            }
+            if (data.binancecoin) {
+                bnbPrice = data.binancecoin.usd;
+                document.getElementById('bnbLivePrice').innerHTML = `$${bnbPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            }
+            updateDashboard();
+        } catch(error) {
+            console.error('Error fetching live prices:', error);
+        }
+    }
+    
+    function startLivePriceUpdates() {
+        if (livePriceInterval) clearInterval(livePriceInterval);
+        fetchLivePrices();
+        livePriceInterval = setInterval(fetchLivePrices, 10000);
+    }
+    
+    function stopLivePriceUpdates() {
+        if (livePriceInterval) {
+            clearInterval(livePriceInterval);
+            livePriceInterval = null;
+        }
+    }
+    
+    function selectCoin(idx){ 
+        currentCoinIndex = idx; 
+        renderCoinSelector(); 
+    }
+    
+    function renderCoinSelector(){ 
+        let c = document.getElementById('coinSelector'); 
+        if(c) c.innerHTML = COINS.map((c,i)=>`<div class="coin-btn ${i===currentCoinIndex?'active':''}" onclick="selectCoin(${i})">${c.symbol}</div>`).join(''); 
+        updateDepositUI(); 
+    }
+    
+    function updateDepositUI(){ 
+        let coin = COINS[currentCoinIndex]; 
+        let address = walletAddresses[coin.key] || "Address not set"; 
+        document.getElementById('depositAddressDisplay').innerHTML = `${address}<br><small>Network: ${coin.network}</small>`; 
         
-        loadingDiv.style.display = 'block';
-        contentDiv.style.display = 'none';
-        deniedDiv.style.display = 'none';
-        
-        auth.onAuthStateChanged(async (user) => {
-            if (user && await isAdminUser(user)) {
-                currentAdminUser = user;
-                loadingDiv.style.display = 'none';
-                contentDiv.style.display = 'block';
-                document.getElementById('adminEmailDisplay').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
-                loadAdminData();
-                
-                document.querySelectorAll('.tab').forEach(tab => {
-                    tab.addEventListener('click', function() {
-                        const tabName = this.getAttribute('data-tab');
-                        if (tabName) switchTab(tabName);
-                    });
+        let qrDiv = document.getElementById('qrCodeContainer'); 
+        qrDiv.innerHTML = ''; 
+        if(address && address !== "Address not set") {
+            try {
+                qrCodeInstance = new QRCode(qrDiv, {
+                    text: address,
+                    width: 150,
+                    height: 150,
+                    correctLevel: QRCode.CorrectLevel.M
                 });
-            } else if (user) {
-                loadingDiv.style.display = 'none';
-                deniedDiv.style.display = 'block';
-                await auth.signOut();
-            } else {
-                loadingDiv.style.display = 'none';
-                deniedDiv.style.display = 'block';
+            } catch(e) {
+                qrDiv.innerHTML = '<div style="width:150px;height:150px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;border-radius:12px;"><span style="color:#000;">QR Error</span></div>';
             }
-        });
+        } else {
+            qrDiv.innerHTML = '<div style="width:150px;height:150px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;border-radius:12px;"><span style="color:#000;">No Address</span></div>';
+        }
     }
     
-    function switchTab(tabName) {
-        currentTab = tabName;
+    function copyDepositAddress(){ 
+        let coin = COINS[currentCoinIndex]; 
+        let address = walletAddresses[coin.key] || ""; 
+        navigator.clipboard.writeText(address); 
+        showNotification('Address copied!'); 
+    }
+    
+    async function submitDepositRequest() {
+        let amount = document.getElementById('depositAmountUsd')?.value;
+        let txHash = document.getElementById('depositTxHash')?.value;
         
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.getElementById(`admin${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).classList.add('active');
-        
-        document.querySelectorAll('.tab').forEach(tab => {
-            if (tab.getAttribute('data-tab') === tabName) {
-                tab.classList.add('active');
-            } else {
-                tab.classList.remove('active');
-            }
-        });
-        
-        if (tabName === 'users') loadAdminUsers();
-        if (tabName === 'wallet') renderWalletSettingsEditor();
-        if (tabName === 'deposits') loadPendingDeposits();
-        if (tabName === 'withdrawals') loadPendingWithdrawals();
-        if (tabName === 'stats') loadStats();
-    }
-    
-    async function loadAdminData() {
-        await Promise.all([
-            loadStats(),
-            loadPendingDeposits(),
-            loadPendingWithdrawals(),
-            loadRecentUsers()
-        ]);
-    }
-    
-    async function loadStats() {
-        try {
-            const usersSnapshot = await db.collection('users').get();
-            const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
-            const depositRequestsSnapshot = await db.collection('depositRequests').where('status', '==', 'approved').get();
-            let totalDeposits = 0;
-            depositRequestsSnapshot.forEach(doc => {
-                totalDeposits += doc.data().amount || 0;
-            });
-            
-            const pendingDepositsSnapshot = await db.collection('depositRequests').where('status', '==', 'pending').get();
-            const pendingWithdrawalsSnapshot = await db.collection('withdrawRequests').where('status', '==', 'pending').get();
-            
-            let totalBalance = 0;
-            users.forEach(user => {
-                totalBalance += user.balance || 0;
-            });
-            
-            document.getElementById('statsGrid').innerHTML = `
-                <div class="stat-card"><div class="stat-value">${users.length}</div><div>Total Users</div></div>
-                <div class="stat-card"><div class="stat-value">$${totalDeposits.toFixed(2)}</div><div>Total Deposits</div></div>
-                <div class="stat-card"><div class="stat-value">$${totalBalance.toFixed(2)}</div><div>Total Balance</div></div>
-                <div class="stat-card"><div class="stat-value">${pendingDepositsSnapshot.size}</div><div>Pending Deposits</div></div>
-                <div class="stat-card"><div class="stat-value">${pendingWithdrawalsSnapshot.size}</div><div>Pending Withdrawals</div></div>
-            `;
-        } catch(error) {
-            console.error("Error loading stats:", error);
-            document.getElementById('statsGrid').innerHTML = `<div class="stat-card">Error loading stats: ${error.message}</div>`;
-        }
-    }
-    
-    async function loadPendingDeposits() {
-        try {
-            const snapshot = await db.collection('depositRequests')
-                .where('status', '==', 'pending')
-                .orderBy('submittedAt', 'desc')
-                .get();
-            
-            if (snapshot.empty) {
-                document.getElementById('pendingDepositsList').innerHTML = `<p style="text-align:center;padding:40px">✅ No pending deposits</p>`;
-                return;
-            }
-            
-            let html = `<table><thead><tr><th>User</th><th>Amount</th><th>Coin</th><th>TX Hash</th><th>Submitted</th><th>Action</th></tr></thead><tbody>`;
-            
-            for (const doc of snapshot.docs) {
-                const deposit = doc.data();
-                let userName = deposit.userName || 'Unknown';
-                let userEmail = deposit.userEmail || '';
-                
-                if (deposit.userId && (!userName || userName === 'Unknown')) {
-                    try {
-                        const userDoc = await db.collection('users').doc(deposit.userId).get();
-                        if (userDoc.exists) {
-                            userName = userDoc.data().name || userDoc.data().email || 'Unknown';
-                            userEmail = userDoc.data().email || '';
-                        }
-                    } catch(e) {}
-                }
-                
-                const submittedDate = deposit.submittedAt?.toDate ? deposit.submittedAt.toDate().toLocaleString() : new Date(deposit.submittedAt).toLocaleString();
-                const txHashShort = deposit.txHash ? deposit.txHash.substring(0, 12) + '...' : 'N/A';
-                
-                html += `<tr>
-                    <td><strong>${escapeHtml(userName)}</strong><br><small>${escapeHtml(userEmail)}</small></td>
-                    <td><span style="color:#00E676;font-weight:bold">$${deposit.amount}</span></td>
-                    <td>${deposit.coin || 'BTC'}</td>
-                    <td><small>${escapeHtml(txHashShort)}</small></td>
-                    <td><small>${submittedDate}</small></td>
-                    <td>
-                        <button class="btn btn-success" onclick="approveDeposit('${doc.id}', ${deposit.amount}, '${deposit.userId}')" style="margin-right:5px"><i class="fas fa-check"></i> Approve</button>
-                        <button class="btn btn-danger" onclick="rejectDeposit('${doc.id}')"><i class="fas fa-times"></i> Reject</button>
-                    </td>
-                </tr>`;
-            }
-            html += `</tbody></table>`;
-            document.getElementById('pendingDepositsList').innerHTML = html;
-        } catch(error) {
-            console.error("Error loading deposits:", error);
-            document.getElementById('pendingDepositsList').innerHTML = `<p>Error loading deposits: ${error.message}</p>`;
-        }
-    }
-    
-    async function approveDeposit(requestId, amount, userId) {
-        if (!confirm(`Approve deposit of $${amount}?`)) return;
-        
-        try {
-            await db.runTransaction(async (transaction) => {
-                const depositRef = db.collection('depositRequests').doc(requestId);
-                const depositDoc = await transaction.get(depositRef);
-                
-                if (!depositDoc.exists || depositDoc.data().status !== 'pending') {
-                    throw new Error('Deposit request no longer pending');
-                }
-                
-                const userRef = db.collection('users').doc(userId);
-                const userDoc = await transaction.get(userRef);
-                
-                if (!userDoc.exists) {
-                    throw new Error('User not found');
-                }
-                
-                const currentBalance = userDoc.data().balance || 0;
-                const newBalance = currentBalance + amount;
-                
-                transaction.update(depositRef, {
-                    status: 'approved',
-                    approvedAt: new Date(),
-                    approvedBy: currentAdminUser?.email || 'admin'
-                });
-                
-                transaction.update(userRef, {
-                    balance: newBalance,
-                    hasDeposited: true
-                });
-            });
-            
-            showToast(`✅ Deposit $${amount} approved!`, "success");
-            await loadPendingDeposits();
-            await loadStats();
-        } catch(error) {
-            console.error("Error approving deposit:", error);
-            showToast("Error: " + error.message, "error");
-        }
-    }
-    
-    async function rejectDeposit(requestId) {
-        if (!confirm("Reject this deposit request?")) return;
-        
-        try {
-            await db.collection('depositRequests').doc(requestId).update({
-                status: 'rejected',
-                rejectedAt: new Date(),
-                rejectedBy: currentAdminUser?.email || 'admin'
-            });
-            showToast("Deposit request rejected.", "success");
-            await loadPendingDeposits();
-            await loadStats();
-        } catch(error) {
-            showToast("Error: " + error.message, "error");
-        }
-    }
-    
-    async function loadPendingWithdrawals() {
-        try {
-            const snapshot = await db.collection('withdrawRequests')
-                .where('status', '==', 'pending')
-                .orderBy('requestedAt', 'desc')
-                .get();
-            
-            if (snapshot.empty) {
-                document.getElementById('pendingWithdrawalsList').innerHTML = `<p style="text-align:center;padding:40px">✅ No pending withdrawals</p>`;
-                return;
-            }
-            
-            let html = `<table><thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Address</th><th>Requested</th><th>Action</th></tr></thead><tbody>`;
-            
-            for (const doc of snapshot.docs) {
-                const withdraw = doc.data();
-                let userName = withdraw.userName || 'Unknown';
-                let userEmail = withdraw.userEmail || '';
-                
-                if (withdraw.userId && (!userName || userName === 'Unknown')) {
-                    try {
-                        const userDoc = await db.collection('users').doc(withdraw.userId).get();
-                        if (userDoc.exists) {
-                            userName = userDoc.data().name || userDoc.data().email || 'Unknown';
-                            userEmail = userDoc.data().email || '';
-                        }
-                    } catch(e) {}
-                }
-                
-                const requestedDate = withdraw.requestedAt?.toDate ? withdraw.requestedAt.toDate().toLocaleString() : new Date(withdraw.requestedAt).toLocaleString();
-                
-                html += `<tr>
-                    <td><strong>${escapeHtml(userName)}</strong><br><small>${escapeHtml(userEmail)}</small></td>
-                    <td><span style="color:#FF9500;font-weight:bold">$${withdraw.amount}</span></td>
-                    <td>${withdraw.method || 'USDT'}</td>
-                    <td><small>${escapeHtml(withdraw.address?.substring(0, 15))}...</small></td>
-                    <td><small>${requestedDate}</small></td>
-                    <td>
-                        <button class="btn btn-success" onclick="approveWithdraw('${doc.id}', ${withdraw.amount}, '${withdraw.userId}')" style="margin-right:5px"><i class="fas fa-check"></i> Approve</button>
-                        <button class="btn btn-danger" onclick="rejectWithdraw('${doc.id}', ${withdraw.amount}, '${withdraw.userId}')"><i class="fas fa-times"></i> Reject</button>
-                    </td>
-                </tr>`;
-            }
-            html += `</tbody></table>`;
-            document.getElementById('pendingWithdrawalsList').innerHTML = html;
-        } catch(error) {
-            console.error("Error loading withdrawals:", error);
-            document.getElementById('pendingWithdrawalsList').innerHTML = `<p>Error: ${error.message}</p>`;
-        }
-    }
-    
-    async function approveWithdraw(requestId, amount, userId) {
-        if (!confirm(`Approve withdrawal of $${amount}? This will deduct from user balance.`)) return;
-        
-        try {
-            await db.collection('withdrawRequests').doc(requestId).update({
-                status: 'approved',
-                approvedAt: new Date(),
-                approvedBy: currentAdminUser?.email || 'admin'
-            });
-            
-            showToast(`✅ Withdrawal $${amount} approved.`, "success");
-            await loadPendingWithdrawals();
-            await loadStats();
-        } catch(error) {
-            showToast("Error: " + error.message, "error");
-        }
-    }
-    
-    async function rejectWithdraw(requestId, amount, userId) {
-        if (!confirm("Reject this withdrawal request? Balance will be refunded.")) return;
-        
-        try {
-            await db.runTransaction(async (transaction) => {
-                const withdrawRef = db.collection('withdrawRequests').doc(requestId);
-                const withdrawDoc = await transaction.get(withdrawRef);
-                
-                if (!withdrawDoc.exists || withdrawDoc.data().status !== 'pending') {
-                    throw new Error('Withdrawal request no longer pending');
-                }
-                
-                const userRef = db.collection('users').doc(userId);
-                const userDoc = await transaction.get(userRef);
-                
-                if (userDoc.exists) {
-                    const currentBalance = userDoc.data().balance || 0;
-                    transaction.update(userRef, { balance: currentBalance + amount });
-                }
-                
-                transaction.update(withdrawRef, {
-                    status: 'rejected',
-                    rejectedAt: new Date(),
-                    rejectedBy: currentAdminUser?.email || 'admin'
-                });
-            });
-            
-            showToast(`Withdrawal rejected. $${amount} refunded to user.`, "success");
-            await loadPendingWithdrawals();
-            await loadStats();
-        } catch(error) {
-            showToast("Error: " + error.message, "error");
-        }
-    }
-    
-    async function loadRecentUsers() {
-        try {
-            const snapshot = await db.collection('users')
-                .orderBy('createdAt', 'desc')
-                .limit(10)
-                .get();
-            
-            if (snapshot.empty) {
-                document.getElementById('recentUsers').innerHTML = `<p>No users yet.</p>`;
-                return;
-            }
-            
-            let html = `<table><thead><tr><th>Name</th><th>Email</th><th>Balance</th><th>Joined</th></tr></thead><tbody>`;
-            snapshot.forEach(doc => {
-                const user = doc.data();
-                const joinedDate = user.createdAt?.toDate ? user.createdAt.toDate().toLocaleDateString() : 'N/A';
-                html += `<tr>
-                    <td>${escapeHtml(user.name || 'N/A')}</td>
-                    <td>${escapeHtml(user.email || 'N/A')}</td>
-                    <td style="color:#00E676">$${(user.balance || 0).toFixed(2)}</td>
-                    <td><small>${joinedDate}</small></td>
-                </tr>`;
-            });
-            html += `</tbody> licensierad`;
-            document.getElementById('recentUsers').innerHTML = html;
-        } catch(error) {
-            console.error("Error loading recent users:", error);
-        }
-    }
-    
-    async function loadAdminUsers() {
-        try {
-            let query = db.collection('users').orderBy('createdAt', 'desc');
-            const searchTerm = document.getElementById('searchUserInput')?.value.toLowerCase().trim();
-            
-            let snapshot = await query.limit(50).get();
-            let docs = snapshot.docs;
-            
-            if (searchTerm) {
-                docs = docs.filter(doc => {
-                    const data = doc.data();
-                    return (data.name && data.name.toLowerCase().includes(searchTerm)) ||
-                           (data.email && data.email.toLowerCase().includes(searchTerm));
-                });
-            }
-            
-            renderUsersList(docs);
-        } catch(error) {
-            console.error("Error loading users:", error);
-            document.getElementById('adminUsersList').innerHTML = `<p>Error loading users: ${error.message}</p>`;
-        }
-    }
-    
-    function renderUsersList(docs) {
-        if (!docs.length) {
-            document.getElementById('adminUsersList').innerHTML = `<p>No users found.</p>`;
+        if (!amount || parseFloat(amount) < 10) {
+            showNotification('❌ Please enter amount of at least $10 USD', 'error');
             return;
         }
-        
-        let html = `<table><thead><tr><th>Name</th><th>Email</th><th>Balance</th><th>Referral Code</th><th>KYC</th><th>Action</th></tr></thead><tbody>`;
-        docs.forEach(doc => {
-            const user = doc.data();
-            html += `<tr>
-                <td>${escapeHtml(user.name || 'N/A')}</td>
-                <td>${escapeHtml(user.email || 'N/A')}</td>
-                <td style="color:#00E676">$${(user.balance || 0).toFixed(2)}</td>
-                <td><code>${escapeHtml(user.refCode || 'N/A')}</code></td>
-                <td><span class="status-badge ${user.kycStatus === 'verified' ? 'status-approved' : 'status-pending'}">${user.kycStatus || 'pending'}</span></td>
-                <td>
-                    <button class="btn btn-warning" onclick="openEditBalanceModal('${doc.id}')"><i class="fas fa-edit"></i> Edit Balance</button>
-                </td>
-            </tr>`;
-        });
-        html += `</tbody></table>`;
-        document.getElementById('adminUsersList').innerHTML = html;
-    }
-    
-    function openEditBalanceModal(userId) {
-        selectedUserId = userId;
-        document.getElementById('editBalanceAmount').value = '';
-        openModal('editBalanceModal');
-    }
-    
-    async function updateUserBalance() {
-        const newBalance = parseFloat(document.getElementById('editBalanceAmount').value);
-        if (isNaN(newBalance)) {
-            showToast("Please enter a valid amount", "error");
+        if (!txHash || txHash.trim() === '') {
+            showNotification('❌ Please enter Transaction Hash / Payment ID', 'error');
+            return;
+        }
+        if (!currentUser || !currentUser.uid) {
+            showNotification('Please login first', 'error');
             return;
         }
         
         try {
-            await db.collection('users').doc(selectedUserId).update({
-                balance: newBalance
+            let coin = COINS[currentCoinIndex];
+            await db.collection('depositRequests').add({
+                userId: currentUser.uid,
+                userName: currentUser.name || 'Unknown',
+                userEmail: currentUser.email || '',
+                amount: parseFloat(amount),
+                txHash: txHash.trim(),
+                coin: coin.symbol,
+                coinKey: coin.key,
+                coinAddress: walletAddresses[coin.key],
+                network: coin.network,
+                status: 'pending',
+                submittedAt: new Date()
             });
-            showToast(`✅ Balance updated to $${newBalance.toFixed(2)}`, "success");
-            closeModal('editBalanceModal');
-            await loadAdminUsers();
-            await loadStats();
+            showNotification(`📨 Deposit request submitted! Amount: $${amount}. Awaiting admin approval.`, 'success');
+            document.getElementById('depositAmountUsd').value = '';
+            document.getElementById('depositTxHash').value = '';
         } catch(error) {
-            showToast("Error: " + error.message, "error");
+            showNotification('Error: ' + error.message, 'error');
         }
     }
     
-    function getWalletAddresses() {
-        const defaultAddrs = {
-            BTC: "bc1qsl8ehutft8v2jpdmnp7x7w9lvrcu7yafw0rk0j",
-            ETH: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B",
-            USDT_BEP20: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B",
-            BNB: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B",
-            SOL: "6GsA7n4DByumVnTjMGkhYieHy2xfU2ykYi1jd4RKCTo7"
-        };
-        const saved = JSON.parse(localStorage.getItem('btcm_wallet_addresses') || '{}');
-        return { ...defaultAddrs, ...saved };
+    async function requestWithdraw() {
+        let addr = document.getElementById('withdrawAddress').value;
+        let amt = parseFloat(document.getElementById('withdrawAmount').value);
+        let method = document.getElementById('withdrawMethod').value;
+        
+        if (!currentUser.hasDeposited) {
+            showNotification('⚠️ Deposit First! You need to make a deposit and get admin approval before withdrawing.', 'error');
+            return;
+        }
+        
+        if (!addr) {
+            showNotification('❌ Please enter your wallet address', 'error');
+            return;
+        }
+        if (isNaN(amt) || amt < 10) {
+            showNotification('❌ Minimum withdrawal amount is $10', 'error');
+            return;
+        }
+        if (currentUser.balance < amt) {
+            showNotification('❌ Insufficient balance. Your balance is $' + currentUser.balance.toFixed(2), 'error');
+            return;
+        }
+        
+        let fee = amt * 0.02;
+        let netAmount = amt - fee;
+        
+        if (!confirm(`💸 Withdrawal Request\n\nAmount: $${amt}\nFee (2%): $${fee.toFixed(2)}\nYou will receive: $${netAmount.toFixed(2)}\n\nContinue?`)) {
+            return;
+        }
+        
+        try {
+            await db.collection('withdrawRequests').add({
+                userId: currentUser.uid,
+                userName: currentUser.name || 'Unknown',
+                userEmail: currentUser.email || '',
+                amount: amt,
+                fee: fee,
+                netAmount: netAmount,
+                address: addr,
+                method: method,
+                status: 'pending',
+                requestedAt: new Date()
+            });
+            
+            const newBalance = currentUser.balance - amt;
+            await db.collection('users').doc(currentUser.uid).update({
+                balance: newBalance,
+                transactions: firebase.firestore.FieldValue.arrayUnion({
+                    type: 'withdraw_request',
+                    amount: amt,
+                    fee: fee,
+                    description: `Withdrawal Request: $${amt} to ${method}`,
+                    status: 'pending',
+                    date: new Date()
+                })
+            });
+            
+            currentUser.balance = newBalance;
+            updateDashboard();
+            
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('withdrawAddress').value = '';
+            
+            showNotification(`✅ Withdrawal request submitted! Amount: $${amt}. Admin will review.`, 'success');
+            
+        } catch(error) {
+            showNotification('❌ Error: ' + error.message, 'error');
+        }
     }
     
-    function saveWalletAddress(key, address) {
-        const addrs = getWalletAddresses();
-        addrs[key] = address;
-        localStorage.setItem('btcm_wallet_addresses', JSON.stringify(addrs));
-        showToast(`${key} address updated!`, "success");
-        renderWalletSettingsEditor();
+    function toggleAuth(isLogin){ 
+        document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none'; 
+        document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block'; 
     }
     
-    function renderWalletSettingsEditor() {
-        const addrs = getWalletAddresses();
-        const networks = [
-            { key: "BTC", name: "Bitcoin (BTC)" },
-            { key: "ETH", name: "Ethereum (ERC20)" },
-            { key: "USDT_BEP20", name: "USDT (BEP20)" },
-            { key: "BNB", name: "BNB (BEP20)" },
-            { key: "SOL", name: "Solana" }
-        ];
-        document.getElementById('walletAddressesEditor').innerHTML = networks.map(n => `
-            <div style="margin-bottom:15px;background:rgba(0,0,0,0.3);padding:15px;border-radius:12px">
-                <label style="display:block;margin-bottom:8px;font-weight:600">${n.name}</label>
-                <input type="text" id="addr_${n.key}" value="${escapeHtml(addrs[n.key] || '')}" placeholder="Wallet address">
-                <button class="btn btn-primary" onclick="saveWalletAddr('${n.key}')" style="margin-top:8px"><i class="fas fa-save"></i> Save Address</button>
+    async function handleRegister(){ 
+        let name = document.getElementById('regName').value.trim(), 
+            email = document.getElementById('regEmail').value.trim().toLowerCase(), 
+            pass = document.getElementById('regPass').value, 
+            refCode = document.getElementById('refCode').value.trim(); 
+        
+        if(!name || !email || !pass){ 
+            showNotification('Please fill all fields!','error'); 
+            return; 
+        }
+        if(pass.length < 6){ 
+            showNotification('Password must be at least 6 characters','error'); 
+            return; 
+        }
+        
+        try { 
+            const userCredential = await auth.createUserWithEmailAndPassword(email,pass); 
+            const user = userCredential.user; 
+            let referralBonus = 0; 
+            
+            if(refCode && !sessionStorage.getItem(`ref_used_${refCode}`)) { 
+                const referrerQuery = await db.collection('users').where('refCode','==',refCode).get(); 
+                if(!referrerQuery.empty){ 
+                    const referrerDoc = referrerQuery.docs[0];
+                    const referrerData = referrerDoc.data();
+                    
+                    const alreadyReferred = (referrerData.referrals || []).some(r => r.email === email);
+                    
+                    if(!alreadyReferred) {
+                        await db.collection('users').doc(referrerDoc.id).update({ 
+                            balance: firebase.firestore.FieldValue.increment(10), 
+                            referralBonus: firebase.firestore.FieldValue.increment(10), 
+                            referrals: firebase.firestore.FieldValue.arrayUnion({
+                                name: name,
+                                email: email,
+                                date: new Date()
+                            }) 
+                        });
+                        referralBonus = 10;
+                        sessionStorage.setItem(`ref_used_${refCode}`, 'true');
+                    }
+                } 
+            }
+            
+            const userRef = db.collection('users').doc(user.uid);
+            const newRefCode = Math.random().toString(36).substring(2,8).toUpperCase();
+            
+            await userRef.set({ 
+                uid: user.uid, 
+                name, 
+                email, 
+                balance: 200, 
+                totalInvested: 0, 
+                referralBonus: referralBonus,
+                todayEarnings: 0, 
+                isMining: false, 
+                hashrate: 12.5, 
+                activePackage: null, 
+                refCode: newRefCode,
+                referredBy: refCode || null, 
+                kycStatus: 'pending', 
+                kycData: null, 
+                twoFactorEnabled: false, 
+                notificationEmail: true, 
+                notificationPush: true, 
+                walletAddresses: {btc:'',usdt:'',eth:''}, 
+                transactions: [{type:'bonus',amount:200,description:'Signup Bonus $200',date:new Date()}], 
+                hasDeposited: false, 
+                referrals: [], 
+                createdAt: new Date() 
+            });
+            
+            showNotification('Account created successfully! +$200 bonus','success'); 
+            currentUser = { 
+                uid: user.uid, 
+                name, 
+                email, 
+                balance: 200, 
+                totalInvested: 0, 
+                referralBonus: referralBonus,
+                todayEarnings: 0, 
+                isMining: false, 
+                hashrate: 12.5, 
+                activePackage: null, 
+                refCode: newRefCode,
+                kycStatus: 'pending', 
+                walletAddresses: {btc:'',usdt:'',eth:''}, 
+                transactions: [], 
+                hasDeposited: false 
+            }; 
+            showApp(); 
+        } catch(error){ 
+            if(error.code === 'auth/email-already-in-use') 
+                showNotification('Email already registered.','error'); 
+            else 
+                showNotification('Registration failed: '+error.message,'error'); 
+        } 
+    }
+    
+    async function handleLogin(){ 
+        let email = document.getElementById('loginEmail').value.trim().toLowerCase(), 
+            pass = document.getElementById('loginPassword').value; 
+        if(!email || !pass){ 
+            showNotification('Please enter email and password','error'); 
+            return; 
+        } 
+        try { 
+            const userCredential = await auth.signInWithEmailAndPassword(email,pass); 
+            const user = userCredential.user; 
+            const doc = await db.collection('users').doc(user.uid).get(); 
+            if(doc.exists){ 
+                currentUser = { uid:user.uid, ...doc.data() }; 
+                showNotification('Welcome back!','success'); 
+                showApp(); 
+            } else 
+                showNotification('User data not found!','error'); 
+        } catch(error){ 
+            showNotification('Login failed: '+error.message,'error'); 
+        } 
+    }
+    
+    async function showApp(){ 
+        await loadWalletAddresses();
+        document.getElementById('authPage').style.display = 'none'; 
+        document.getElementById('mainApp').style.display = 'block'; 
+        loadPackages(); 
+        loadLeaderboard(); 
+        loadSettingsUI(); 
+        updateDashboard(); 
+        updateReferralDisplay(); 
+        startCountdown(); 
+        startLivePriceUpdates();
+        
+        if(currentUser.isMining) startMiningSimulation(); 
+        renderCoinSelector(); 
+        
+        if(currentUser && currentUser.uid) {
+            db.collection('users').doc(currentUser.uid).onSnapshot((doc)=>{ 
+                if(doc.exists){ 
+                    currentUser = { uid:currentUser.uid, ...doc.data() }; 
+                    updateDashboard(); 
+                    loadSettingsUI();
+                } 
+            });
+            
+            setInterval(async () => {
+                if(currentUser && !currentUser.hasDeposited) {
+                    const snapshot = await db.collection('depositRequests')
+                        .where('userId', '==', currentUser.uid)
+                        .where('status', '==', 'approved')
+                        .get();
+                    
+                    if (!snapshot.empty && !currentUser.hasDeposited) {
+                        await db.collection('users').doc(currentUser.uid).update({
+                            hasDeposited: true
+                        });
+                        currentUser.hasDeposited = true;
+                        showNotification('✅ Your deposit has been approved! You can now withdraw.', 'success');
+                        updateDashboard();
+                    }
+                }
+            }, 30000);
+        }
+    }
+    
+    function startCountdown(){ 
+        if(countdownInterval) clearInterval(countdownInterval); 
+        countdownInterval = setInterval(()=>{ 
+            if(remainingSeconds > 0){ 
+                remainingSeconds--; 
+                let d = Math.floor(remainingSeconds/86400), 
+                    h = Math.floor((remainingSeconds%86400)/3600), 
+                    m = Math.floor((remainingSeconds%3600)/60), 
+                    s = remainingSeconds%60; 
+                document.getElementById('countdownTimer').innerHTML = `${d}d ${h}h ${m}m ${s}s`; 
+                document.getElementById('miningProgressBar').style.width = (remainingSeconds/(20*86400))*100 + '%'; 
+            } 
+        },1000); 
+    }
+    
+    function loadPackages(){ 
+        document.getElementById('packagesList').innerHTML = investmentPackages.map(p=>`
+            <div class="package-card">
+                <div>
+                    <strong style="color:var(--primary); font-size:18px;">${p.name}</strong>
+                    <p style="margin-top:5px;">$${p.minAmount}+ | Daily ${p.dailyReturn}% | Total ${p.totalReturn}%</p>
+                </div>
+                <button class="btn btn-primary" onclick="investPackage(${p.minAmount},'${p.name}')">Invest $${p.minAmount}+</button>
             </div>
-        `).join('');
+        `).join(''); 
     }
     
-    function saveWalletAddr(key) {
-        let newAddr = document.getElementById(`addr_${key}`).value.trim();
-        if (newAddr) saveWalletAddress(key, newAddr);
-        else showToast("Please enter an address", "error");
+    async function investPackage(amount, pkg){ 
+        if(currentUser.balance >= amount){ 
+            const newBalance = currentUser.balance - amount; 
+            const newTotalInvested = currentUser.totalInvested + amount; 
+            await db.collection('users').doc(currentUser.uid).update({ 
+                balance: newBalance, 
+                totalInvested: newTotalInvested, 
+                activePackage: {name:pkg,amount,startDate:new Date()}, 
+                hashrate: currentUser.hashrate + (amount * 0.5), 
+                transactions: firebase.firestore.FieldValue.arrayUnion({
+                    type:'investment',
+                    amount,
+                    description:`Invested ${pkg} Package`,
+                    date:new Date()
+                }) 
+            }); 
+            currentUser.balance = newBalance; 
+            currentUser.totalInvested = newTotalInvested; 
+            currentUser.hashrate += amount * 0.5; 
+            showNotification(`Invested $${amount} in ${pkg}!`); 
+            updateDashboard();
+        } else 
+            showNotification('Insufficient balance','error'); 
     }
     
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+    async function toggleMining(){ 
+        if(!currentUser.isMining){ 
+            await db.collection('users').doc(currentUser.uid).update({ isMining:true }); 
+            currentUser.isMining = true; 
+            document.getElementById('mineBtn').classList.add('mining'); 
+            document.getElementById('mineText').innerHTML = '<i class="fas fa-spinner fa-spin"></i> MINING...'; 
+            startMiningSimulation(); 
+            showNotification('Mining started!'); 
+        } else { 
+            await db.collection('users').doc(currentUser.uid).update({ isMining:false }); 
+            currentUser.isMining = false; 
+            document.getElementById('mineBtn').classList.remove('mining'); 
+            document.getElementById('mineText').innerHTML = 'START MINING'; 
+            if(miningInterval) clearInterval(miningInterval); 
+            showNotification('Mining stopped.'); 
+        } 
     }
     
-    function openModal(id) {
-        document.getElementById(id).classList.add('active');
+    function startMiningSimulation(){ 
+        if(miningInterval) clearInterval(miningInterval); 
+        miningInterval = setInterval(async ()=>{ 
+            if(currentUser && currentUser.isMining && remainingSeconds > 0){ 
+                let baseEarn = currentUser.hashrate * 0.0005;
+                let priceBonus = 1;
+                if(btcPrice > 60000) {
+                    priceBonus = 1 + ((btcPrice - 60000) / 60000) * 0.1;
+                }
+                let earn = baseEarn * Math.min(priceBonus, 1.5);
+                earn = Math.max(earn, 0.0001);
+                
+                const newBalance = currentUser.balance + earn; 
+                const newTodayEarnings = (currentUser.todayEarnings || 0) + earn; 
+                await db.collection('users').doc(currentUser.uid).update({ 
+                    balance: newBalance, 
+                    todayEarnings: newTodayEarnings 
+                }); 
+                currentUser.balance = newBalance; 
+                currentUser.todayEarnings = newTodayEarnings; 
+                updateDashboard(); 
+            } 
+        }, 5000); 
     }
     
-    function closeModal(id) {
-        const modal = document.getElementById(id);
-        if(modal) modal.classList.remove('active');
+    async function updateDashboard(){ 
+        if(!currentUser) return; 
+        document.getElementById('balanceAmount').innerHTML = `$${currentUser.balance.toFixed(2)}`; 
+        document.getElementById('btcBalance').innerHTML = (currentUser.balance/btcPrice).toFixed(8); 
+        document.getElementById('estimatedEarnings').innerHTML = `$${(currentUser.hashrate * 0.008).toFixed(2)}`; 
+        document.getElementById('hashrateText').innerHTML = `Hashrate: ${currentUser.hashrate.toFixed(1)} TH/s`; 
+        document.getElementById('todayEarnings').innerHTML = `$${(currentUser.todayEarnings || 0).toFixed(2)}`; 
+        document.getElementById('totalInvested').innerHTML = `$${(currentUser.totalInvested || 0).toFixed(2)}`; 
+        document.getElementById('referralBonus').innerHTML = `$${(currentUser.referralBonus || 0).toFixed(2)}`; 
+        
+        document.getElementById('todayEarningsStat').innerHTML = `$${(currentUser.todayEarnings || 0).toFixed(2)}`;
+        document.getElementById('totalInvestedStat').innerHTML = `$${(currentUser.totalInvested || 0).toFixed(2)}`;
+        document.getElementById('referralBonusStat').innerHTML = `$${(currentUser.referralBonus || 0).toFixed(2)}`;
+        document.getElementById('hashrateStat').innerHTML = `${currentUser.hashrate.toFixed(1)} TH/s`;
+        
+        let prog = currentUser.hasDeposited ? Math.min((currentUser.balance / 10) * 100, 100) : 0;
+        document.getElementById('withdrawProgress').style.width = prog + '%';
+        
+        if (!currentUser.hasDeposited) { 
+            document.getElementById('withdrawStatus').innerHTML = '⚠️ Deposit Required First'; 
+            document.getElementById('withdrawStatus').style.color = '#f59e0b'; 
+        } else if (currentUser.balance >= 10) { 
+            document.getElementById('withdrawStatus').innerHTML = '✅ Withdraw Available'; 
+            document.getElementById('withdrawStatus').style.color = '#10b981'; 
+        } else { 
+            document.getElementById('withdrawStatus').innerHTML = '⚠️ Need More Balance (Min $10)'; 
+            document.getElementById('withdrawStatus').style.color = '#f59e0b'; 
+        } 
     }
     
-    async function logoutAdmin() {
-        await auth.signOut();
-        window.location.href = 'index.html';
+    async function loadLeaderboard(){ 
+        const usersSnapshot = await db.collection('users').orderBy('totalInvested','desc').limit(10).get(); 
+        let users = []; 
+        usersSnapshot.forEach(doc=>users.push({id:doc.id,...doc.data()})); 
+        document.getElementById('leaderboardList').innerHTML = users.map((u,i)=>`
+            <div class="leaderboard-item">
+                <div><span class="${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':''}">${i+1}. </span>${(u.name||'User').substring(0,15)}</div>
+                <div>$${(u.totalInvested||0).toFixed(2)}</div>
+            </div>
+        `).join(''); 
+        
+        const allUsersSnapshot = await db.collection('users').get(); 
+        let allUsers = []; 
+        allUsersSnapshot.forEach(doc=>allUsers.push({id:doc.id,...doc.data()})); 
+        allUsers.sort((a,b)=>(b.totalInvested||0)-(a.totalInvested||0)); 
+        let idx = allUsers.findIndex(u=>u.id===currentUser.uid)+1; 
+        document.getElementById('userRank').innerHTML = idx>0 ? `🏆 Your Rank: #${idx} | Invested: $${(currentUser.totalInvested||0).toFixed(2)}` : ''; 
     }
     
-    window.approveDeposit = approveDeposit;
-    window.rejectDeposit = rejectDeposit;
-    window.approveWithdraw = approveWithdraw;
-    window.rejectWithdraw = rejectWithdraw;
-    window.openEditBalanceModal = openEditBalanceModal;
-    window.updateUserBalance = updateUserBalance;
-    window.saveWalletAddr = saveWalletAddr;
-    window.closeModal = closeModal;
-    window.openModal = openModal;
-    window.logoutAdmin = logoutAdmin;
-    window.loadAdminUsers = loadAdminUsers;
-    window.loadAdminData = loadAdminData;
+    function loadSettingsUI() { 
+        const settingsList = [
+            {icon:"👤", name:"Profile Info", desc:"Update your personal information", badge: null, action:"openProfileModal()"},
+            {icon:"🔐", name:"Change Password", desc:"Secure your account", badge: null, action:"openModal('changePasswordModal')"},
+            {icon:"🆔", name:"KYC Verification", desc:"Verify your identity to unlock higher limits", badge: currentUser.kycStatus === 'verified' ? '✅ Verified' : (currentUser.kycStatus === 'submitted' ? '⏳ Pending' : '⚠️ Not Done'), action:"openModal('kycModal')"},
+            {icon:"🔒", name:"2FA Security", desc:"Two-factor authentication", badge: currentUser.twoFactorEnabled ? '✅ Enabled' : '❌ Disabled', action:"openModal('2faModal')"},
+            {icon:"💳", name:"Wallet Addresses", desc:"Set withdrawal addresses", badge: null, action:"openModal('walletAddressModal')"},
+            {icon:"📜", name:"Transaction History", desc:"View all transactions", badge: null, action:"showTransactionHistory()"},
+            {icon:"🤝", name:"Referral Status", desc:`${(currentUser.referrals || []).length} referrals`, badge: `+$${(currentUser.referralBonus || 0)}`, action:"showReferralStatus()"},
+            {icon:"🔔", name:"Notifications", desc:"Manage alerts", badge: null, action:"openModal('notifyModal')"},
+            {icon:"🌐", name:"Language", desc:"Change language (English / বাংলা)", badge: null, action:"changeLanguage()"},
+            {icon:"❓", name:"Support Center", desc:"Get help 24/7", badge: null, action:"showSupport()"}
+        ]; 
+        
+        document.getElementById('settingsList').innerHTML = settingsList.map(s => `
+            <div class="setting-card" onclick="${s.action}">
+                <div class="setting-card-content">
+                    <div class="setting-icon-wrapper">${s.icon}</div>
+                    <div class="setting-info-modern">
+                        <div class="setting-name-modern">
+                            ${s.name}
+                            ${s.badge ? `<span class="setting-badge ${s.badge.includes('Verified') ? 'kyc-verified' : (s.badge.includes('Pending') ? 'kyc-pending' : '')}">${s.badge}</span>` : ''}
+                        </div>
+                        <div class="setting-desc-modern">${s.desc}</div>
+                    </div>
+                    <div class="setting-arrow-modern"><i class="fas fa-chevron-right"></i></div>
+                </div>
+            </div>
+        `).join(''); 
+        
+        updateKycPanel(); 
+    }
     
-    checkAdminAccess();
+    function updateKycPanel() { 
+        let isVerified = currentUser.kycStatus === 'verified';
+        let isSubmitted = currentUser.kycStatus === 'submitted';
+        
+        let statusIcon = isVerified ? '✅' : (isSubmitted ? '⏳' : '⚠️');
+        let statusText = isVerified ? 'Identity Verified' : (isSubmitted ? 'Under Review' : 'Verification Required');
+        let statusDesc = isVerified ? 'Your identity has been verified. Higher withdrawal limits unlocked.' : (isSubmitted ? 'Your documents are being reviewed by our team.' : 'Please verify your identity to increase your withdrawal limits.');
+        let badgeClass = isVerified ? 'kyc-verified-badge' : 'kyc-pending-badge';
+        let badgeText = isVerified ? 'Verified' : (isSubmitted ? 'Pending' : 'Not Verified');
+        
+        document.getElementById('kycStatusPanel').innerHTML = `
+            <div class="kyc-status-card">
+                <div class="kyc-status-header">
+                    <div class="kyc-status-icon">${statusIcon}</div>
+                    <div class="kyc-status-text">
+                        <h4>${statusText}</h4>
+                        <p>${statusDesc}</p>
+                    </div>
+                    <div class="kyc-status-badge ${badgeClass}">${badgeText}</div>
+                </div>
+                ${!isVerified && !isSubmitted ? `
+                    <button class="kyc-submit-btn" onclick="openModal('kycModal')">
+                        <i class="fas fa-upload"></i> Submit KYC Documents
+                    </button>
+                ` : ''}
+                ${isSubmitted ? `
+                    <div style="margin-top: 12px; padding: 8px; background: rgba(245,158,11,0.1); border-radius: 12px; text-align: center; font-size: 11px; color: #f59e0b;">
+                        <i class="fas fa-clock"></i> Usually takes 24-48 hours for verification
+                    </div>
+                ` : ''}
+                ${isVerified ? `
+                    <div style="margin-top: 12px; padding: 8px; background: rgba(16,185,129,0.1); border-radius: 12px; text-align: center; font-size: 11px; color: #10b981;">
+                        <i class="fas fa-check-circle"></i> Daily Withdrawal Limit: $50,000
+                    </div>
+                ` : ''}
+            </div>
+        `; 
+    }
+    
+    function changeLanguage(){ 
+        let lang = prompt('Select Language: English / বাংলা'); 
+        if(lang) showNotification(`Language changed to ${lang}`); 
+    }
+    
+    function showSupport(){ 
+        alert('📞 Support Center\nEmail: support@btcmpro.com\nTelegram: @btcmpro_support\nResponse: 24h'); 
+    }
+    
+    async function submitKYC(){ 
+        let fullName = document.getElementById('kycFullName').value, 
+            idNumber = document.getElementById('kycIdNumber').value, 
+            file = document.getElementById('kycFile').files[0]; 
+        if(!fullName || !idNumber || !file){ 
+            showNotification('Fill all fields','error'); 
+            return; 
+        } 
+        await db.collection('users').doc(currentUser.uid).update({ 
+            kycStatus:'submitted', 
+            kycData:{fullName,idNumber,submittedAt:new Date().toISOString()} 
+        }); 
+        currentUser.kycStatus = 'submitted'; 
+        loadSettingsUI();
+        closeModal('kycModal'); 
+        showNotification('KYC submitted for review.'); 
+    }
+    
+    async function changePassword(){ 
+        let oldP = document.getElementById('oldPassword').value, 
+            newP = document.getElementById('newPassword').value, 
+            confirmP = document.getElementById('confirmNewPassword').value; 
+        if(newP !== confirmP){ 
+            showNotification('Passwords do not match','error'); 
+            return; 
+        } 
+        if(newP.length < 6){ 
+            showNotification('Password too short','error'); 
+            return; 
+        } 
+        try { 
+            const user = auth.currentUser; 
+            const credential = firebase.auth.EmailAuthProvider.credential(user.email,oldP); 
+            await user.reauthenticateWithCredential(credential); 
+            await user.updatePassword(newP); 
+            showNotification('Password changed!'); 
+            closeModal('changePasswordModal'); 
+        } catch(e){ 
+            showNotification('Current password incorrect','error'); 
+        } 
+    }
+    
+    async function saveUserWalletAddresses(){ 
+        let btc = document.getElementById('userBtcAddress').value, 
+            usdt = document.getElementById('userUsdtAddress').value, 
+            eth = document.getElementById('userEthAddress').value; 
+        await db.collection('users').doc(currentUser.uid).update({ 
+            walletAddresses:{btc,usdt,eth} 
+        }); 
+        currentUser.walletAddresses = {btc,usdt,eth}; 
+        showNotification('Addresses saved'); 
+        closeModal('walletAddressModal'); 
+    }
+    
+    async function toggle2FA(){ 
+        const newStatus = !currentUser.twoFactorEnabled; 
+        await db.collection('users').doc(currentUser.uid).update({ twoFactorEnabled:newStatus }); 
+        currentUser.twoFactorEnabled = newStatus; 
+        showNotification(`2FA ${newStatus?'Enabled':'Disabled'}`); 
+        loadSettingsUI();
+        closeModal('2faModal'); 
+    }
+    
+    async function saveNotifySettings(){ 
+        let email = document.getElementById('notifyEmail').checked, 
+            push = document.getElementById('notifyPush').checked; 
+        await db.collection('users').doc(currentUser.uid).update({ 
+            notificationEmail:email, 
+            notificationPush:push 
+        }); 
+        currentUser.notificationEmail = email; 
+        currentUser.notificationPush = push; 
+        showNotification('Settings saved'); 
+        closeModal('notifyModal'); 
+    }
+    
+    function openProfileModal(){ 
+        let newName = prompt('Enter your full name:',currentUser.name); 
+        if(newName && newName.trim()){ 
+            db.collection('users').doc(currentUser.uid).update({ name:newName.trim() }); 
+            currentUser.name = newName.trim(); 
+            showNotification('Profile updated!'); 
+            loadSettingsUI();
+        } 
+    }
+    
+    async function showTransactionHistory(){ 
+        const userDoc = await db.collection('users').doc(currentUser.uid).get(); 
+        const transactions = userDoc.data().transactions || []; 
+        let history = transactions.map(t => `${t.type.toUpperCase()}: $${t.amount} - ${t.description} (${new Date(t.date).toLocaleString()})`).join('\n'); 
+        alert('📜 Transaction History:\n\n'+(history || 'No transactions yet.')); 
+    }
+    
+    function showReferralStatus(){ 
+        alert(`🔗 Your Referral Code: ${currentUser.refCode}\n👥 Total Referrals: ${(currentUser.referrals || []).length}\n💰 Bonus Earned: $${(currentUser.referralBonus || 0)}\n\nShare your link to earn $10 per referral!`); 
+    }
+    
+    function copyReferralLink(){ 
+        let link = `https://btcm-pro.github.io/btcm-mining-pro/?ref=${currentUser.refCode}`; 
+        navigator.clipboard.writeText(link); 
+        showNotification('Referral link copied!'); 
+    }
+    
+    function updateReferralDisplay(){ 
+        document.getElementById('referralLinkDisplay').innerHTML = `https://btcm-pro.github.io/btcm-mining-pro/?ref=${currentUser.refCode}`; 
+    }
+    
+    function switchPage(pageId){ 
+        document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); 
+        document.getElementById(pageId).classList.add('active'); 
+        
+        document.querySelectorAll('.nav-item-modern').forEach(nav => nav.classList.remove('active'));
+        const navMap = { dashboard:0, packages:1, wallet:2, leaderboard:3, settings:4 };
+        if(navMap[pageId] !== undefined) {
+            document.querySelectorAll('.nav-item-modern')[navMap[pageId]].classList.add('active');
+        }
+        
+        if(pageId === 'leaderboard') loadLeaderboard(); 
+        if(pageId === 'packages') loadPackages(); 
+        if(pageId === 'wallet') renderCoinSelector(); 
+        if(pageId === 'settings') loadSettingsUI(); 
+    }
+    
+    async function logout(){ 
+        if(miningInterval) clearInterval(miningInterval); 
+        if(countdownInterval) clearInterval(countdownInterval);
+        stopLivePriceUpdates();
+        if(qrCodeInstance) qrCodeInstance = null;
+        await auth.signOut(); 
+        location.reload(); 
+    }
+    
+    function showNotification(msg, type='success'){ 
+        let n = document.createElement('div'); 
+        n.className = 'notification'; 
+        n.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':'fa-exclamation-circle'}" style="color:${type==='success'?'#10b981':'#f59e0b'}"></i><span>${msg}</span>`; 
+        document.body.appendChild(n); 
+        setTimeout(()=>n.remove(),3000); 
+    }
+    
+    function showNotifications(){ 
+        alert('📢 BTCM PRO Updates:\n• Min Withdrawal: $10\n• Referral Bonus: $10\n• KYC unlocks limits\n• 24/7 Support'); 
+    }
+    
+    function openModal(modalId){ 
+        document.getElementById(modalId).classList.add('active'); 
+    }
+    
+    function closeModal(modalId){ 
+        const modal = document.getElementById(modalId);
+        if(modal) modal.classList.remove('active'); 
+    }
+    
+    window.onload = () => { 
+        const urlParams = new URLSearchParams(window.location.search); 
+        const refCode = urlParams.get('ref'); 
+        if(refCode) document.getElementById('refCode').value = refCode; 
+        auth.onAuthStateChanged(async (user) => { 
+            if(user){ 
+                const doc = await db.collection('users').doc(user.uid).get(); 
+                if(doc.exists){ 
+                    currentUser = { uid:user.uid, ...doc.data() }; 
+                    await loadWalletAddresses(); 
+                    showApp(); 
+                } 
+            } 
+        }); 
+    };
 </script>
 </body>
 </html>

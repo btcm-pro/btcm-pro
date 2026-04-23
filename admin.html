@@ -44,48 +44,56 @@
         .modal.active { display: flex; }
         .modal-content { background: linear-gradient(135deg, #1a1f2e, #0f1422); border-radius: 32px; padding: 28px; max-width: 500px; width: 100%; border: 1px solid rgba(255,215,0,0.3); }
         .loading { text-align: center; padding: 40px; }
+        .access-denied { text-align: center; padding: 60px 20px; }
+        .access-denied i { font-size: 80px; color: #FF3B30; margin-bottom: 20px; }
         .toast { position: fixed; bottom: 20px; right: 20px; background: #333; padding: 12px 24px; border-radius: 8px; z-index: 2000; animation: slideIn 0.3s ease; }
         .toast.success { background: #00E676; color: #000; }
         .toast.error { background: #FF3B30; color: #fff; }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .refresh-btn { background: #2a2a3e; border: none; color: #FFD700; padding: 8px 12px; border-radius: 8px; cursor: pointer; margin-left: 10px; }
     </style>
 </head>
 <body>
 <div id="adminPanel">
     <div class="admin-container">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px">
-            <h1><i class="fas fa-shield-alt"></i> BTCM Pro Admin</h1>
-            <div>
-                <span id="adminEmailDisplay" style="margin-right:15px;color:#FFD700"></span>
-                <button class="btn btn-danger" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Exit</button>
+        <div id="adminLoading" style="text-align:center;padding:50px">
+            <i class="fas fa-spinner fa-spin"></i> Checking access...
+        </div>
+        
+        <div id="accessDenied" style="display:none">
+            <div class="access-denied glass-card">
+                <i class="fas fa-ban"></i>
+                <h2>Access Denied</h2>
+                <p>You are not authorized to access this page.</p>
+                <button class="btn btn-primary" onclick="window.location.href='index.html'">
+                    <i class="fas fa-home"></i> Back to Home
+                </button>
             </div>
         </div>
         
-        <div id="adminLoginContainer" style="display:none">
-            <div class="glass-card" style="max-width:500px;margin:0 auto">
-                <h2 style="margin-bottom:20px">🔐 Admin Login</h2>
-                <p style="margin-bottom:20px;color:#aaa">Only authorized admin can access this panel.</p>
-                <input type="email" id="adminLoginEmail" placeholder="Admin Email">
-                <input type="password" id="adminLoginPass" placeholder="Password">
-                <button class="btn btn-primary" onclick="performAdminLogin()" style="width:100%"><i class="fas fa-arrow-right"></i> Login</button>
+        <div id="adminContent" style="display:none">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+                <h1><i class="fas fa-shield-alt"></i> BTCM Pro Admin</h1>
+                <div>
+                    <span id="adminEmailDisplay" style="margin-right:15px;color:#FFD700"></span>
+                    <button class="btn btn-danger" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
             </div>
-        </div>
-        
-        <div id="adminDashboardContainer" style="display:none">
-            <div class="nav-tabs" id="navTabs">
-                <div class="tab" data-tab="stats">📊 Dashboard</div>
+            
+            <div class="nav-tabs">
+                <div class="tab active" data-tab="stats">📊 Dashboard</div>
                 <div class="tab" data-tab="deposits">💰 Deposit Requests</div>
                 <div class="tab" data-tab="withdrawals">💸 Withdraw Requests</div>
                 <div class="tab" data-tab="users">👥 Users</div>
                 <div class="tab" data-tab="wallet">🏦 Wallet Settings</div>
             </div>
             
-            <div id="adminStats" class="tab-content">
+            <div id="adminStats" class="tab-content active">
                 <div class="stats-grid" id="statsGrid">
                     <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
                 </div>
                 <div class="glass-card">
-                    <h3>📋 Recent Users <button class="refresh-btn" onclick="loadAdminData()" style="background:#2a2a3e;border:none;color:#FFD700;padding:8px 12px;border-radius:8px;cursor:pointer;margin-left:10px"><i class="fas fa-sync-alt"></i></button></h3>
+                    <h3>📋 Recent Users <button class="refresh-btn" onclick="loadAdminData()"><i class="fas fa-sync-alt"></i></button></h3>
                     <div id="recentUsers"></div>
                 </div>
             </div>
@@ -118,7 +126,7 @@
             <div id="adminWallet" class="tab-content">
                 <div class="glass-card">
                     <h3>🏦 Deposit Wallet Addresses</h3>
-                    <p style="font-size:12px;color:#aaa;margin-bottom:20px">⚠️ সতর্কতা: এখানে অ্যাড্রেস পরিবর্তন করলেই ইউজার প্যানেলে সাথে সাথে আপডেট হবে</p>
+                    <p style="font-size:12px;color:#aaa;margin-bottom:20px">⚠️ এখানে অ্যাড্রেস পরিবর্তন করলেই ইউজার প্যানেলে সাথে সাথে আপডেট হবে</p>
                     <div id="walletAddressesEditor"></div>
                 </div>
             </div>
@@ -126,7 +134,6 @@
     </div>
 </div>
 
-<!-- Edit Balance Modal -->
 <div id="editBalanceModal" class="modal">
     <div class="modal-content">
         <h3 style="margin-bottom:20px">✏️ Edit User Balance</h3>
@@ -139,7 +146,6 @@
 </div>
 
 <script>
-    // Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDegGMXh3i3TgC_FhbG_Rx6SUm8fHMZFxI",
         authDomain: "btcm-pro-app.firebaseapp.com",
@@ -157,10 +163,8 @@
     let selectedUserId = null;
     let currentTab = 'stats';
     
-    // Admin emails list (store in Firestore for better security)
     const ADMIN_EMAILS = ["admin@btcmpro.com", "btcmpro.admin@gmail.com"];
     
-    // Toast notification function
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
@@ -169,68 +173,70 @@
         setTimeout(() => toast.remove(), 3000);
     }
     
-    async function performAdminLogin() {
-        let email = document.getElementById('adminLoginEmail').value.trim().toLowerCase();
-        let password = document.getElementById('adminLoginPass').value;
-        
-        if (!email || !password) {
-            showToast("Please enter email and password", "error");
-            return;
-        }
+    async function isAdminUser(user) {
+        if (!user) return false;
+        if (!ADMIN_EMAILS.includes(user.email)) return false;
         
         try {
-            const userCredential = await auth.signInWithEmailAndPassword(email, password);
-            
-            // Verify admin status from Firestore
-            const adminDoc = await db.collection('admins').doc(email).get();
-            if (!adminDoc.exists || adminDoc.data().role !== 'admin') {
-                await auth.signOut();
-                showToast("Access denied. You are not authorized as admin.", "error");
-                return;
+            const adminDoc = await db.collection('admins').doc(user.uid).get();
+            if (adminDoc.exists && adminDoc.data().role === 'admin') {
+                return true;
             }
             
-            currentAdminUser = userCredential.user;
-            sessionStorage.setItem('admin_logged', 'true');
-            sessionStorage.setItem('admin_email', email);
-            
-            showToast("Login successful! Welcome Admin.", "success");
-            showAdminDashboard();
-            loadAdminData();
-        } catch(error) {
-            if (error.code === 'auth/user-not-found') {
-                showToast("Admin account not found.", "error");
-            } else if (error.code === 'auth/wrong-password') {
-                showToast("Incorrect password.", "error");
-            } else {
-                showToast("Login failed: " + error.message, "error");
+            if (ADMIN_EMAILS.includes(user.email)) {
+                await db.collection('admins').doc(user.uid).set({
+                    email: user.email,
+                    role: 'admin',
+                    createdAt: new Date()
+                });
+                return true;
             }
+        } catch(e) {
+            console.error("Admin check error:", e);
         }
+        return false;
     }
     
-    async function logoutAdmin() {
-        await auth.signOut();
-        sessionStorage.removeItem('admin_logged');
-        sessionStorage.removeItem('admin_email');
-        currentAdminUser = null;
-        showToast("Logged out successfully", "success");
-        location.reload();
+    async function checkAdminAccess() {
+        const loadingDiv = document.getElementById('adminLoading');
+        const contentDiv = document.getElementById('adminContent');
+        const deniedDiv = document.getElementById('accessDenied');
+        
+        loadingDiv.style.display = 'block';
+        contentDiv.style.display = 'none';
+        deniedDiv.style.display = 'none';
+        
+        auth.onAuthStateChanged(async (user) => {
+            if (user && await isAdminUser(user)) {
+                currentAdminUser = user;
+                loadingDiv.style.display = 'none';
+                contentDiv.style.display = 'block';
+                document.getElementById('adminEmailDisplay').innerHTML = `<i class="fas fa-user-shield"></i> ${user.email}`;
+                loadAdminData();
+                
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        const tabName = this.getAttribute('data-tab');
+                        if (tabName) switchTab(tabName);
+                    });
+                });
+            } else if (user) {
+                loadingDiv.style.display = 'none';
+                deniedDiv.style.display = 'block';
+                await auth.signOut();
+            } else {
+                loadingDiv.style.display = 'none';
+                deniedDiv.style.display = 'block';
+            }
+        });
     }
     
-    function showAdminDashboard() {
-        document.getElementById('adminLoginContainer').style.display = 'none';
-        document.getElementById('adminDashboardContainer').style.display = 'block';
-        document.getElementById('adminEmailDisplay').innerHTML = `<i class="fas fa-user-shield"></i> ${currentAdminUser?.email || sessionStorage.getItem('admin_email')}`;
-    }
-    
-    // Fixed tab switching function
     function switchTab(tabName) {
         currentTab = tabName;
         
-        // Hide all tab contents
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.getElementById(`admin${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).classList.add('active');
         
-        // Update tab active state
         document.querySelectorAll('.tab').forEach(tab => {
             if (tab.getAttribute('data-tab') === tabName) {
                 tab.classList.add('active');
@@ -239,7 +245,6 @@
             }
         });
         
-        // Load tab specific data
         if (tabName === 'users') loadAdminUsers();
         if (tabName === 'wallet') renderWalletSettingsEditor();
         if (tabName === 'deposits') loadPendingDeposits();
@@ -527,7 +532,7 @@
                     <td><small>${joinedDate}</small></td>
                 </tr>`;
             });
-            html += `</tbody></table>`;
+            html += `</tbody> licensierad`;
             document.getElementById('recentUsers').innerHTML = html;
         } catch(error) {
             console.error("Error loading recent users:", error);
@@ -607,7 +612,6 @@
         }
     }
     
-    // Wallet Settings Functions
     function getWalletAddresses() {
         const defaultAddrs = {
             BTC: "bc1qsl8ehutft8v2jpdmnp7x7w9lvrcu7yafw0rk0j",
@@ -652,7 +656,6 @@
         else showToast("Please enter an address", "error");
     }
     
-    // Helper Functions
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -668,41 +671,15 @@
     }
     
     function closeModal(id) {
-        document.getElementById(id).classList.remove('active');
+        const modal = document.getElementById(id);
+        if(modal) modal.classList.remove('active');
     }
     
-    // Initialize event listeners
-    window.onload = async () => {
-        // Setup tab click handlers
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                const tabName = this.getAttribute('data-tab');
-                if (tabName) switchTab(tabName);
-            });
-        });
-        
-        const adminLogged = sessionStorage.getItem('admin_logged');
-        const adminEmail = sessionStorage.getItem('admin_email');
-        
-        if (adminLogged === 'true' && adminEmail) {
-            try {
-                const user = auth.currentUser;
-                if (user && ADMIN_EMAILS.includes(user.email)) {
-                    currentAdminUser = user;
-                    showAdminDashboard();
-                    loadAdminData();
-                } else {
-                    document.getElementById('adminLoginContainer').style.display = 'block';
-                }
-            } catch(e) {
-                document.getElementById('adminLoginContainer').style.display = 'block';
-            }
-        } else {
-            document.getElementById('adminLoginContainer').style.display = 'block';
-        }
-    };
+    async function logoutAdmin() {
+        await auth.signOut();
+        window.location.href = 'index.html';
+    }
     
-    // Make functions global
     window.approveDeposit = approveDeposit;
     window.rejectDeposit = rejectDeposit;
     window.approveWithdraw = approveWithdraw;
@@ -710,14 +687,13 @@
     window.openEditBalanceModal = openEditBalanceModal;
     window.updateUserBalance = updateUserBalance;
     window.saveWalletAddr = saveWalletAddr;
-    window.switchTab = switchTab;
     window.closeModal = closeModal;
     window.openModal = openModal;
-    window.performAdminLogin = performAdminLogin;
     window.logoutAdmin = logoutAdmin;
     window.loadAdminUsers = loadAdminUsers;
     window.loadAdminData = loadAdminData;
-    window.showToast = showToast;
+    
+    checkAdminAccess();
 </script>
 </body>
 </html>

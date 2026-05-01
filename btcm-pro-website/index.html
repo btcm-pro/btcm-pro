@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>BTCM PRO - ক্লাউড মাইনিং প্ল্যাটফর্ম</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #0f1235 100%);
+            color: #e0e4ff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f0b90b, #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo p {
+            font-size: 12px;
+            color: #8a8fc2;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #f0b90b, #ff8c00);
+            color: #0a0e27;
+            padding: 12px 28px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(240, 185, 11, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 70px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, #f0b90b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #b0b4e0;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .bonus-badge {
+            background: rgba(240, 185, 11, 0.15);
+            border: 1px solid rgba(240, 185, 11, 0.3);
+            padding: 12px 24px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .bonus-badge span {
+            color: #f0b90b;
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f0b90b, #ff8c00);
+            color: #0a0e27;
+            padding: 14px 32px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Section Titles */
+        .section-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #f0b90b, #ff8c00);
+            margin: 15px auto 0;
+            border-radius: 3px;
+        }
+
+        /* Screenshot Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .screenshot-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .screenshot-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .screenshot-card img {
+            width: 100%;
+            max-width: 200px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .screenshot-card p {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #f0b90b;
+            font-weight: 600;
+        }
+
+        /* Feature Table */
+        .features {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-label {
+            font-weight: 600;
+            color: #b0b4e0;
+        }
+
+        .feature-value {
+            font-weight: 700;
+            color: #f0b90b;
+        }
+
+        /* Investment Plans */
+        .plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .plan-card {
+            background: linear-gradient(135deg, rgba(240, 185, 11, 0.1), rgba(255, 140, 0, 0.05));
+            border-radius: 24px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(240, 185, 11, 0.2);
+            transition: all 0.3s;
+        }
+
+        .plan-card:hover {
+            border-color: #f0b90b;
+            transform: scale(1.02);
+        }
+
+        .plan-name {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .plan-price {
+            font-size: 18px;
+            color: #f0b90b;
+            margin-bottom: 15px;
+        }
+
+        .plan-daily {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 15px 0;
+        }
+
+        .plan-total {
+            color: #8a8fc2;
+            margin-bottom: 20px;
+        }
+
+        .invest-btn {
+            background: transparent;
+            border: 1px solid #f0b90b;
+            color: #f0b90b;
+            padding: 8px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.3s;
+        }
+
+        .invest-btn:hover {
+            background: #f0b90b;
+            color: #0a0e27;
+        }
+
+        /* Referral Section */
+        .referral-box {
+            background: linear-gradient(135deg, #1a1f45, #0f1235);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 60px;
+            border: 1px solid rgba(240, 185, 11, 0.3);
+        }
+
+        .referral-box h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .referral-box .bonus {
+            font-size: 42px;
+            font-weight: 800;
+            color: #f0b90b;
+            margin: 20px 0;
+        }
+
+        /* Whitepaper */
+        .whitepaper {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .whitepaper-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #f0b90b;
+            padding: 14px 35px;
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.3s;
+        }
+
+        .whitepaper-btn:hover {
+            background: #f0b90b;
+            color: #0a0e27;
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 4px solid #ff4444;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 40px 0;
+            font-size: 13px;
+            color: #cccedd;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+            font-size: 14px;
+            color: #8a8fc2;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .section-title { font-size: 26px; }
+            .referral-box .bonus { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container header-flex">
+        <div class="logo">
+            <h1>BTCM PRO</h1>
+            <p>Advanced Cloud Mining Platform</p>
+        </div>
+        <a href="https://www.webintoapp.com/download/zip/1299718/BTCM%20PRO%201.0.zip?v7VHnHdJNlfH" class="download-btn" download>
+            <i class="fas fa-download"></i> অ্যাপ ডাউনলোড (APK/ZIP)
+        </a>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <div class="bonus-badge">
+            🎉 সাইন-আপ বোনাস <span>$200</span> 🎉
+        </div>
+        <h1>ক্লাউড মাইনিং<br>যে কোনো জায়গা থেকে</h1>
+        <p>BTCM PRO-তে মাত্র $10 ডিপোজিট করে মাইনিং শুরু করুন। দৈনিক ২.৫% থেকে ৪% পর্যন্ত উপার্জন।</p>
+        <div class="hero-buttons">
+            <a href="#download" class="btn-primary"><i class="fas fa-rocket"></i> এখনই শুরু করুন</a>
+            <a href="#plans" class="btn-secondary"><i class="fas fa-chart-line"></i> প্ল্যান দেখুন</a>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Screenshot Gallery -->
+    <h2 class="section-title">অ্যাপের স্ক্রিনশট</h2>
+    <div class="gallery">
+        <div class="screenshot-card">
+            <img src="Screenshot_12.png" alt="Dashboard Screenshot">
+            <p>📊 ড্যাশবোর্ড & ব্যালেন্স</p>
+        </div>
+        <div class="screenshot-card">
+            <img src="Screenshot_13.png" alt="Investment Plans">
+            <p>💎 ইনভেস্টমেন্ট প্ল্যান</p>
+        </div>
+        <div class="screenshot-card">
+            <img src="Screenshot_14.png" alt="Deposit Crypto">
+            <p>💰 ডিপোজিট ক্রিপ্টো</p>
+        </div>
+        <div class="screenshot-card">
+            <img src="Screenshot_16.png" alt="Withdraw">
+            <p>📤 উইথড্র সুবিধা</p>
+        </div>
+        <div class="screenshot-card">
+            <img src="Screenshot_15.png" alt="Settings">
+            <p>⚙️ প্রোফাইল & সেটিংস</p>
+        </div>
+    </div>
+
+    <!-- Features Table -->
+    <div class="features">
+        <div class="feature-grid">
+            <div class="feature-item"><span class="feature-label">ন্যূনতম ডিপোজিট</span><span class="feature-value">$10</span></div>
+            <div class="feature-item"><span class="feature-label">ন্যূনতম উইথড্র</span><span class="feature-value">$10</span></div>
+            <div class="feature-item"><span class="feature-label">উইথড্র ফি</span><span class="feature-value">২%</span></div>
+            <div class="feature-item"><span class="feature-label">প্রসেসিং সময়</span><span class="feature-value">০.১-২৪ ঘণ্টা</span></div>
+            <div class="feature-item"><span class="feature-label">বোনাস</span><span class="feature-value">$২০০ সাইন-আপ</span></div>
+            <div class="feature-item"><span class="feature-label">রেফারেল বোনাস</span><span class="feature-value">$১০ প্রতি রেফারে</span></div>
+        </div>
+    </div>
+
+    <!-- Investment Plans -->
+    <h2 class="section-title" id="plans">ইনভেস্টমেন্ট প্ল্যান</h2>
+    <div class="plans">
+        <div class="plan-card"><div class="plan-name">🌟 Starter</div><div class="plan-price">$২০+</div><div class="plan-daily">২.৫% দৈনিক</div><div class="plan-total">মোট রিটার্ন ১৫০%</div><a href="#" class="invest-btn">ইনভেস্ট করুন</a></div>
+        <div class="plan-card"><div class="plan-name">⚡ Basic</div><div class="plan-price">$৫১+</div><div class="plan-daily">৩% দৈনিক</div><div class="plan-total">মোট রিটার্ন ১৮০%</div><a href="#" class="invest-btn">ইনভেস্ট করুন</a></div>
+        <div class="plan-card"><div class="plan-name">💎 Premium</div><div class="plan-price">$১০১+</div><div class="plan-daily">৩.৫% দৈনিক</div><div class="plan-total">মোট রিটার্ন ২১০%</div><a href="#" class="invest-btn">ইনভেস্ট করুন</a></div>
+        <div class="plan-card"><div class="plan-name">👑 Pro</div><div class="plan-price">$২০০+</div><div class="plan-daily">৪% দৈনিক</div><div class="plan-total">মোট রিটার্ন ২৪০%</div><a href="#" class="invest-btn">ইনভেস্ট করুন</a></div>
+    </div>
+
+    <!-- Referral Program -->
+    <div class="referral-box">
+        <i class="fas fa-users" style="font-size: 48px; color: #f0b90b;"></i>
+        <h3>রেফারেল প্রোগ্রাম</h3>
+        <p>আপনার বন্ধুদের আমন্ত্রণ জানান এবং উপার্জন করুন</p>
+        <div class="bonus">$১০ বোনাস <span style="font-size: 20px;">প্রতি রেফারে</span></div>
+        <p>+ দ্বিতীয় স্তরে আরও $৫</p>
+    </div>
+
+    <!-- Download Section -->
+    <div id="download" style="text-align: center; margin: 50px 0;">
+        <a href="https://www.webintoapp.com/download/zip/1299718/BTCM%20PRO%201.0.zip?v7VHnHdJNlfH" class="btn-primary" style="font-size: 18px; padding: 16px 40px;" download>
+            <i class="fas fa-download"></i> অ্যাপ ডাউনলোড করুন (APK/ZIP)
+        </a>
+        <p style="margin-top: 15px; font-size: 14px;">Android APK + AAB + Keystore ফাইল</p>
+    </div>
+
+    <!-- Whitepaper -->
+    <div class="whitepaper">
+        <a href="BTCM_PRO_Whitepaper_v1.0.pdf" class="whitepaper-btn" download>
+            <i class="fas fa-file-alt"></i> হোয়াইটপেপার ডাউনলোড (PDF)
+        </a>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <strong>⚠️ গুরুত্বপূর্ণ সতর্কতা:</strong> ক্রিপ্টোকারেন্সি ও ক্লাউড মাইনিংয়ে বিনিয়োগ ঝুঁকিপূর্ণ। BTCM PRO একটি ডেমো/প্রমোশনাল প্রজেক্ট। বিনিয়োগের আগে নিজের গবেষণা করুন। কোনো আর্থিক ক্ষতির জন্য আমরা দায়ী নই।
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>&copy; ২০২৬ BTCM PRO - অ্যাডভান্সড ক্লাউড মাইনিং প্ল্যাটফর্ম</p>
+        <p style="margin-top: 10px;">
+            <i class="fab fa-telegram"></i> t.me/btcmpro &nbsp;|&nbsp;
+            <i class="fab fa-twitter"></i> twitter.com/btcmpro &nbsp;|&nbsp;
+            <i class="fas fa-envelope"></i> support@btcmpro.com
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>

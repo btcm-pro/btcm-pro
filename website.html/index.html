@@ -4,327 +4,562 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>BTCM PRO - Cloud Mining Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            background: #0a0e27;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            color: #eef2ff;
-            padding: 20px 16px 60px;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #0f1235 100%);
+            color: #e0e4ff;
+            line-height: 1.6;
         }
+
         .container {
-            max-width: 550px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 20px;
         }
-        .header {
+
+        /* Header */
+        header {
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-flex {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            background: rgba(255,255,255,0.03);
-            padding: 12px 18px;
-            border-radius: 60px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
+
         .logo h1 {
-            font-size: 22px;
-            background: linear-gradient(135deg, #f5b81b, #ffd966);
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f0b90b, #ffd700);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
+
         .logo p {
-            font-size: 10px;
-            color: #9ca3cf;
+            font-size: 12px;
+            color: #8a8fc2;
         }
-        .download-badge {
-            background: linear-gradient(135deg, #f0b90b, #ff9500);
-            padding: 8px 18px;
+
+        .download-btn {
+            background: linear-gradient(135deg, #f0b90b, #ff8c00);
+            color: #0a0e27;
+            padding: 12px 28px;
             border-radius: 40px;
-            color: #000;
-            font-weight: bold;
             text-decoration: none;
-            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(240, 185, 11, 0.4);
+        }
+
+        /* Hero Section */
         .hero {
+            padding: 60px 0 40px;
             text-align: center;
-            margin: 20px 0 30px;
         }
-        .bonus {
-            background: rgba(240,185,11,0.15);
+
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, #f0b90b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #b0b4e0;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .bonus-badge {
+            background: rgba(240, 185, 11, 0.15);
+            border: 1px solid rgba(240, 185, 11, 0.3);
+            padding: 12px 24px;
+            border-radius: 50px;
             display: inline-block;
-            padding: 6px 18px;
-            border-radius: 60px;
-            border: 1px solid #f0b90b55;
-            font-size: 13px;
+            margin-bottom: 30px;
         }
-        .hero h2 {
-            font-size: 28px;
-            margin: 15px 0 10px;
+
+        .bonus-badge span {
+            color: #f0b90b;
+            font-weight: 800;
+            font-size: 24px;
         }
-        .btn-group {
+
+        .hero-buttons {
             display: flex;
-            gap: 12px;
+            gap: 20px;
             justify-content: center;
-            margin: 25px 0;
             flex-wrap: wrap;
         }
+
         .btn-primary {
-            background: #f0b90b;
-            padding: 10px 24px;
-            border-radius: 40px;
+            background: linear-gradient(135deg, #f0b90b, #ff8c00);
             color: #0a0e27;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-outline {
-            border: 1px solid #f0b90b;
-            padding: 10px 24px;
+            padding: 14px 32px;
             border-radius: 40px;
-            color: #f0b90b;
-            font-weight: bold;
             text-decoration: none;
-            background: transparent;
-        }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
             gap: 10px;
-            margin: 35px 0;
+            transition: transform 0.3s;
         }
-        .stat-card {
-            background: rgba(255,255,255,0.04);
-            border-radius: 18px;
-            padding: 14px 5px;
-            text-align: center;
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
         }
-        .stat-card .number {
-            font-size: 22px;
-            font-weight: 800;
-            color: #f0b90b;
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: 0.3s;
         }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Section Titles */
         .section-title {
             text-align: center;
-            font-size: 26px;
-            margin: 35px 0 20px;
-            font-weight: 700;
+            font-size: 36px;
+            font-weight: 800;
+            margin: 60px 0 40px;
+            position: relative;
         }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 70px;
+            height: 4px;
+            background: linear-gradient(135deg, #f0b90b, #ff8c00);
+            margin: 15px auto 0;
+            border-radius: 3px;
+        }
+
+        /* Mobile Frame Gallery */
         .gallery {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 35px;
-            align-items: center;
+            margin-bottom: 60px;
+            justify-items: center;
         }
-        .phone-mock {
-            background: #12121c;
-            border-radius: 44px;
-            padding: 10px 6px;
-            box-shadow: 0 20px 35px -8px black, 0 0 0 5px #2c2f4a, 0 0 0 10px #181c2c;
-            width: 260px;
+
+        /* Phone Frame */
+        .phone-frame {
+            background: #1a1f35;
+            border-radius: 45px;
+            padding: 12px 8px 12px 8px;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.5), 0 0 0 8px #2a2f4a, 0 0 0 12px #1a1f35;
+            transition: transform 0.3s;
+            max-width: 280px;
         }
+
+        .phone-frame:hover {
+            transform: translateY(-8px);
+        }
+
         .phone-screen {
             background: #000;
-            border-radius: 36px;
+            border-radius: 35px;
             overflow: hidden;
-            min-height: 450px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
         }
+
         .phone-screen img {
             width: 100%;
-            display: block;
-            border-radius: 36px;
-        }
-        .placeholder-img {
-            width: 100%;
             height: auto;
-            background: linear-gradient(145deg, #1a1f45, #0f1235);
-            color: #f0b90b;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 20px;
-            text-align: center;
-            font-size: 14px;
-            border-radius: 36px;
+            display: block;
+            border-radius: 35px;
         }
-        .placeholder-img i {
-            font-size: 48px;
-            margin-bottom: 15px;
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 28px;
+            background: #000;
+            border-radius: 0 0 18px 18px;
+            z-index: 2;
         }
+
         .caption {
             text-align: center;
-            margin-top: 12px;
+            margin-top: 15px;
             font-weight: 600;
             color: #f0b90b;
-            font-size: 14px;
+            font-size: 15px;
         }
-        .plan-grid {
+
+        /* Stats Grid */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-            margin: 25px 0;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
         }
-        .plan {
-            background: linear-gradient(145deg, #10132e, #0b0e24);
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-card i {
+            font-size: 40px;
+            color: #f0b90b;
+            margin-bottom: 15px;
+        }
+
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .label {
+            font-size: 14px;
+            color: #8a8fc2;
+        }
+
+        /* Investment Plans */
+        .plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .plan-card {
+            background: linear-gradient(135deg, rgba(240, 185, 11, 0.08), rgba(255, 140, 0, 0.04));
             border-radius: 24px;
-            padding: 18px 8px;
+            padding: 28px 20px;
             text-align: center;
-            border: 1px solid #f0b90b30;
+            border: 1px solid rgba(240, 185, 11, 0.2);
+            transition: all 0.3s;
         }
-        .plan h3 { font-size: 20px; }
-        .plan .daily { font-size: 24px; font-weight: 800; color: #f0b90b; margin: 8px 0; }
-        .referral {
-            background: #111633;
-            border-radius: 32px;
-            padding: 28px 16px;
+
+        .plan-card:hover {
+            border-color: #f0b90b;
+            transform: scale(1.02);
+        }
+
+        .plan-name {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .plan-price {
+            font-size: 18px;
+            color: #f0b90b;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .plan-daily {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 15px 0;
+            color: white;
+        }
+
+        .plan-total {
+            color: #8a8fc2;
+            margin-bottom: 20px;
+        }
+
+        .invest-btn {
+            background: transparent;
+            border: 1px solid #f0b90b;
+            color: #f0b90b;
+            padding: 10px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .invest-btn:hover {
+            background: #f0b90b;
+            color: #0a0e27;
+        }
+
+        /* Referral Box */
+        .referral-box {
+            background: linear-gradient(135deg, #1a1f45, #0f1235);
+            border-radius: 28px;
+            padding: 50px 30px;
             text-align: center;
-            margin: 35px 0;
+            margin-bottom: 60px;
+            border: 1px solid rgba(240, 185, 11, 0.3);
         }
-        .referral .big-bonus {
-            font-size: 44px;
+
+        .referral-box h3 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .referral-box .bonus {
+            font-size: 52px;
             font-weight: 800;
             color: #f0b90b;
+            margin: 25px 0;
         }
-        .download-area {
+
+        /* Whitepaper */
+        .whitepaper-section {
             text-align: center;
-            margin: 35px 0 20px;
+            margin-bottom: 60px;
         }
+
+        .whitepaper-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid #f0b90b;
+            padding: 16px 42px;
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.3s;
+        }
+
+        .whitepaper-btn:hover {
+            background: #f0b90b;
+            color: #0a0e27;
+        }
+
+        /* Disclaimer */
         .disclaimer {
-            background: #ffcc0010;
-            border-left: 4px solid #f0b90b;
-            padding: 16px;
-            border-radius: 16px;
-            font-size: 11px;
-            margin: 30px 0;
+            background: rgba(255, 68, 68, 0.08);
+            border-left: 4px solid #ff4444;
+            padding: 22px;
+            border-radius: 14px;
+            margin: 50px 0;
+            font-size: 13px;
+            color: #b0b4d5;
         }
+
+        /* Footer */
         footer {
             text-align: center;
-            font-size: 12px;
-            color: #7c82ac;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
             margin-top: 40px;
+        }
+
+        .social-links a {
+            color: #8a8fc2;
+            margin: 0 12px;
+            font-size: 22px;
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        .social-links a:hover {
+            color: #f0b90b;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .section-title { font-size: 28px; }
+            .referral-box .bonus { font-size: 38px; }
+            .phone-frame { max-width: 250px; }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
+
+<header>
+    <div class="container header-flex">
         <div class="logo">
-            <h1>⚡ BTCM PRO</h1>
-            <p>cloud mining</p>
+            <h1>BTCM PRO</h1>
+            <p>Advanced Cloud Mining Platform</p>
         </div>
-        <a href="https://www.webintoapp.com/download/zip/1299718/BTCM%20PRO%201.0.zip?v7VHnHdJNlfH" class="download-badge" download>📲 APK</a>
+        <a href="https://www.webintoapp.com/download/zip/1299718/BTCM%20PRO%201.0.zip?v7VHnHdJNlfH" class="download-btn" download>
+            <i class="fas fa-download"></i> Download App (APK)
+        </a>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <div class="bonus-badge">
+            🎉 Sign-up Bonus <span>$200</span> 🎉
+        </div>
+        <h1>Cloud Mining<br>From Anywhere</h1>
+        <p>Start mining with just $10 deposit. Earn 2.5% to 4% daily returns.</p>
+        <div class="hero-buttons">
+            <a href="#download" class="btn-primary"><i class="fas fa-rocket"></i> Get Started</a>
+            <a href="#plans" class="btn-secondary"><i class="fas fa-chart-line"></i> View Plans</a>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Key Stats -->
+    <div class="stats-grid">
+        <div class="stat-card"><i class="fas fa-dollar-sign"></i><div class="value">$10</div><div class="label">Min Deposit</div></div>
+        <div class="stat-card"><i class="fas fa-money-bill-wave"></i><div class="value">$10</div><div class="label">Min Withdraw</div></div>
+        <div class="stat-card"><i class="fas fa-percent"></i><div class="value">2%</div><div class="label">Withdraw Fee</div></div>
+        <div class="stat-card"><i class="fas fa-clock"></i><div class="value">0.1-24h</div><div class="label">Processing Time</div></div>
+        <div class="stat-card"><i class="fas fa-gift"></i><div class="value">$200</div><div class="label">Welcome Bonus</div></div>
+        <div class="stat-card"><i class="fas fa-users"></i><div class="value">$10</div><div class="label">Per Referral</div></div>
     </div>
 
-    <div class="hero">
-        <div class="bonus">🎁 $200 SIGN-UP BONUS</div>
-        <h2>Start Mining with $10</h2>
-        <p>2.5% – 4% daily | Instant withdraw</p>
-        <div class="btn-group">
-            <a href="#downloadApp" class="btn-primary">📱 Download App</a>
-            <a href="#plans" class="btn-outline">💰 Investment Plans</a>
+    <!-- Screenshot Gallery with Phone Frames -->
+    <h2 class="section-title">App Screenshots</h2>
+    <div class="gallery">
+        <div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <img src="Screenshot_12.png" alt="Dashboard">
+                </div>
+            </div>
+            <div class="caption">📊 Dashboard & Balance</div>
+        </div>
+        <div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <img src="Screenshot_13.png" alt="Investment Plans">
+                </div>
+            </div>
+            <div class="caption">💎 Investment Plans</div>
+        </div>
+        <div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <img src="Screenshot_14.png" alt="Deposit Crypto">
+                </div>
+            </div>
+            <div class="caption">💰 Deposit Crypto</div>
+        </div>
+        <div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <img src="Screenshot_16.png" alt="Withdraw Funds">
+                </div>
+            </div>
+            <div class="caption">📤 Withdraw Funds</div>
+        </div>
+        <div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <img src="Screenshot_15.png" alt="Settings">
+                </div>
+            </div>
+            <div class="caption">⚙️ Profile & Settings</div>
         </div>
     </div>
 
-    <div class="stats">
-        <div class="stat-card"><div class="number">$10</div><div>Min Deposit</div></div>
-        <div class="stat-card"><div class="number">$10</div><div>Min Withdraw</div></div>
-        <div class="stat-card"><div class="number">2%</div><div>Fee</div></div>
-        <div class="stat-card"><div class="number">$10</div><div>Referral</div></div>
-        <div class="stat-card"><div class="number">24h</div><div>Processing</div></div>
-        <div class="stat-card"><div class="number">$200</div><div>Bonus</div></div>
+    <!-- Investment Plans -->
+    <h2 class="section-title" id="plans">Investment Plans</h2>
+    <div class="plans">
+        <div class="plan-card"><div class="plan-name">🌟 Starter</div><div class="plan-price">$20+</div><div class="plan-daily">2.5% Daily</div><div class="plan-total">Total Return: 150%</div><a href="#" class="invest-btn">Invest Now</a></div>
+        <div class="plan-card"><div class="plan-name">⚡ Basic</div><div class="plan-price">$51+</div><div class="plan-daily">3% Daily</div><div class="plan-total">Total Return: 180%</div><a href="#" class="invest-btn">Invest Now</a></div>
+        <div class="plan-card"><div class="plan-name">💎 Premium</div><div class="plan-price">$101+</div><div class="plan-daily">3.5% Daily</div><div class="plan-total">Total Return: 210%</div><a href="#" class="invest-btn">Invest Now</a></div>
+        <div class="plan-card"><div class="plan-name">👑 Pro</div><div class="plan-price">$200+</div><div class="plan-daily">4% Daily</div><div class="plan-total">Total Return: 240%</div><a href="#" class="invest-btn">Invest Now</a></div>
     </div>
 
-    <!-- Screenshot Gallery -->
-    <div class="section-title">📱 App Preview</div>
-    <div class="gallery" id="gallery">
-        <!-- ছবি গুলো এখানে জাভাস্ক্রিপ্ট দিয়ে দেখানো হবে -->
+    <!-- Referral Program -->
+    <div class="referral-box">
+        <i class="fas fa-users" style="font-size: 56px; color: #f0b90b;"></i>
+        <h3>Referral Program</h3>
+        <p>Invite your friends and earn instantly</p>
+        <div class="bonus">$10 Bonus <span style="font-size: 24px;">per referral</span></div>
+        <p>+ Extra $5 for second level referrals</p>
     </div>
 
-    <div class="section-title" id="plans">💎 Investment Plans</div>
-    <div class="plan-grid">
-        <div class="plan"><h3>Starter</h3><div>$20+</div><div class="daily">2.5% daily</div><div>150% total</div></div>
-        <div class="plan"><h3>Basic</h3><div>$51+</div><div class="daily">3% daily</div><div>180% total</div></div>
-        <div class="plan"><h3>Premium</h3><div>$101+</div><div class="daily">3.5% daily</div><div>210% total</div></div>
-        <div class="plan"><h3>Pro</h3><div>$200+</div><div class="daily">4% daily</div><div>240% total</div></div>
+    <!-- Download Section -->
+    <div id="download" style="text-align: center; margin: 40px 0;">
+        <a href="https://www.webintoapp.com/download/zip/1299718/BTCM%20PRO%201.0.zip?v7VHnHdJNlfH" class="btn-primary" style="font-size: 18px; padding: 16px 44px;" download>
+            <i class="fas fa-download"></i> Download BTCM PRO App
+        </a>
+        <p style="margin-top: 18px; font-size: 14px; color: #8a8fc2;">Android APK + AAB + Keystore files included</p>
     </div>
 
-    <div class="referral">
-        <div>👥 REFER & EARN</div>
-        <div class="big-bonus">$10 per referral</div>
-        <div>+ $5 for 2nd level</div>
+    <!-- Whitepaper -->
+    <div class="whitepaper-section">
+        <a href="BTCM_PRO_Whitepaper_v1.0.pdf" class="whitepaper-btn" download>
+            <i class="fas fa-file-pdf"></i> Download Whitepaper (PDF)
+        </a>
     </div>
 
-    <div id="downloadApp" class="download-area">
-        <a href="https://www.webintoapp.com/download/zip/1299718/BTCM%20PRO%201.0.zip?v7VHnHdJNlfH" class="btn-primary" style="background:#f0b90b; padding:12px 28px; font-size:16px;" download>⬇️ Download BTCM PRO (APK)</a>
-        <p style="font-size:12px; margin-top:10px;">Android APK + AAB + Keystore</p>
-    </div>
-
+    <!-- Disclaimer -->
     <div class="disclaimer">
-        ⚠️ <strong>Risk Disclaimer:</strong> Crypto cloud mining involves risk. BTCM PRO is a demo platform. Prices and returns are not guaranteed. Always DYOR.
+        <strong>⚠️ RISK DISCLAIMER:</strong> Cryptocurrency mining and cloud mining investments involve significant risks. BTCM PRO is a demo/promotional project. Prices and returns can fluctuate. Always do your own research before investing. We are not responsible for any financial losses.
     </div>
-
-    <footer>
-        © 2026 BTCM PRO — Advanced Cloud Mining<br>
-        support@btcmpro.com
-    </footer>
 </div>
 
-<script>
-    // Screenshot data (আপনার ছবির নাম)
-    const screenshots = [
-        { name: "Dashboard & Balance", file: "Screenshot_12.png", icon: "💰" },
-        { name: "Investment Plans", file: "Screenshot_13.png", icon: "📊" },
-        { name: "Deposit Crypto", file: "Screenshot_14.png", icon: "💎" },
-        { name: "Withdraw Funds", file: "Screenshot_16.png", icon: "📤" },
-        { name: "Profile & KYC", file: "Screenshot_15.png", icon: "⚙️" }
-    ];
+<footer>
+    <div class="container">
+        <div class="social-links">
+            <a href="#"><i class="fab fa-telegram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p style="margin: 25px 0 0;">&copy; 2026 BTCM PRO - Advanced Cloud Mining Platform</p>
+        <p style="margin-top: 12px; font-size: 13px;">
+            <i class="fas fa-envelope"></i> support@btcmpro.com
+        </p>
+    </div>
+</footer>
 
-    const gallery = document.getElementById('gallery');
-    
-    screenshots.forEach(shot => {
-        const div = document.createElement('div');
-        const img = new Image();
-        
-        img.onload = function() {
-            // ছবি পাওয়া গেলে
-            div.innerHTML = `
-                <div class="phone-mock">
-                    <div class="phone-screen">
-                        <img src="${shot.file}" alt="${shot.name}">
-                    </div>
-                </div>
-                <div class="caption">${shot.icon} ${shot.name}</div>
-            `;
-            gallery.appendChild(div);
-        };
-        
-        img.onerror = function() {
-            // ছবি না পাওয়া গেলে প্লেসহোল্ডার
-            div.innerHTML = `
-                <div class="phone-mock">
-                    <div class="phone-screen">
-                        <div class="placeholder-img">
-                            <div style="font-size:48px;">${shot.icon}</div>
-                            <div style="margin-top:10px;">${shot.name}</div>
-                            <div style="font-size:11px; margin-top:8px;">📸 Screenshot missing</div>
-                            <div style="font-size:10px; margin-top:5px;">Upload: ${shot.file}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="caption">${shot.icon} ${shot.name}</div>
-            `;
-            gallery.appendChild(div);
-        };
-        
-        img.src = shot.file;
-    });
-</script>
 </body>
 </html>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>BTCM PRO - Daily Cloud Mining | Earn 2.5%-4% Daily</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <title>BTCM PRO | Premium Cloud Mining Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -15,120 +15,146 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(145deg, #0b0f2a 0%, #070a1c 100%);
-            color: #eef2ff;
+            background: #0a0c1a;
+            color: #ffffff;
             line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Animated Gradient Background */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 20% 30%, #0f1235, #070a1c);
+        }
+
+        .bg-gradient::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle, rgba(247,147,26,0.08) 0%, transparent 60%);
+            animation: rotateBg 30s linear infinite;
+        }
+
+        @keyframes rotateBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 24px;
+            position: relative;
+            z-index: 2;
         }
 
-        /* Header */
+        /* Glassmorphism Header */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 0;
             flex-wrap: wrap;
-            gap: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 20px;
+            border-bottom: 1px solid rgba(247,147,26,0.2);
+            backdrop-filter: blur(10px);
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
-        /* Bitcoin-inspired logo icon */
         .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: radial-gradient(circle at 30% 35%, #f7931a, #e67e22);
-            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, #f7931a, #ffd966);
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 900;
-            color: #fff;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            box-shadow: 0 8px 18px rgba(247,147,26,0.3);
-            border: 1px solid rgba(255,215,0,0.5);
+            color: #0a0c1a;
+            box-shadow: 0 10px 25px rgba(247,147,26,0.4);
+            transition: 0.3s;
         }
 
-        /* Bitcoin 'B' styled */
-        .logo-icon span {
-            font-weight: 900;
-            letter-spacing: -1px;
+        .logo-icon:hover {
+            transform: scale(1.05) rotate(5deg);
         }
 
         .logo-text h1 {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 800;
-            background: linear-gradient(135deg, #f7931a, #ffb347);
+            background: linear-gradient(135deg, #f7931a, #ffd966);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            line-height: 1.2;
         }
 
         .logo-text span {
-            font-size: 11px;
-            color: #f0b90b;
-            font-weight: 500;
+            font-size: 12px;
+            color: #f7931a;
+            letter-spacing: 1px;
         }
 
         .download-header {
-            background: linear-gradient(95deg, #f0b90b, #ff9500);
-            padding: 10px 28px;
-            border-radius: 60px;
-            color: #0a0e27;
-            font-weight: 800;
+            background: linear-gradient(95deg, #f7931a, #ffb347);
+            padding: 12px 32px;
+            border-radius: 50px;
+            color: #0a0c1a;
+            font-weight: 700;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            font-size: 15px;
-            transition: 0.2s;
-            box-shadow: 0 6px 14px rgba(240,185,11,0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(247,147,26,0.3);
         }
 
         .download-header:hover {
-            transform: scale(1.02);
-            background: #f0b90b;
-            box-shadow: 0 10px 20px rgba(240,185,11,0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(247,147,26,0.4);
         }
 
-        /* Hero */
+        /* Hero Section */
         .hero {
             text-align: center;
-            padding: 60px 0 40px;
+            padding: 80px 0 50px;
         }
 
         .badge {
-            background: rgba(240, 185, 11, 0.12);
-            border: 1px solid rgba(240, 185, 11, 0.3);
-            padding: 8px 20px;
+            background: rgba(247,147,26,0.12);
+            border: 1px solid rgba(247,147,26,0.4);
+            padding: 8px 24px;
             border-radius: 60px;
             display: inline-block;
             font-size: 14px;
-            margin-bottom: 24px;
-            backdrop-filter: blur(4px);
+            font-weight: 500;
+            margin-bottom: 30px;
+            backdrop-filter: blur(5px);
         }
 
         .hero h1 {
-            font-size: 52px;
+            font-size: 64px;
             font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 20px;
+            line-height: 1.15;
+            margin-bottom: 25px;
+            letter-spacing: -1px;
         }
 
         .hero h1 span {
-            background: linear-gradient(135deg, #f7931a, #ffb347);
+            background: linear-gradient(135deg, #f7931a, #ffd966);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -136,333 +162,389 @@
 
         .hero p {
             font-size: 18px;
-            color: #b9c3f0;
-            max-width: 600px;
-            margin: 0 auto 30px;
+            color: #b0b4e0;
+            max-width: 650px;
+            margin: 0 auto 35px;
         }
 
         .hero-buttons {
             display: flex;
-            gap: 18px;
+            gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
         }
 
-        .btn-large {
-            padding: 14px 38px;
-            font-size: 18px;
-            font-weight: 700;
-            border-radius: 60px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            transition: 0.2s;
-        }
-
-        .btn-gold {
-            background: linear-gradient(95deg, #f0b90b, #ff9500);
-            color: #0a0e27;
-            box-shadow: 0 8px 18px rgba(240,185,11,0.3);
-        }
-
-        .btn-gold:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 14px 26px rgba(240,185,11,0.4);
-        }
-
-        .btn-dark {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: white;
-        }
-
-        .btn-dark:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Floating Stats */
-        .floating-stats {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 28px;
-            background: rgba(12, 16, 38, 0.7);
-            backdrop-filter: blur(12px);
-            border-radius: 60px;
-            padding: 16px 28px;
-            margin: 40px auto;
-            width: fit-content;
-            border: 1px solid rgba(240, 185, 11, 0.2);
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 0 18px;
-        }
-
-        .stat-number {
-            font-size: 32px;
-            font-weight: 800;
-            color: #f0b90b;
-        }
-
-        /* Features */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 28px;
-            margin: 70px 0;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 32px;
-            padding: 28px 22px;
-            text-align: center;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: 0.2s;
-        }
-
-        .feature-card:hover {
-            border-color: rgba(240, 185, 11, 0.3);
-            transform: translateY(-6px);
-        }
-
-        .feature-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        .feature-card h3 {
-            font-size: 22px;
-            margin-bottom: 12px;
-        }
-
-        /* Investment Plans */
-        .plans-header {
-            text-align: center;
-            margin: 20px 0 10px;
-        }
-
-        .plans-header h2 {
-            font-size: 32px;
-        }
-
-        /* Testimonials */
-        .testimonials {
-            background: linear-gradient(135deg, #0f132f, #090c1f);
-            border-radius: 48px;
-            padding: 50px 30px;
-            margin: 60px 0;
-            text-align: center;
-        }
-
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .testimonial-card {
-            background: rgba(255,255,255,0.04);
-            border-radius: 28px;
-            padding: 28px 20px;
-        }
-
-        .testimonial-text {
-            font-size: 15px;
-            font-style: italic;
-            color: #d1d6ff;
-        }
-
-        .testimonial-name {
-            margin-top: 16px;
-            font-weight: 700;
-            color: #f0b90b;
-        }
-
-        /* Whitepaper Section */
-        .whitepaper-section {
-            background: rgba(240, 185, 11, 0.05);
-            border-radius: 32px;
-            padding: 35px 30px;
-            text-align: center;
-            margin: 40px 0;
-            border: 1px solid rgba(240, 185, 11, 0.2);
-        }
-
-        .whitepaper-btn {
-            background: transparent;
-            border: 2px solid #f0b90b;
+        .btn-primary {
+            background: linear-gradient(95deg, #f7931a, #ffb347);
             padding: 14px 38px;
             border-radius: 60px;
-            color: #f0b90b;
+            color: #0a0c1a;
             font-weight: 700;
+            font-size: 16px;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 12px;
             transition: 0.3s;
-            font-size: 16px;
+            box-shadow: 0 8px 20px rgba(247,147,26,0.3);
         }
 
-        .whitepaper-btn:hover {
-            background: #f0b90b;
-            color: #0a0e27;
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(247,147,26,0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 14px 38px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #f7931a;
+        }
+
+        /* Stats Cards - Premium Style */
+        .stats-section {
+            background: rgba(15, 18, 53, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 70px;
+            padding: 20px 30px;
+            margin: 50px auto;
+            border: 1px solid rgba(247,147,26,0.2);
+            width: fit-content;
+            max-width: 90%;
+        }
+
+        .stats-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .stat-card-premium {
+            text-align: center;
+            padding: 10px 25px;
+        }
+
+        .stat-card-premium .stat-value {
+            font-size: 38px;
+            font-weight: 800;
+            color: #f7931a;
+            line-height: 1;
+        }
+
+        .stat-card-premium .stat-label {
+            font-size: 14px;
+            color: #a0a4d0;
+            margin-top: 8px;
+        }
+
+        /* Features Grid */
+        .section-title {
+            text-align: center;
+            font-size: 38px;
+            font-weight: 700;
+            margin: 70px 0 15px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #a0a4d0;
+            margin-bottom: 50px;
+            font-size: 18px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 32px;
+            padding: 35px 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(247,147,26,0.4);
+            box-shadow: 0 20px 35px -15px rgba(247,147,26,0.2);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, rgba(247,147,26,0.15), rgba(255,180,70,0.05));
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto 25px;
+            border: 1px solid rgba(247,147,26,0.3);
+        }
+
+        /* Investment Plans - Premium Cards */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0 60px;
+        }
+
+        .plan-premium {
+            background: linear-gradient(145deg, #101332, #0a0d28);
+            border-radius: 32px;
+            padding: 32px 20px;
+            text-align: center;
+            border: 1px solid rgba(247,147,26,0.15);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #f7931a, #ffd966);
+        }
+
+        .plan-premium:hover {
+            transform: translateY(-5px);
+            border-color: rgba(247,147,26,0.4);
+        }
+
+        .plan-name {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .plan-price {
+            font-size: 18px;
+            color: #f7931a;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .plan-daily {
+            font-size: 34px;
+            font-weight: 800;
+            color: #ffd966;
+            margin: 15px 0;
+        }
+
+        /* Testimonials */
+        .testimonials-section {
+            background: linear-gradient(135deg, #0f1235, #0a0d28);
+            border-radius: 48px;
+            padding: 60px 30px;
+            margin: 60px 0;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .testimonial {
+            background: rgba(255,255,255,0.04);
+            border-radius: 28px;
+            padding: 30px 25px;
+            transition: 0.3s;
+        }
+
+        .testimonial:hover {
+            background: rgba(247,147,26,0.05);
+        }
+
+        .testimonial-text {
+            font-size: 16px;
+            font-style: italic;
+            color: #c5c9f0;
+            line-height: 1.5;
+        }
+
+        .testimonial-author {
+            margin-top: 20px;
+            font-weight: 700;
+            color: #f7931a;
+        }
+
+        /* Whitepaper */
+        .whitepaper-box {
+            background: radial-gradient(ellipse at 30% 40%, rgba(247,147,26,0.08), transparent);
+            border-radius: 48px;
+            padding: 50px 30px;
+            text-align: center;
+            margin: 50px 0;
+            border: 1px solid rgba(247,147,26,0.2);
         }
 
         /* CTA */
-        .cta-section {
-            text-align: center;
+        .cta-box {
             background: linear-gradient(115deg, #12173f, #080b1f);
             border-radius: 56px;
             padding: 60px 30px;
+            text-align: center;
             margin: 50px 0;
-            border: 1px solid rgba(240,185,11,0.2);
+            border: 1px solid rgba(247,147,26,0.3);
         }
 
-        .cta-section h2 {
-            font-size: 36px;
-            margin-bottom: 18px;
+        .cta-box h2 {
+            font-size: 42px;
+            margin-bottom: 15px;
         }
 
         /* Footer */
         footer {
             border-top: 1px solid rgba(255,255,255,0.08);
-            padding: 40px 0;
+            padding: 50px 0 30px;
             text-align: center;
         }
 
         .social-links {
             display: flex;
             justify-content: center;
-            gap: 28px;
-            margin-bottom: 25px;
+            gap: 35px;
+            margin-bottom: 30px;
         }
 
         .social-links a {
             color: #8a91c2;
             font-size: 24px;
-            transition: 0.2s;
+            transition: 0.3s;
         }
 
         .social-links a:hover {
-            color: #f0b90b;
+            color: #f7931a;
             transform: translateY(-3px);
         }
 
-        .footer-text {
-            font-size: 13px;
-            color: #8a91c2;
-        }
-
         .disclaimer {
-            background: rgba(255,200,0,0.05);
-            border-left: 4px solid #f0b90b;
-            padding: 18px;
+            background: rgba(247,147,26,0.05);
+            border-left: 4px solid #f7931a;
+            padding: 20px;
             border-radius: 20px;
             font-size: 12px;
-            margin: 20px 0;
+            margin: 30px 0;
+            color: #a0a4d0;
         }
 
-        @media (max-width: 700px) {
-            .hero h1 { font-size: 36px; }
-            .floating-stats { flex-direction: column; gap: 12px; width: 100%; text-align: center; border-radius: 32px; }
-            .stat-item { padding: 6px 0; }
-            .cta-section h2 { font-size: 28px; }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 40px; }
+            .section-title { font-size: 30px; }
+            .cta-box h2 { font-size: 30px; }
+            .stats-grid { gap: 20px; }
         }
     </style>
 </head>
 <body>
+<div class="bg-gradient"></div>
 
 <div class="container">
     <div class="header">
         <div class="logo">
-            <!-- Bitcoin-inspired logo icon -->
-            <div class="logo-icon">
-                <span>₿</span>
-            </div>
+            <div class="logo-icon">₿</div>
             <div class="logo-text">
                 <h1>BTCM PRO</h1>
-                <span>⚡ bitcoin cloud mining</span>
+                <span>PREMIUM CLOUD MINING</span>
             </div>
         </div>
         <a href="https://btcm-pro.github.io/btcm-pro/app-release.apk" class="download-header" download>
-            <i class="fas fa-download"></i> GET APK
+            <i class="fas fa-download"></i> DOWNLOAD APK
         </a>
     </div>
 
     <div class="hero">
-        <div class="badge">🔥 TRUSTED BY 15,000+ MINERS</div>
-        <h1>Turn $10 into <span>daily income</span><br>with cloud mining</h1>
-        <p>Start earning 2.5% – 4% every single day. Automated payouts, instant withdrawals, and zero hardware.</p>
+        <div class="badge">⭐ TRUSTED BY 25,000+ MINERS WORLDWIDE</div>
+        <h1>Turn <span>$10</span> into<br>Daily Passive Income</h1>
+        <p>Start earning 2.5% – 4% every single day. Automated payouts, instant withdrawals, and zero hardware. The future of mining is here.</p>
         <div class="hero-buttons">
-            <a href="#downloadNow" class="btn-large btn-gold"><i class="fas fa-rocket"></i> Start Mining Now</a>
-            <a href="#plans" class="btn-large btn-dark"><i class="fas fa-chart-simple"></i> View Plans</a>
+            <a href="#downloadNow" class="btn-primary"><i class="fas fa-rocket"></i> Start Mining</a>
+            <a href="#plans" class="btn-secondary"><i class="fas fa-chart-line"></i> View Plans</a>
         </div>
     </div>
 
-    <div class="floating-stats">
-        <div class="stat-item"><div class="stat-number">$10</div><div>Min Deposit</div></div>
-        <div class="stat-item"><div class="stat-number">$10</div><div>Min Withdraw</div></div>
-        <div class="stat-item"><div class="stat-number">2%</div><div>Withdraw Fee</div></div>
-        <div class="stat-item"><div class="stat-number">$200</div><div>Welcome Bonus</div></div>
-        <div class="stat-item"><div class="stat-number">$10</div><div>Per Referral</div></div>
+    <div class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card-premium"><div class="stat-value">$10</div><div class="stat-label">Min Deposit</div></div>
+            <div class="stat-card-premium"><div class="stat-value">$10</div><div class="stat-label">Min Withdraw</div></div>
+            <div class="stat-card-premium"><div class="stat-value">2%</div><div class="stat-label">Fee</div></div>
+            <div class="stat-card-premium"><div class="stat-value">$200</div><div class="stat-label">Bonus</div></div>
+            <div class="stat-card-premium"><div class="stat-value">$10</div><div class="stat-label">Referral</div></div>
+        </div>
     </div>
 
+    <h2 class="section-title">Why Choose BTCM PRO?</h2>
     <div class="features-grid">
-        <div class="feature-card"><div class="feature-icon">⚡</div><h3>No Hardware</h3><p>Fully cloud-based. No electricity or noise.</p></div>
-        <div class="feature-card"><div class="feature-icon">💰</div><h3>Daily Payouts</h3><p>Earnings added every 5 seconds. Withdraw anytime.</p></div>
-        <div class="feature-card"><div class="feature-icon">🔒</div><h3>Secure & KYC</h3><p>Firebase auth, 2FA, and identity verification.</p></div>
-        <div class="feature-card"><div class="feature-icon">👥</div><h3>Referral $10</h3><p>Get $10 per friend + $5 for second level.</p></div>
+        <div class="feature-card"><div class="feature-icon">⚡</div><h3>Zero Hardware</h3><p>Fully cloud-based mining. No expensive equipment, no electricity bills.</p></div>
+        <div class="feature-card"><div class="feature-icon">💰</div><h3>Daily Payouts</h3><p>Earnings credited every 5 seconds. Withdraw anytime you want.</p></div>
+        <div class="feature-card"><div class="feature-icon">🔒</div><h3>Bank-Level Security</h3><p>Firebase Auth, 2FA, KYC verification — your funds are safe.</p></div>
+        <div class="feature-card"><div class="feature-icon">👥</div><h3>$10 Per Referral</h3><p>Invite friends and earn $10 instantly + $5 for second level.</p></div>
     </div>
 
-    <div id="plans" class="plans-header">
-        <h2>💎 Investment plans</h2>
-        <p style="color: #b9c3f0;">Choose your package and start earning in minutes</p>
-    </div>
-    <div class="features-grid" style="margin-top: 10px;">
-        <div class="feature-card"><h3>🌟 Starter</h3><div class="stat-number">$20+</div><div>2.5% daily</div><div>150% total</div></div>
-        <div class="feature-card"><h3>⚡ Basic</h3><div class="stat-number">$51+</div><div>3% daily</div><div>180% total</div></div>
-        <div class="feature-card"><h3>💎 Premium</h3><div class="stat-number">$101+</div><div>3.5% daily</div><div>210% total</div></div>
-        <div class="feature-card"><h3>👑 Pro</h3><div class="stat-number">$200+</div><div>4% daily</div><div>240% total</div></div>
+    <h2 class="section-title" id="plans">💎 Investment Plans</h2>
+    <p class="section-subtitle">Choose your package and start earning in minutes</p>
+    <div class="plans-grid">
+        <div class="plan-premium"><div class="plan-name">🌟 Starter</div><div class="plan-price">$20 minimum</div><div class="plan-daily">2.5% Daily</div><div>Total Return: 150%</div></div>
+        <div class="plan-premium"><div class="plan-name">⚡ Basic</div><div class="plan-price">$51 minimum</div><div class="plan-daily">3% Daily</div><div>Total Return: 180%</div></div>
+        <div class="plan-premium"><div class="plan-name">💎 Premium</div><div class="plan-price">$101 minimum</div><div class="plan-daily">3.5% Daily</div><div>Total Return: 210%</div></div>
+        <div class="plan-premium"><div class="plan-name">👑 Pro</div><div class="plan-price">$200 minimum</div><div class="plan-daily">4% Daily</div><div>Total Return: 240%</div></div>
     </div>
 
-    <div class="testimonials">
-        <h2>⭐ Real earnings, real people</h2>
-        <div class="testimonial-grid">
-            <div class="testimonial-card"><div class="testimonial-text">“Withdrew $276 in my first week. Best decision ever!”</div><div class="testimonial-name">— Michael J.</div></div>
-            <div class="testimonial-card"><div class="testimonial-text">“I only invested $50 and getting daily profit. Legit platform.”</div><div class="testimonial-name">— Sarah W.</div></div>
-            <div class="testimonial-card"><div class="testimonial-text">“$10 referral bonus is real. I already earned $120.”</div><div class="testimonial-name">— Kavita P.</div></div>
+    <div class="testimonials-section">
+        <h2 style="text-align: center; font-size: 32px;">⭐ Real Success Stories</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial"><div class="testimonial-text">“Withdrew $276 in my first week. This platform is a game-changer!”</div><div class="testimonial-author">— Michael J.</div></div>
+            <div class="testimonial"><div class="testimonial-text">“I invested only $50 and I'm getting daily profit. Highly recommended.”</div><div class="testimonial-author">— Sarah W.</div></div>
+            <div class="testimonial"><div class="testimonial-text">“The referral bonus is real — I earned $120 just by inviting friends.”</div><div class="testimonial-author">— Kavita P.</div></div>
         </div>
     </div>
 
-    <!-- Whitepaper Download Section -->
-    <div class="whitepaper-section">
-        <i class="fas fa-file-alt" style="font-size: 40px; color: #f0b90b; margin-bottom: 15px; display: block;"></i>
+    <div class="whitepaper-box">
+        <i class="fas fa-file-pdf" style="font-size: 48px; color: #f7931a; margin-bottom: 20px; display: block;"></i>
         <h3 style="margin-bottom: 15px;">Official Whitepaper</h3>
-        <p style="margin-bottom: 20px; color: #b9c3f0;">Learn about our technology, tokenomics, and roadmap</p>
-        <a href="BTCM_PRO_Whitepaper_v1.0.pdf" class="whitepaper-btn" download>
-            <i class="fas fa-download"></i> Download Whitepaper (PDF)
+        <p style="margin-bottom: 25px; color: #b0b4e0;">Deep dive into our technology, tokenomics and 3-year roadmap</p>
+        <a href="BTCM_PRO_Whitepaper_v1.0.pdf" class="btn-secondary" style="background: transparent; border-color: #f7931a; color: #f7931a;" download>
+            <i class="fas fa-download"></i> Download PDF
         </a>
     </div>
 
-    <div id="downloadNow" class="cta-section">
-        <h2>🚀 Don't wait — start mining today</h2>
-        <p style="margin-bottom: 10px;">Join 15,000+ active miners. Get $200 bonus on sign-up.</p>
-        <div class="cta-buttons">
-            <a href="https://btcm-pro.github.io/btcm-pro/app-release.apk" class="btn-large btn-gold" style="font-size: 20px; padding: 16px 44px;" download>
-                <i class="fas fa-download"></i> Download BTCM PRO (APK)
-            </a>
-            <p style="margin-top: 18px; font-size: 13px;">Direct APK – No ZIP, no extra files</p>
-        </div>
+    <div id="downloadNow" class="cta-box">
+        <h2>🚀 Start Mining Today</h2>
+        <p style="margin-bottom: 25px;">Join 25,000+ active miners. Get $200 bonus on sign-up.</p>
+        <a href="https://btcm-pro.github.io/btcm-pro/app-release.apk" class="btn-primary" style="font-size: 20px; padding: 16px 48px;" download>
+            <i class="fas fa-download"></i> Download BTCM PRO (APK)
+        </a>
+        <p style="margin-top: 20px; font-size: 13px;">Direct APK — No ZIP, no extra files. 100% safe.</p>
     </div>
 
     <div class="disclaimer">
-        ⚠️ Risk disclaimer: Crypto cloud mining involves market risk. BTCM PRO is a promotional platform. Past returns do not guarantee future results. Always do your own research.
+        ⚠️ Risk Disclaimer: Cryptocurrency cloud mining involves market risk. BTCM PRO is a promotional platform. Past returns do not guarantee future results. Always do your own research (DYOR).
     </div>
 
     <footer>
@@ -473,12 +555,9 @@
             <a href="https://instagram.com/btcmpro" target="_blank"><i class="fab fa-instagram"></i></a>
             <a href="mailto:support@btcmpro.com"><i class="fas fa-envelope"></i></a>
         </div>
-        <div class="footer-text">
-            © 2026 BTCM PRO — Advanced Cloud Mining Platform<br>
-            support@btcmpro.com
-        </div>
+        <p>© 2026 BTCM PRO — Premium Cloud Mining Platform</p>
+        <p style="margin-top: 8px; font-size: 13px;">support@btcmpro.com</p>
     </footer>
 </div>
-
 </body>
 </html>

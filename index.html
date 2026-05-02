@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>BTCM Pro - Cloud Mining Platform</title>
+    <title>BTCM Pro -Advanced Cloud Mining Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -220,7 +220,7 @@
             
             <div class="countdown-timer">
                 <p style="font-size: 12px; opacity: 0.7;">⏰ Mining Session Remaining</p>
-                <div class="timer-digits" id="countdownTimer">20d 00h 00m 00s</div>
+                <div class="timer-digits" id="countdownTimer">7d 00h 00m 00s</div>
                 <div class="progress-bar" style="margin-top: 12px;"><div class="progress-fill" id="miningProgressBar" style="width: 100%;"></div></div>
             </div>
             <div style="text-align: center; margin: 20px 0;">
@@ -291,7 +291,7 @@
                 <button class="btn btn-primary" onclick="requestWithdraw()" style="width: 100%;"><i class="fas fa-arrow-up"></i> Request Withdrawal</button>
                 <p style="font-size:11px; opacity:0.6; margin-top: 12px; text-align:center;">
                     <i class="fas fa-info-circle"></i> Fee: 2% | Processing: 0.1-24 hours<br>
-                    ⚠️ Withdrawals available after first deposit approval
+                    ⚠️ Withdrawals available after first deposit
                 </p>
             </div>
         </div>
@@ -552,7 +552,7 @@
         let method = document.getElementById('withdrawMethod').value;
         
         if (!currentUser.hasDeposited) {
-            showNotification('⚠️ Deposit First! You need to make a deposit and get admin approval before withdrawing.', 'error');
+            showNotification('⚠️ Deposit first! You must deposit before you can withdraw money.', 'error');
             return;
         }
         
@@ -1008,7 +1008,7 @@
     }
     
     function showSupport(){ 
-        alert('📞 Support Center\nEmail: support@btcmpro.com\nTelegram: @btcmpro_support\nResponse: 24h'); 
+        alert('📞 Support Center\nEmail: btcmpro.admin@gmail.com\nTelegram: @btcmpro_support\nResponse: 24h'); 
     }
     
     async function submitKYC(){ 

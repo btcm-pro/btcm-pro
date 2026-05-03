@@ -77,6 +77,7 @@
         .bonus-timer-card { background: linear-gradient(135deg, rgba(247,147,26,0.15), rgba(255,215,0,0.05)); border-radius: 24px; padding: 16px; margin: 16px 0; text-align: center; }
         .warning-box { background: rgba(239,68,68,0.15); border: 1px solid var(--danger); border-radius: 16px; padding: 12px; margin-top: 12px; font-size: 13px; text-align: center; }
         .withdraw-limit-alert { background: rgba(245,158,11,0.15); border: 1px solid var(--warning); border-radius: 12px; padding: 8px; margin-top: 8px; font-size: 11px; text-align: center; }
+        .btcm-badge { background: linear-gradient(135deg, #f7931a, #ffd700); display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-left: 8px; }
     </style>
 </head>
 <body>
@@ -96,6 +97,7 @@
                     <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
                         <div class="bonus-badge"><i class="fas fa-gift"></i> $200 SIGNUP BONUS</div>
                         <div class="bonus-badge" style="background: linear-gradient(135deg, var(--success), #059669);"><i class="fas fa-money-bill-wave"></i> $10 MIN WITHDRAW</div>
+                        <div class="bonus-badge" style="background: linear-gradient(135deg, #f7931a, #ffd700);"><i class="fas fa-gem"></i> 1 BTCM = $50</div>
                     </div>
                 </div>
                 <div id="loginForm">
@@ -133,11 +135,11 @@
 
         <div id="dashboard" class="page active">
             <div class="balance-card" style="margin-bottom: 20px;">
-                <p style="color: #aaa; margin-bottom: 8px;">Total Balance</p>
+                <p style="color: #aaa; margin-bottom: 8px;">Total Balance (USD)</p>
                 <div class="balance-amount" id="balanceAmount">$0.00</div>
                 <div style="display: flex; justify-content: space-between; margin-top: 16px;">
-                    <span style="font-size: 13px;">₿ <span id="btcBalance">0.00000000</span></span>
-                    <span style="font-size: 13px;">📊 <span id="estimatedEarnings">$0.00</span>/day</span>
+                    <span style="font-size: 13px;">🔷 <span id="btcmBalance">0.00000000 BTCM</span> <span class="btcm-badge">1 BTCM = $50</span></span>
+                    <span style="font-size: 13px;">📊 <span id="estimatedEarnings">$0.00</span>/24h</span>
                 </div>
                 <div class="price-box">
                     <div class="price-item">
@@ -149,8 +151,8 @@
                         <p class="price-value eth-color" id="ethLivePrice">$---</p>
                     </div>
                     <div class="price-item">
-                        <span class="price-symbol"><i class="fab fa-bnb"></i> BNB</span>
-                        <p class="price-value bnb-color" id="bnbLivePrice">$---</p>
+                        <span class="price-symbol"><i class="fas fa-gem"></i> BTCM</span>
+                        <p class="price-value" style="color: #ffd700;">$50.00</p>
                     </div>
                 </div>
                 <div style="margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 20px;">
@@ -196,9 +198,9 @@
             </div>
 
             <div class="countdown-timer">
-                <p style="font-size: 12px; opacity: 0.7;">⏰ Mining Session Remaining</p>
-                <div class="timer-digits" id="miningTimerDisplay">7d 00h 00m 00s</div>
-                <div class="progress-bar" style="margin-top: 12px;"><div class="progress-fill" id="miningProgressBar" style="width: 100%;"></div></div>
+                <p style="font-size: 12px; opacity: 0.7;">⏰ Mining Session Remaining (24 Hours)</p>
+                <div class="timer-digits" id="miningTimerDisplay">24:00:00</div>
+                <div class="progress-bar" style="margin-top: 12px;"><div class="progress-fill" id="miningProgressBar" style="width: 0%;"></div></div>
             </div>
             <div style="text-align: center; margin: 20px 0;">
                 <div class="mine-btn" id="mineBtn" onclick="toggleMining()">
@@ -206,6 +208,7 @@
                     <p id="mineText" style="margin-top: 12px; font-weight: 500;">START MINING</p>
                 </div>
                 <p style="margin-top: 16px; color: var(--secondary);" id="hashrateText">Hashrate: 0 TH/s</p>
+                <p style="margin-top: 8px; font-size: 12px; color: #ffd700;"><i class="fas fa-info-circle"></i> Mining earns 0.000001 BTCM per second (1 BTCM = $50)</p>
             </div>
             <div style="display: flex; gap: 12px;">
                 <button class="btn btn-secondary" onclick="switchPage('packages')" style="flex:1;"><i class="fas fa-box"></i> Invest</button>
@@ -304,7 +307,7 @@
 <div id="notifyModal" class="modal"><div class="modal-content"><h3>Notifications</h3><label><input type="checkbox" id="notifyEmail"> Email Alerts</label><br><label><input type="checkbox" id="notifyPush"> Push Notifications</label><br><button class="btn btn-primary" onclick="saveNotifySettings()" style="margin-top:10px;">Save</button><button class="btn btn-secondary" onclick="closeModal('notifyModal')">Cancel</button></div></div>
 
 <script>
-    // Firebase Configuration (Updated)
+    // Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDegGMXh3i3TgC_FhbG_Rx6SUm8fHMZFxI",
         authDomain: "btcm-pro-app.firebaseapp.com",
@@ -322,8 +325,11 @@
     let currentUser = null, btcPrice = 62650, ethPrice = 3400, bnbPrice = 580;
     let miningInterval = null, livePriceInterval = null, bonusTimerInterval = null, depositCheckInterval = null;
     let qrCodeInstance = null;
-    let lastWithdrawalTime = 0; // Track last withdrawal time for cooldown
-    const WITHDRAWAL_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+    let lastWithdrawalTime = 0;
+    const WITHDRAWAL_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+    const BTCM_TO_USD = 50; // 1 BTCM = $50
+    const MINING_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+    const BTCM_PER_SECOND = 0.000001; // 0.000001 BTCM per second
 
     const investmentPackages = [
         { name:"Starter", minAmount:20, dailyReturn:2.5, duration:20, totalReturn:150 },
@@ -393,10 +399,11 @@
         resetTodayEarnings(); 
     }
 
+    // MODIFIED: Mining toggle with 24 hours duration
     async function toggleMining(){ 
         if(!currentUser) return; 
         if(!currentUser.isMining){ 
-            let miningUntil=Date.now() + 7*86400000; 
+            let miningUntil = Date.now() + MINING_DURATION_MS; // 24 hours
             await db.collection('users').doc(currentUser.uid).update({ 
                 isMining:true, 
                 miningUntil:firebase.firestore.Timestamp.fromMillis(miningUntil) 
@@ -406,7 +413,7 @@
             document.getElementById('mineBtn').classList.add('mining'); 
             document.getElementById('mineText').innerHTML='<i class="fas fa-spinner fa-spin"></i> MINING...'; 
             startMiningLoop(); 
-            showNotification('Mining started!'); 
+            showNotification('Mining started for 24 hours! Earn 0.000001 BTCM per second!'); 
         } else { 
             await db.collection('users').doc(currentUser.uid).update({ isMining:false }); 
             currentUser.isMining=false; 
@@ -417,46 +424,62 @@
         } 
     }
     
+    // MODIFIED: Mining loop - every 1 second adds BTCM
     function startMiningLoop(){ 
         if(miningInterval) clearInterval(miningInterval); 
-        miningInterval=setInterval(async()=>{ 
-            if(currentUser && currentUser.isMining && currentUser.miningUntil && currentUser.miningUntil.toDate()>new Date()){ 
-                let earnPerSec = currentUser.hashrate * 0.000002; 
-                let earn = earnPerSec * 10; 
+        miningInterval = setInterval(async() => { 
+            if(currentUser && currentUser.isMining && currentUser.miningUntil && currentUser.miningUntil.toDate() > new Date()){ 
+                let earnBTCM = BTCM_PER_SECOND; // 0.000001 BTCM per second
+                let earnUSD = earnBTCM * BTCM_TO_USD; // Convert to USD
+                
                 await db.collection('users').doc(currentUser.uid).update({ 
-                    balance:firebase.firestore.FieldValue.increment(earn), 
-                    todayEarnings:firebase.firestore.FieldValue.increment(earn) 
+                    btcmBalance: firebase.firestore.FieldValue.increment(earnBTCM),
+                    balance: firebase.firestore.FieldValue.increment(earnUSD),
+                    todayEarnings: firebase.firestore.FieldValue.increment(earnUSD) 
                 }); 
+                
                 if(currentUser){ 
-                    currentUser.balance+=earn; 
-                    currentUser.todayEarnings+=earn; 
+                    currentUser.btcmBalance = (currentUser.btcmBalance || 0) + earnBTCM;
+                    currentUser.balance = (currentUser.balance || 0) + earnUSD; 
+                    currentUser.todayEarnings = (currentUser.todayEarnings || 0) + earnUSD; 
                     updateDashboard(); 
                 } 
-            } else if(currentUser && currentUser.isMining && currentUser.miningUntil?.toDate()<=new Date()){ 
+            } else if(currentUser && currentUser.isMining && currentUser.miningUntil?.toDate() <= new Date()){ 
                 await db.collection('users').doc(currentUser.uid).update({ isMining:false }); 
                 currentUser.isMining=false; 
                 document.getElementById('mineBtn').classList.remove('mining'); 
                 document.getElementById('mineText').innerHTML='START MINING'; 
                 clearInterval(miningInterval); 
-                showNotification('Mining session expired!','error'); 
+                showNotification('✅ 24 hours mining session completed! You can start mining again.','success'); 
             } 
-        }, 10000); 
+        }, 1000); // Every 1 second
     }
 
+    // MODIFIED: Timer UI for 24 hours format (HH:MM:SS)
     function updateMiningTimerUI(){ 
-        if(!currentUser || !currentUser.miningUntil) return; 
-        let remaining=currentUser.miningUntil.toDate()-Date.now(); 
-        if(remaining<=0 && currentUser.isMining){ 
+        if(!currentUser || !currentUser.miningUntil) {
+            document.getElementById('miningTimerDisplay').innerHTML = '24:00:00';
+            document.getElementById('miningProgressBar').style.width = '0%';
+            return;
+        } 
+        let remaining = currentUser.miningUntil.toDate() - Date.now(); 
+        if(remaining <= 0 && currentUser.isMining){ 
             toggleMining(); 
             return; 
         } 
-        if(remaining>0){ 
-            let d=Math.floor(remaining/86400000), h=Math.floor((remaining%86400000)/3600000), m=Math.floor((remaining%3600000)/60000), s=Math.floor((remaining%60000)/1000); 
-            document.getElementById('miningTimerDisplay').innerHTML=`${d}d ${h}h ${m}m ${s}s`; 
-            document.getElementById('miningProgressBar').style.width=(remaining/(7*86400000))*100+'%'; 
-        } 
+        if(remaining > 0){ 
+            let hours = Math.floor(remaining / 3600000);
+            let minutes = Math.floor((remaining % 3600000) / 60000);
+            let seconds = Math.floor((remaining % 60000) / 1000);
+            document.getElementById('miningTimerDisplay').innerHTML = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`; 
+            let progressPercent = ((MINING_DURATION_MS - remaining) / MINING_DURATION_MS) * 100;
+            document.getElementById('miningProgressBar').style.width = Math.min(100, Math.max(0, progressPercent)) + '%'; 
+        } else {
+            document.getElementById('miningTimerDisplay').innerHTML = '00:00:00';
+            document.getElementById('miningProgressBar').style.width = '100%';
+        }
     }
-    setInterval(()=>updateMiningTimerUI(),1000);
+    setInterval(()=>updateMiningTimerUI(),100);
 
     function updateBonusTimerUI(){ 
         if(!currentUser) return; 
@@ -687,7 +710,8 @@
                 uid:user.uid, 
                 name, 
                 email, 
-                balance:0, 
+                balance:0,
+                btcmBalance:0,
                 totalInvested:0, 
                 referralBonus, 
                 todayEarnings:0, 
@@ -826,19 +850,21 @@
         } else showNotification('Insufficient balance','error'); 
     }
 
+    // MODIFIED: Dashboard with BTCM balance
     async function updateDashboard(){ 
         if(!currentUser) return; 
-        document.getElementById('balanceAmount').innerHTML=`$${currentUser.balance.toFixed(2)}`; 
-        document.getElementById('btcBalance').innerHTML=(currentUser.balance/btcPrice).toFixed(8); 
-        document.getElementById('estimatedEarnings').innerHTML=`$${(currentUser.hashrate*0.04).toFixed(2)}`; 
-        document.getElementById('hashrateText').innerHTML=`Hashrate: ${currentUser.hashrate.toFixed(1)} TH/s`; 
-        document.getElementById('todayEarningsStat').innerHTML=`$${(currentUser.todayEarnings||0).toFixed(2)}`; 
-        document.getElementById('totalInvestedStat').innerHTML=`$${(currentUser.totalInvested||0).toFixed(2)}`; 
-        document.getElementById('referralBonusStat').innerHTML=`$${(currentUser.referralBonus||0).toFixed(2)}`; 
-        document.getElementById('hashrateStat').innerHTML=`${currentUser.hashrate.toFixed(1)} TH/s`; 
-        document.getElementById('btcLivePrice').innerHTML=`$${btcPrice.toLocaleString()}`;
-        document.getElementById('ethLivePrice').innerHTML=`$${ethPrice.toLocaleString()}`;
-        document.getElementById('bnbLivePrice').innerHTML=`$${bnbPrice.toLocaleString()}`;
+        document.getElementById('balanceAmount').innerHTML = `$${(currentUser.balance || 0).toFixed(2)}`; 
+        document.getElementById('btcmBalance').innerHTML = `${(currentUser.btcmBalance || 0).toFixed(8)} BTCM`; 
+        let estimated24h = (currentUser.hashrate || 0.5) * 0.000001 * 86400 * BTCM_TO_USD;
+        document.getElementById('estimatedEarnings').innerHTML = `$${estimated24h.toFixed(2)}`; 
+        document.getElementById('hashrateText').innerHTML = `Hashrate: ${currentUser.hashrate.toFixed(1)} TH/s`; 
+        document.getElementById('todayEarningsStat').innerHTML = `$${(currentUser.todayEarnings || 0).toFixed(2)}`; 
+        document.getElementById('totalInvestedStat').innerHTML = `$${(currentUser.totalInvested || 0).toFixed(2)}`; 
+        document.getElementById('referralBonusStat').innerHTML = `$${(currentUser.referralBonus || 0).toFixed(2)}`; 
+        document.getElementById('hashrateStat').innerHTML = `${currentUser.hashrate.toFixed(1)} TH/s`; 
+        document.getElementById('btcLivePrice').innerHTML = `$${btcPrice.toLocaleString()}`;
+        document.getElementById('ethLivePrice').innerHTML = `$${ethPrice.toLocaleString()}`;
+        document.getElementById('bnbLivePrice').innerHTML = `$${bnbPrice.toLocaleString()}`;
         
         let statusSpan=document.getElementById('withdrawStatus'); 
         if(currentUser.hasDeposited && !currentUser.bonusLocked){ 
@@ -1025,7 +1051,7 @@
     }
     
     function showNotifications(){ 
-        alert('📢 BTCM PRO Updates:\n• First deposit $10+ required to unlock $200 bonus\n• No withdrawal before first deposit\n• After deposit approval, bonus unlocks\n• Min withdraw $10\n• Max withdraw 90% of balance\n• Withdrawal cooldown: 24 hours'); 
+        alert('📢 BTCM PRO Updates:\n• First deposit $10+ required to unlock $200 bonus\n• No withdrawal before first deposit\n• After deposit approval, bonus unlocks\n• Min withdraw $10\n• Max withdraw 90% of balance\n• Withdrawal cooldown: 24 hours\n• Mining earns 0.000001 BTCM per second\n• 1 BTCM = $50\n• 24 hours mining session when you start'); 
     }
     
     function openModal(id){ document.getElementById(id).classList.add('active'); }

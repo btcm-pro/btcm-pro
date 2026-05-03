@@ -89,7 +89,6 @@
             </div>
             <div class="glass-card" style="text-align: center; max-width: 400px; margin: 0 auto;">
                 <div class="balance-card" style="background: transparent; padding: 0 0 20px 0;">
-                    <!-- লোগো ইমেজ সেট করা -->
                     <div class="auth-logo-img">
                         <img src="https://raw.githubusercontent.com/btcm-pro/btcm-pro/main/GeminiGeneratedImagedg32eidg32eidg32256x256.jpg" alt="BTCM Pro Logo">
                     </div>
@@ -124,7 +123,6 @@
     <div id="mainApp" style="display: none;">
         <div class="app-header" style="display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; align-items: center;">
-                <!-- হেডারে লোগো -->
                 <img src="https://raw.githubusercontent.com/btcm-pro/btcm-pro/main/GeminiGeneratedImagedg32eidg32eidg32256x256.jpg" 
                      style="width: 36px; height: 36px; border-radius: 12px; margin-right: 8px; object-fit: cover;">
                 <strong style="font-size: 18px;"> BTCM PRO</strong>
@@ -168,7 +166,6 @@
                 </div>
             </div>
 
-            <!-- বোনাস টাইমার কার্ড (৭ দিন) -->
             <div id="bonusTimerCard" class="bonus-timer-card">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <i class="fas fa-gift" style="font-size: 32px; color: #f7931a;"></i>
@@ -203,7 +200,6 @@
                 </div>
             </div>
 
-            <!-- মাইনিং টাইমার (২৪ ঘণ্টা) -->
             <div class="countdown-timer">
                 <p style="font-size: 12px; opacity: 0.7;">⏰ Mining Session Remaining (24 Hours)</p>
                 <div class="timer-digits" id="miningTimerDisplay">24:00:00</div>
@@ -330,7 +326,7 @@
     const storage = firebase.storage();
 
     let currentUser = null, btcPrice = 62650, ethPrice = 3400, bnbPrice = 580;
-    let miningInterval = null, livePriceInterval = null, bonusTimerInterval = null, depositCheckInterval = null;
+    let miningInterval = null, livePriceInterval = null, bonusTimerInterval = null;
     let qrCodeInstance = null;
     let lastWithdrawalTime = 0;
     const WITHDRAWAL_COOLDOWN_MS = 24 * 60 * 60 * 1000;
@@ -345,9 +341,57 @@
         { name:"Pro", minAmount:200, dailyReturn:4, duration:20, totalReturn:240 }
     ];
     const tickerNames = ["Michael J.","Sarah W.","David K.","Priya M.","Rahul S.","Oliver T.","Emma L.","Deepak V.","Maruf","Vikram S.","Kavita P.","Anik"];
-    const walletAddresses = { BTC: "bc1qsl8ehutft8v2jpdmnp7x7w9lvrcu7yafw0rk0j", ETH: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B", USDT_BEP20: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B", BNB: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B", SOL: "6GsA7n4DByumVnTjMGkhYieHy2xfU2ykYi1jd4RKCTo7" };
     const COINS = [{ name:"BTC", symbol:"BTC", key:"BTC", network:"Bitcoin" },{ name:"ETH", symbol:"ETH", key:"ETH", network:"ERC20" },{ name:"USDT", symbol:"USDT (BEP20)", key:"USDT_BEP20", network:"BEP20" },{ name:"BNB", symbol:"BNB", key:"BNB", network:"BEP20" }];
     let currentCoinIndex = 0;
+
+    // ========== Firebase Wallet Address Functions ==========
+    async function loadWalletAddressesFromFirebase() {
+        try {
+            const doc = await db.collection('settings').doc('wallet_config').get();
+            if (doc.exists && doc.data().addresses) {
+                return doc.data().addresses;
+            }
+        } catch(e) { console.warn("Error loading wallet addresses:", e); }
+        return {
+            BTC: "bc1qsl8ehutft8v2jpdmnp7x7w9lvrcu7yafw0rk0j",
+            ETH: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B",
+            USDT_BEP20: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B",
+            BNB: "0xE257Ad2579CB528364333449f57aBD235FAD4f0B"
+        };
+    }
+
+    async function updateDepositUI() {
+        const addresses = await loadWalletAddressesFromFirebase();
+        let coin = COINS[currentCoinIndex];
+        let address = addresses[coin.key] || "Address not set";
+        let addrDiv = document.getElementById('depositAddressDisplay');
+        if(addrDiv) addrDiv.innerHTML = `${address}<br><small>Network: ${coin.network}</small>`;
+        let qrDiv = document.getElementById('qrCodeContainer');
+        if(qrDiv){
+            qrDiv.innerHTML = '';
+            if(address && address !== "Address not set"){
+                try{
+                    new QRCode(qrDiv, {text:address, width:150, height:150});
+                } catch(e){
+                    qrDiv.innerHTML = '<div style="width:150px;height:150px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;border-radius:12px;"><span style="color:#000;">QR</span></div>';
+                }
+            } else {
+                qrDiv.innerHTML = '<div style="width:150px;height:150px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;border-radius:12px;"><span style="color:#000;">No Address</span></div>';
+            }
+        }
+    }
+
+    async function renderCoinSelector() {
+        let c = document.getElementById('coinSelector');
+        if(c) c.innerHTML = COINS.map((c,i)=>`<div class="coin-btn ${i===currentCoinIndex?'active':''}" onclick="selectCoin(${i})">${c.symbol}</div>`).join('');
+        await updateDepositUI();
+    }
+
+    async function selectCoin(idx) {
+        currentCoinIndex = idx;
+        await renderCoinSelector();
+    }
+    // ========== End Wallet Functions ==========
 
     function generateRandomTransaction() { const name = tickerNames[Math.floor(Math.random() * tickerNames.length)]; const isDeposit = Math.random() > 0.6; let amount = isDeposit ? (Math.random()*40+10).toFixed(2) : (Math.random()*300+100).toFixed(2); return `${name} ${isDeposit ? `deposited $${amount}` : `withdrew $${amount}`} 💸`; }
     function generateTickerHTML() { let items=[]; for(let i=0;i<12;i++) items.push(generateRandomTransaction()); return items.map(t=>`<span>✨ ${t}</span>`).join(''); }
@@ -455,7 +499,7 @@
                 document.getElementById('mineBtn').classList.remove('mining'); 
                 document.getElementById('mineText').innerHTML='START MINING'; 
                 clearInterval(miningInterval); 
-                showNotification('✅ 24 hours mining session completed! You can start mining again.','success'); 
+                showNotification('✅ 24 hours mining session completed!','success'); 
             } 
         }, 1000);
     }
@@ -478,19 +522,17 @@
             document.getElementById('miningTimerDisplay').innerHTML = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`; 
             let progressPercent = ((MINING_DURATION_MS - remaining) / MINING_DURATION_MS) * 100;
             document.getElementById('miningProgressBar').style.width = Math.min(100, Math.max(0, progressPercent)) + '%'; 
-        } else {
-            document.getElementById('miningTimerDisplay').innerHTML = '00:00:00';
-            document.getElementById('miningProgressBar').style.width = '100%';
         }
     }
     setInterval(()=>updateMiningTimerUI(),100);
 
-    // বোনাস টাইমার ফাংশন (৭ দিন)
     function updateBonusTimerUI(){ 
         if(!currentUser) return; 
         if(!currentUser.bonusLocked){ 
             let card=document.getElementById('bonusTimerCard'); 
-            if(card) card.innerHTML=`<div style="text-align:center;padding:8px;"><i class="fas fa-check-circle" style="color:#10b981;font-size:28px;"></i><h3>$200 Bonus Unlocked!</h3><p>You can withdraw now.</p></div>`; 
+            if(card && card.innerHTML.indexOf('Bonus Unlocked') === -1){ 
+                card.innerHTML = `<div style="text-align:center;padding:8px;"><i class="fas fa-check-circle" style="color:#10b981;font-size:28px;"></i><h3>$200 Bonus Unlocked!</h3><p>You can withdraw now.</p></div>`; 
+            }
             if(bonusTimerInterval) clearInterval(bonusTimerInterval); 
             return; 
         } 
@@ -557,7 +599,6 @@
         if(!currentUser) return;
         
         const canWithdraw = currentUser.hasDeposited === true && currentUser.bonusLocked === false;
-        
         const now = Date.now();
         const timeSinceLastWithdrawal = now - lastWithdrawalTime;
         const isCooldownActive = lastWithdrawalTime > 0 && timeSinceLastWithdrawal < WITHDRAWAL_COOLDOWN_MS;
@@ -792,7 +833,7 @@
         loadSettingsUI(); 
         updateDashboard(); 
         updateReferralDisplay(); 
-        renderCoinSelector(); 
+        await renderCoinSelector();
         updateBonusTimerUI(); 
         updateWithdrawButtonState();
         setInterval(()=>updateBonusTimerUI(),1000); 
@@ -887,6 +928,10 @@
         let snap=await db.collection('users').orderBy('totalInvested','desc').limit(10).get(); 
         let users=[]; 
         snap.forEach(d=>users.push({id:d.id,...d.data()})); 
+        if(users.length===0){
+            document.getElementById('leaderboardList').innerHTML = '<div style="text-align:center;padding:40px;">📭 No users yet.<br>Be the first to invest!</div>';
+            return;
+        }
         document.getElementById('leaderboardList').innerHTML=users.map((u,i)=>`<div class="leaderboard-item"><div><span class="${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':''}">${i+1}. </span>${(u.name||'User').substring(0,15)}</div><div>$${(u.totalInvested||0).toFixed(2)}</div></div>`).join(''); 
         
         try {
@@ -1060,39 +1105,16 @@
     
     function openModal(id){ document.getElementById(id).classList.add('active'); }
     function closeModal(id){ document.getElementById(id).classList.remove('active'); }
-    function selectCoin(idx){ currentCoinIndex=idx; renderCoinSelector(); }
-    
-    function renderCoinSelector(){ 
-        let c=document.getElementById('coinSelector'); 
-        if(c) c.innerHTML=COINS.map((c,i)=>`<div class="coin-btn ${i===currentCoinIndex?'active':''}" onclick="selectCoin(${i})">${c.symbol}</div>`).join(''); 
-        updateDepositUI(); 
-    }
-    
-    function updateDepositUI(){ 
-        let coin=COINS[currentCoinIndex]; 
-        let address=walletAddresses[coin.key]||"Address not set"; 
-        let addrDiv=document.getElementById('depositAddressDisplay'); 
-        if(addrDiv) addrDiv.innerHTML=`${address}<br><small>Network: ${coin.network}</small>`; 
-        let qrDiv=document.getElementById('qrCodeContainer'); 
-        if(qrDiv){ 
-            qrDiv.innerHTML=''; 
-            if(address && address!=="Address not set"){ 
-                try{ 
-                    new QRCode(qrDiv, {text:address, width:150, height:150}); 
-                } catch(e){ 
-                    qrDiv.innerHTML='<div style="width:150px;height:150px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;border-radius:12px;"><span style="color:#000;">QR</span></div>'; 
-                } 
-            } else { 
-                qrDiv.innerHTML='<div style="width:150px;height:150px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;border-radius:12px;"><span style="color:#000;">No Address</span></div>'; 
-            } 
-        } 
-    }
-    
     function copyDepositAddress(){ 
         let coin=COINS[currentCoinIndex]; 
-        let address=walletAddresses[coin.key]||""; 
-        navigator.clipboard.writeText(address); 
-        showNotification('Address copied!'); 
+        let addrDiv = document.getElementById('depositAddressDisplay');
+        let address = addrDiv ? addrDiv.innerText.split('\n')[0] : '';
+        if(address && address !== "Address not set"){
+            navigator.clipboard.writeText(address); 
+            showNotification('Address copied!');
+        } else {
+            showNotification('No address to copy','error');
+        }
     }
     
     function toggleAuth(isLogin){ 

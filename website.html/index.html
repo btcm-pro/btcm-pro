@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>BTCM PRO | Advanced Cloud Mining Platform</title>
+    <title>BTCM PRO | BTC · USDT · ETH Cloud Mining</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -474,12 +474,67 @@
             color: #a0a4d0;
         }
 
-        @media (max-width: 768px) {
+        /* Live Payout Notification - BTC / USDT / ETH only */
+        .payout-notification {
+            position: fixed;
+            bottom: 24px;
+            left: -420px;
+            background: rgba(12, 15, 40, 0.96);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(247, 147, 26, 0.5);
+            border-radius: 28px;
+            padding: 14px 22px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            z-index: 10000;
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.7), 0 0 0 1px rgba(247,147,26,0.2);
+            transition: left 0.55s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+            font-family: 'Inter', sans-serif;
+            max-width: 350px;
+            width: auto;
+            cursor: pointer;
+        }
+        .payout-notification.show {
+            left: 24px;
+        }
+        .payout-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(145deg, #10b981, #047857);
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: white;
+            box-shadow: 0 10px 18px -5px rgba(16,185,129,0.4);
+        }
+        .payout-info p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #e2e8f0;
+        }
+        .payout-info strong {
+            color: #f7931a;
+            font-weight: 800;
+        }
+        .payout-amount {
+            font-weight: 800;
+            font-size: 18px;
+            background: linear-gradient(115deg, #FFE68F, #f7931a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.2px;
+        }
+        @media (max-width: 680px) {
+            .payout-notification { max-width: 290px; padding: 12px 18px; gap: 12px; bottom: 16px; }
+            .payout-notification.show { left: 16px; }
             .hero h1 { font-size: 40px; }
-            .section-title { font-size: 30px; }
             .cta-box h2 { font-size: 30px; }
             .logo-icon { width: 48px; height: 48px; }
-            .logo-text h1 { font-size: 22px; }
         }
     </style>
 </head>
@@ -494,19 +549,18 @@
             </div>
             <div class="logo-text">
                 <h1>BTCM PRO</h1>
-                <span>ADVANCED CLOUD MINING</span>
+                <span>BTC · USDT · ETH MINING</span>
             </div>
         </div>
-        <!-- 👇 এখানে raw লিংক ব্যবহার করা হয়েছে -->
         <a href="https://raw.githubusercontent.com/btcm-pro/btcm-pro/main/app-release.apk" class="download-header" download>
             <i class="fas fa-download"></i> DOWNLOAD APK
         </a>
     </div>
 
     <div class="hero">
-        <div class="badge">⭐ TRUSTED BY 25,000+ MINERS WORLDWIDE</div>
+        <div class="badge">⭐ TRUSTED BY 32,000+ MINERS WORLDWIDE</div>
         <h1>Turn <span>$10</span> into<br>Daily Passive Income</h1>
-        <p>Start earning 2.5% – 4% every single day. Automated payouts, instant withdrawals, and zero hardware. The future of mining is here.</p>
+        <p>Start earning 2.5% – 4% every single day. Withdraw directly in BTC, USDT or ETH. No hardware, instant payouts.</p>
         <div class="hero-buttons">
             <a href="#downloadNow" class="btn-primary"><i class="fas fa-rocket"></i> Start Mining</a>
             <a href="#plans" class="btn-secondary"><i class="fas fa-chart-line"></i> View Plans</a>
@@ -560,7 +614,7 @@
 
     <div id="downloadNow" class="cta-box">
         <h2>🚀 Start Mining Today</h2>
-        <p style="margin-bottom: 25px;">Join 25,000+ active miners. Get $200 bonus on sign-up.</p>
+        <p style="margin-bottom: 25px;">Join 32,000+ active miners. Get $200 bonus on sign-up.</p>
         <a href="https://raw.githubusercontent.com/btcm-pro/btcm-pro/main/app-release.apk" class="btn-primary" style="font-size: 20px; padding: 16px 48px;" download>
             <i class="fas fa-download"></i> Download BTCM PRO (APK)
         </a>
@@ -583,5 +637,155 @@
         <p style="margin-top: 8px; font-size: 13px;">btcmpro.admin@gmail.com</p>
     </footer>
 </div>
+
+<!-- Payout Notification (Only BTC/USDT/ETH) -->
+<div id="payoutNotify" class="payout-notification">
+    <div class="payout-icon">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <div class="payout-info">
+        <p id="payoutUser"><strong>Maruf A.</strong> just withdrew</p>
+        <p id="payoutAmount" class="payout-amount">0.0025 BTC</p>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // BTC / USDT / ETH ONLY - Live Withdrawal Notifications
+    // ============================================================
+    
+    // Realistic user names (global community)
+    const userNames = [
+        "Maruf A.", "Sarah K.", "Rahat H.", "Deepak V.", "Anik S.", "Jessica M.", 
+        "Tarek R.", "Priya G.", "Salman F.", "Amit Khan", "Sabbir Hossain", "Elena G.",
+        "Victor L.", "Nadia S.", "Hasan M.", "Ritu B.", "Cameron J.", "Olivia W.",
+        "Liam N.", "Zara T.", "Mohammed R.", "Fatema A.", "David C.", "Sophia L.",
+        "Ethan B.", "Chloe D.", "Mason W.", "Isabella R."
+    ];
+    
+    // ONLY BTC, USDT, ETH methods (exactly as requested)
+    const cryptoMethods = ["BTC", "USDT", "ETH"];
+    
+    // Helper: random item from array
+    function randomItem(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+    
+    // Generate random withdrawal amount depending on crypto type (realistic values)
+    function getAmountByCrypto(crypto) {
+        if (crypto === "BTC") {
+            // BTC amounts between 0.0008 and 0.045 BTC
+            let btc = (Math.random() * 0.0442 + 0.0008).toFixed(6);
+            return `${btc} BTC`;
+        } else if (crypto === "ETH") {
+            // ETH amounts between 0.02 and 1.45 ETH
+            let eth = (Math.random() * 1.43 + 0.02).toFixed(5);
+            return `${eth} ETH`;
+        } else { // USDT stablecoin
+            let usdt = (Math.random() * 480 + 12).toFixed(2);
+            return `${usdt} USDT`;
+        }
+    }
+    
+    // DOM elements
+    const notifyDiv = document.getElementById('payoutNotify');
+    const userSpan = document.getElementById('payoutUser');
+    const amountSpan = document.getElementById('payoutAmount');
+    
+    let activeTimeout = null;
+    let isNotificationVisible = false;
+    
+    // Show the notification with given user and formatted amount string
+    function showWithdrawalNotification(userName, amountStr) {
+        // Update content
+        userSpan.innerHTML = `<strong>${userName}</strong> just withdrew`;
+        amountSpan.innerHTML = amountStr;
+        
+        if (!isNotificationVisible) {
+            notifyDiv.classList.add('show');
+            isNotificationVisible = true;
+            
+            if (activeTimeout) clearTimeout(activeTimeout);
+            activeTimeout = setTimeout(() => {
+                notifyDiv.classList.remove('show');
+                isNotificationVisible = false;
+                activeTimeout = null;
+            }, 5200);
+        } else {
+            // Refresh timer if already visible
+            if (activeTimeout) {
+                clearTimeout(activeTimeout);
+                activeTimeout = setTimeout(() => {
+                    notifyDiv.classList.remove('show');
+                    isNotificationVisible = false;
+                    activeTimeout = null;
+                }, 4800);
+            }
+        }
+    }
+    
+    // Generate random payout event (only BTC / USDT / ETH)
+    function generatePayout() {
+        const randomUser = randomItem(userNames);
+        const randomCrypto = randomItem(cryptoMethods);
+        const formattedAmount = getAmountByCrypto(randomCrypto);
+        showWithdrawalNotification(randomUser, formattedAmount);
+    }
+    
+    // Start the rotating payout simulator (random intervals between 10s and 22s)
+    let intervalRef = null;
+    function startPayoutSimulator() {
+        // First payout after 2 seconds
+        setTimeout(() => {
+            generatePayout();
+        }, 2000);
+        
+        function scheduleNext() {
+            const delay = Math.floor(Math.random() * (15000 - 9000 + 1) + 9000); // 9s to 15s for organic feel
+            intervalRef = setTimeout(() => {
+                generatePayout();
+                scheduleNext();
+            }, delay);
+        }
+        scheduleNext();
+    }
+    
+    // Also an extra pulse on user engagement (click CTA can trigger bonus notification)
+    function boostEngagement() {
+        const btns = document.querySelectorAll('.btn-primary, .download-header, .hero-buttons a');
+        btns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setTimeout(() => {
+                    if (Math.random() > 0.55) {
+                        generatePayout();
+                    }
+                }, 500);
+            });
+        });
+    }
+    
+    // On scroll near bottom, generate spontaneous notification (mimics live activity)
+    let scrollCooldown = false;
+    window.addEventListener('scroll', () => {
+        if (!scrollCooldown && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 400) {
+            scrollCooldown = true;
+            setTimeout(() => {
+                generatePayout();
+                setTimeout(() => { scrollCooldown = false; }, 3000);
+            }, 200);
+        }
+    });
+    
+    // Initialize all
+    startPayoutSimulator();
+    boostEngagement();
+    
+    // Extra safety: generate one more after page fully loaded if needed
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            if (!isNotificationVisible) generatePayout();
+        }, 5500);
+    });
+</script>
 </body>
 </html>

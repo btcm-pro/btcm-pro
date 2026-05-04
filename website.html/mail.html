@@ -1,242 +1,419 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BTCM PRO - Welcome Email</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>BTCM PRO - বিশেষ উপহার | ক্লাউড মাইনিং</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        
-        .email-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: linear-gradient(135deg, #0a0c1a 0%, #0f1235 100%);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        .email-bg-fallback {
-            background-color: #0a0c1a;
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', 'Noto Sans Bengali', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0b0e1a;
+            padding: 28px 16px;
+        }
+
+        .email-container {
+            max-width: 580px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #0f1238 0%, #080b22 100%);
+            border-radius: 56px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 160, 255, 0.35);
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 140, 255, 0.1) inset;
+            transition: all 0.2s;
+        }
+
+        .header {
+            background: radial-gradient(circle at 20% 30%, #0099ff, #0044bb);
+            padding: 36px 24px;
+            text-align: center;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(120deg, #ffffff, #d4f0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            color: #e6f7ff;
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            display: inline-block;
+            padding: 6px 24px;
+            border-radius: 60px;
+        }
+
+        .trust-badge {
+            background: rgba(0, 212, 255, 0.2);
+            border-radius: 40px;
+            padding: 6px 18px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #c2ecff;
+            display: inline-block;
+            margin-top: 16px;
+            backdrop-filter: blur(2px);
+        }
+
+        .content {
+            padding: 32px 30px 28px;
+        }
+
+        .greeting {
+            font-size: 30px;
+            font-weight: 800;
+            background: linear-gradient(115deg, #2bb0ff, #0066e0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 16px;
+            letter-spacing: -0.3px;
+        }
+
+        /* সুন্দর ও পরিষ্কার লাইন ব্রেক */
+        .message p {
+            color: #e6ecff;
+            line-height: 1.65;
+            margin-bottom: 14px;
+            font-size: 16px;
+            font-weight: 450;
+        }
+
+        .message strong, .highlight {
+            background: linear-gradient(95deg, #33bbff, #0080ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+
+        .stats-mini {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0, 100, 255, 0.08);
+            border-radius: 32px;
+            padding: 16px 12px;
+            margin: 28px 0;
+            gap: 10px;
+            flex-wrap: wrap;
+            border: 1px solid rgba(0, 160, 255, 0.35);
+            backdrop-filter: blur(4px);
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+            min-width: 70px;
+        }
+
+        .stat-number {
+            font-size: 27px;
+            font-weight: 800;
+            color: #38b0ff;
+            display: block;
+            letter-spacing: -0.3px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #b3c0ff;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .offer-box {
+            background: linear-gradient(125deg, rgba(0, 140, 255, 0.05), rgba(0, 80, 200, 0.1));
+            border-left: 4px solid #2aafff;
+            padding: 20px 22px;
+            border-radius: 32px;
+            margin: 28px 0;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 🔥 উন্নত offer-item — পরিষ্কার, হিজিবিজি মুক্ত */
+        .offer-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin: 22px 0;
+            font-size: 15px;
+            color: #f0f3ff;
+            font-weight: 500;
+        }
+
+        .offer-item i {
+            width: 32px;
+            color: #3bb3ff;
+            font-size: 26px;
+            font-weight: normal;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .offer-item-content {
+            flex: 1;
+        }
+
+        .offer-item-content strong {
+            font-size: 16px;
+            display: inline-block;
+            margin-bottom: 4px;
+            color: #cae6ff;
+        }
+
+        .offer-desc-small {
+            display: block;
+            font-size: 12.5px;
+            color: #9bb5f0;
+            margin-top: 6px;
+            line-height: 1.45;
+            letter-spacing: 0.2px;
+        }
+
+        .plan-highlight {
+            background: rgba(0, 110, 255, 0.2);
+            border-radius: 24px;
+            padding: 14px 18px;
+            margin: 18px 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px dashed #3ba8ff;
+            color: #e0ecff;
+        }
+
+        .btn-download {
+            display: block;
+            background: linear-gradient(98deg, #0a8cff, #004fcf);
+            text-align: center;
+            padding: 16px 18px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 800;
+            font-size: 19px;
+            text-decoration: none;
+            margin: 24px 0 20px;
+            transition: all 0.25s ease;
+            box-shadow: 0 12px 22px rgba(0, 110, 255, 0.35);
+            letter-spacing: 0.5px;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(98deg, #1f9aff, #0060e6);
+            box-shadow: 0 20px 28px rgba(0, 140, 255, 0.45);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1.5px solid rgba(0, 150, 255, 0.7);
+            padding: 12px 28px;
+            border-radius: 60px;
+            color: #6bc6ff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            backdrop-filter: blur(2px);
+            transition: 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 140, 255, 0.2);
+            color: white;
+            border-color: #0099ff;
+        }
+
+        .testimonial {
+            background: rgba(0, 130, 255, 0.08);
+            border-radius: 28px;
+            padding: 18px 22px;
+            margin: 28px 0;
+            border-right: 3px solid #2d9eff;
+        }
+
+        .testimonial p {
+            color: #e0eaff;
+            font-size: 14px;
+            line-height: 1.5;
+            font-style: normal;
+            margin-bottom: 8px;
+        }
+
+        .testimonial span {
+            color: #7bcaff;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .note {
+            font-size: 13px;
+            color: #b7c0f0;
+            text-align: center;
+            margin-top: 28px;
+            border-top: 1px solid rgba(100, 150, 255, 0.2);
+            padding-top: 24px;
+            line-height: 1.5;
+        }
+
+        .warning {
+            font-size: 10px;
+            color: #7c82b0;
+            text-align: center;
+            margin-top: 18px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 8px 12px;
+            border-radius: 48px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .footer {
+            background: #02041a;
+            text-align: center;
+            padding: 24px 20px;
+            font-size: 12px;
+            color: #8088c2;
+            border-top: 1px solid #1e2260;
+        }
+
+        .footer a {
+            color: #3da5ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .flex-center {
+            text-align: center;
+        }
+
+        @media (max-width: 500px) {
+            .content {
+                padding: 24px 20px;
+            }
+            .greeting {
+                font-size: 26px;
+            }
+            .offer-item {
+                gap: 10px;
+            }
+            .offer-item i {
+                font-size: 22px;
+            }
         }
     </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #0a0c1a; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0a0c1a" style="background-color: #0a0c1a;">
-        <tr>
-            <td align="center" style="padding: 40px 20px;">
-                <!-- Main Email Container -->
-                <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background: linear-gradient(135deg, #0a0c1a 0%, #0f1235 100%); border-radius: 32px; border: 1px solid rgba(247,147,26,0.2); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
-                    
-                    <!-- Header with Logo (আপনার লোগো ইমেজ সহ) -->
-                    <tr>
-                        <td style="padding: 40px 30px 20px 30px; text-align: center;">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="center">
-                                        <!-- Logo Container with Your Image -->
-                                        <div style="display: inline-block; text-align: center;">
-                                            <!-- লোগো ইমেজ - আপনার ফাইলের নাম এখানে বসবে -->
-                                            <div style="width: 70px; height: 70px; margin: 0 auto 15px;">
-                                                <img src="GeminiGeneratedImagedg32eidg32eidg32256x256.jpg" alt="BTCM PRO Logo" style="width: 70px; height: 70px; border-radius: 20px; box-shadow: 0 0 20px rgba(247,147,26,0.5);">
-                                            </div>
-                                            <h1 style="margin: 0; font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #f7931a, #008cff, #9d00ff); -webkit-background-clip: text; background-clip: text; color: transparent;">BTCM PRO</h1>
-                                            <p style="margin: 5px 0 0; font-size: 11px; letter-spacing: 2px; color: #f7931a;">ADVANCED CLOUD MINING</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    
-                    <!-- Welcome Badge -->
-                    <tr>
-                        <td style="padding: 0 30px; text-align: center;">
-                            <div style="background: rgba(247,147,26,0.12); border: 1px solid rgba(247,147,26,0.4); padding: 8px 24px; border-radius: 60px; display: inline-block; font-size: 13px; font-weight: 500; color: #f7931a;">
-                                ⭐ WELCOME TO BTCM PRO
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    <!-- Main Message -->
-                    <tr>
-                        <td style="padding: 30px 30px 20px 30px; text-align: center;">
-                            <h2 style="font-size: 32px; font-weight: 800; margin: 0 0 15px; color: #ffffff; line-height: 1.2;">Welcome to the<br><span style="background: linear-gradient(135deg, #f7931a, #008cff); -webkit-background-clip: text; background-clip: text; color: transparent;">Future of Mining</span></h2>
-                            <p style="font-size: 16px; line-height: 1.5; color: #b0b4e0; margin: 0 0 20px;">Thank you for joining BTCM PRO! Start earning daily passive income with zero hardware. Your mining journey begins now.</p>
-                        </td>
-                    </tr>
-                    
-                    <!-- Stats Cards -->
-                    <tr>
-                        <td style="padding: 0 30px;">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: rgba(15, 18, 53, 0.6); border-radius: 50px; padding: 15px 20px; border: 1px solid rgba(247,147,26,0.2);">
-                                <tr>
-                                    <td align="center" style="padding: 8px 12px;">
-                                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                            <tr>
-                                                <td align="center" style="padding: 0 10px;">
-                                                    <div style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #f7931a, #008cff); -webkit-background-clip: text; background-clip: text; color: transparent;">$10</div>
-                                                    <div style="font-size: 11px; color: #a0a4d0;">Min Deposit</div>
-                                                </td>
-                                                <td align="center" style="padding: 0 10px;">
-                                                    <div style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #f7931a, #008cff); -webkit-background-clip: text; background-clip: text; color: transparent;">$10</div>
-                                                    <div style="font-size: 11px; color: #a0a4d0;">Min Withdraw</div>
-                                                </td>
-                                                <td align="center" style="padding: 0 10px;">
-                                                    <div style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #f7931a, #008cff); -webkit-background-clip: text; background-clip: text; color: transparent;">2%</div>
-                                                    <div style="font-size: 11px; color: #a0a4d0;">Fee</div>
-                                                </td>
-                                                <td align="center" style="padding: 0 10px;">
-                                                    <div style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #f7931a, #008cff); -webkit-background-clip: text; background-clip: text; color: transparent;">$200</div>
-                                                    <div style="font-size: 11px; color: #a0a4d0;">Bonus</div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    
-                    <!-- Investment Plans Preview -->
-                    <tr>
-                        <td style="padding: 40px 30px 20px 30px;">
-                            <h3 style="font-size: 24px; font-weight: 700; text-align: center; margin: 0 0 20px; color: white;">💎 Popular Investment Plans</h3>
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 10px;">
-                                <tr>
-                                    <td style="padding: 0 8px 16px 8px; width: 50%;">
-                                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: linear-gradient(145deg, #101332, #0a0d28); border-radius: 24px; padding: 20px 15px; border: 1px solid rgba(247,147,26,0.15);">
-                                            <tr>
-                                                <td align="center">
-                                                    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #f7931a, #008cff); -webkit-background-clip: text; background-clip: text; color: transparent;">🌟 Starter</div>
-                                                    <div style="font-size: 13px; color: #f7931a; margin: 5px 0;">$20 min</div>
-                                                    <div style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #ffd966, #9d00ff); -webkit-background-clip: text; background-clip: text; color: transparent; margin: 10px 0;">2.5% Daily</div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td style="padding: 0 8px 16px 8px; width: 50%;">
-                                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: linear-gradient(145deg, #101332, #0a0d28); border-radius: 24px; padding: 20px 15px; border: 1px solid rgba(247,147,26,0.15);">
-                                            <tr>
-                                                <td align="center">
-                                                    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #f7931a, #008cff); -webkit-background-clip: text; background-clip: text; color: transparent;">⚡ Basic</div>
-                                                    <div style="font-size: 13px; color: #f7931a; margin: 5px 0;">$51 min</div>
-                                                    <div style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #ffd966, #9d00ff); -webkit-background-clip: text; background-clip: text; color: transparent; margin: 10px 0;">3% Daily</div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 0 8px 16px 8px; width: 50%;">
-                                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: linear-gradient(145deg, #101332, #0a0d28); border-radius: 24px; padding: 20px 15px; border: 1px solid rgba(247,147,26,0.15);">
-                                            <tr>
-                                                <td align="center">
-                                                    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #f7931a, #008cff); -webkit-background-clip: text; background-clip: text; color: transparent;">💎 Premium</div>
-                                                    <div style="font-size: 13px; color: #f7931a; margin: 5px 0;">$101 min</div>
-                                                    <div style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #ffd966, #9d00ff); -webkit-background-clip: text; background-clip: text; color: transparent; margin: 10px 0;">3.5% Daily</div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    <td>
-                                    <td style="padding: 0 8px 16px 8px; width: 50%;">
-                                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: linear-gradient(145deg, #101332, #0a0d28); border-radius: 24px; padding: 20px 15px; border: 1px solid rgba(247,147,26,0.15);">
-                                            <tr>
-                                                <td align="center">
-                                                    <div style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #f7931a, #008cff); -webkit-background-clip: text; background-clip: text; color: transparent;">👑 Pro</div>
-                                                    <div style="font-size: 13px; color: #f7931a; margin: 5px 0;">$200 min</div>
-                                                    <div style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #ffd966, #9d00ff); -webkit-background-clip: text; background-clip: text; color: transparent; margin: 10px 0;">4% Daily</div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    
-                    <!-- CTA Button -->
-                    <tr>
-                        <td style="padding: 10px 30px 30px 30px; text-align: center;">
-                            <a href="https://btcm-pro.github.io/btcm-pro/app-release.apk" style="display: inline-block; background: linear-gradient(95deg, #f7931a, #ffb347); padding: 14px 40px; border-radius: 60px; color: #0a0c1a; font-weight: 700; font-size: 16px; text-decoration: none; box-shadow: 0 8px 20px rgba(247,147,26,0.3);">
-                                🚀 Start Mining Now
-                            </a>
-                            <p style="font-size: 12px; color: #6a6f9a; margin-top: 20px;">Download the APK and start earning today!</p>
-                        </td>
-                    </table>
-                    
-                    <!-- Features List -->
-                    <tr>
-                        <td style="padding: 0 30px 30px 30px;">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="padding: 12px 0;">
-                                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                            <tr>
-                                                <td width="40" style="vertical-align: middle;"><span style="font-size: 22px;">⚡</span></td>
-                                                <td style="color: #c5c9f0; font-size: 14px;">Zero Hardware — Fully cloud-based</td>
-                                            </tr>
-                                            <tr>
-                                                <td width="40" style="vertical-align: middle; padding-top: 12px;"><span style="font-size: 22px;">💰</span></td>
-                                                <td style="color: #c5c9f0; font-size: 14px; padding-top: 12px;">Daily Payouts — Withdraw anytime</td>
-                                            </tr>
-                                            <tr>
-                                                <td width="40" style="vertical-align: middle; padding-top: 12px;"><span style="font-size: 22px;">🔒</span></td>
-                                                <td style="color: #c5c9f0; font-size: 14px; padding-top: 12px;">Bank-Level Security — Your funds are safe</td>
-                                            </tr>
-                                            <tr>
-                                                <td width="40" style="vertical-align: middle; padding-top: 12px;"><span style="font-size: 22px;">👥</span></td>
-                                                <td style="color: #c5c9f0; font-size: 14px; padding-top: 12px;">$10 Per Referral — Invite & earn instantly</td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    
-                    <!-- Testimonial -->
-                    <tr>
-                        <td style="padding: 0 30px 30px 30px;">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: rgba(255,255,255,0.04); border-radius: 20px; padding: 20px; border-left: 3px solid #008cff;">
-                                <tr>
-                                    <td>
-                                        <p style="font-size: 14px; font-style: italic; color: #c5c9f0; margin: 0;">"Withdrew $276 in my first week. This platform is a game-changer!"</p>
-                                        <p style="margin: 12px 0 0 0; font-weight: 700; background: linear-gradient(95deg, #f7931a, #9d00ff); -webkit-background-clip: text; background-clip: text; color: transparent;">— Michael J.</p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding: 30px 30px 40px 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.08);">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="center" style="padding-bottom: 20px;">
-                                        <a href="https://t.me/btcmpro" style="color: #8a91c2; font-size: 20px; text-decoration: none; margin: 0 10px; display: inline-block;">📱</a>
-                                        <a href="https://twitter.com/btcmpro" style="color: #8a91c2; font-size: 20px; text-decoration: none; margin: 0 10px; display: inline-block;">🐦</a>
-                                        <a href="https://facebook.com/btcmpro" style="color: #8a91c2; font-size: 20px; text-decoration: none; margin: 0 10px; display: inline-block;">📘</a>
-                                        <a href="mailto:support@btcmpro.com" style="color: #8a91c2; font-size: 20px; text-decoration: none; margin: 0 10px; display: inline-block;">✉️</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="center">
-                                        <p style="font-size: 11px; color: #6a6f9a; margin: 0;">© 2026 BTCM PRO — Advanced Cloud Mining Platform</p>
-                                        <p style="font-size: 11px; color: #6a6f9a; margin: 8px 0 0;">btcmpro.admin@gmail.com</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="center" style="padding-top: 20px;">
-                                        <p style="font-size: 10px; color: #4a4f7a; margin: 0;">⚠️ Risk Disclaimer: Cryptocurrency cloud mining involves market risk. Always do your own research (DYOR).</p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    
-                </table>
-            </td>
-        </tr>
-    </table>
+<body>
+<div class="email-container">
+    <div class="header">
+        <h1>⚡ BTCM PRO</h1>
+        <p>✅ ADVANCED CLOUD MINING PLATFORM</p>
+        <div class="trust-badge">⭐ TRUSTED BY 25,000+ MINERS WORLDWIDE</div>
+    </div>
+
+    <div class="content">
+        <div class="greeting">🎁 প্রিয় আজাদ,</div>
+
+        <!-- সুন্দর ভাঙা বাক্য ও পরিষ্কার লাইন -->
+        <div class="message">
+            <p><strong class="highlight">BTCM PRO</strong> থেকে আপনাকে বিশেষ স্বাগতম!</p>
+            <p>কোনো হার্ডওয়্যার ছাড়াই প্রতিদিন <strong>২.৫% – ৪% লাভের সুযোগ</strong> পেতে পারেন।</p>
+            <p>বিশ্বব্যাপী <strong>২৫,০০০+ সক্রিয় মাইনার</strong> আমাদের সঙ্গে যুক্ত হয়ে স্বচ্ছ লাভ পাচ্ছেন।</p>
+        </div>
+
+        <div class="stats-mini">
+            <div class="stat-item"><span class="stat-number">$10</span><span class="stat-label">মিন. ডিপোজিট</span></div>
+            <div class="stat-item"><span class="stat-number">$10</span><span class="stat-label">মিন. উইথড্র</span></div>
+            <div class="stat-item"><span class="stat-number">$200</span><span class="stat-label">বোনাস পর্যন্ত</span></div>
+            <div class="stat-item"><span class="stat-number">$10</span><span class="stat-label">রেফারেল</span></div>
+        </div>
+
+        <!-- ✅ উন্নত offer-box - হিজিবিজি মুক্ত, পরিষ্কার লাইন ও বিস্তারিত তথ্য -->
+        <div class="offer-box">
+            <div class="offer-item">
+                <i>💰</i>
+                <div class="offer-item-content">
+                    <strong>সাইন-আপ বোনাস:</strong> প্রথম জমাতে <span class="highlight">$২০০ পর্যন্ত</span> এক্সক্লুসিভ উপহার!
+                    <span class="offer-desc-small">✅ ন্যূনতম $২০ ডিপোজিটে স্বয়ংক্রিয় ক্রেডিট। বোনাস লক-ইন ছাড়া তাত্ক্ষণিক মাইনিং শুরু করুন।</span>
+                </div>
+            </div>
+
+            <div class="offer-item">
+                <i>📈</i>
+                <div class="offer-item-content">
+                    <strong>ডেইলি পেআউট:</strong> প্রতি <span class="highlight">৫ সেকেন্ড</span> আপডেট, যেকোনো সময় টাকা তুলুন।
+                    <span class="offer-desc-small">⚡ ইন্সট্যান্ট উইথড্র সুবিধা (২৪/৭) – বিটকয়েন, USDT বা বাইন্যন্স পেমেন্ট।</span>
+                </div>
+            </div>
+
+            <div class="offer-item">
+                <i>🔒</i>
+                <div class="offer-item-content">
+                    <strong>সিকিউরিটি:</strong> ফায়ারবেস অথ + 2FA, ব্যাংক-লেভেল সুরক্ষা নিশ্চিত।
+                    <span class="offer-desc-small">🛡️ আইসোলেটেড ওয়ালেট, এনক্রিপ্টেড ডাটাবেস ও বাইনারি অডিট। আপনার অর্থ সর্বদা সুরক্ষিত।</span>
+                </div>
+            </div>
+
+            <div class="offer-item">
+                <i>👥</i>
+                <div class="offer-item-content">
+                    <strong>$১০ রেফার বোনাস:</strong> বন্ধু আনুন, সাথে <span class="highlight">সেকেন্ড লেভেলে $৫</span> উপার্জন করুন।
+                    <span class="offer-desc-small">🏆 আনলিমিটেড রেফারেল – লাইফটাইম কমিশন। প্রতি সক্রিয় রেফারের জন্য বোনাস জমা হয় প্রতিদিন।</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- পপুলার প্ল্যান লাইন ফর্মেট করে সুন্দরভাবে -->
+        <div class="plan-highlight">
+            🌟 <strong>পপুলার প্ল্যান:</strong> স্টার্টার ($20) → ২.৫% ডেইলি &nbsp;|&nbsp; প্রিমিয়াম ($101) → ৩.৫% ডেইলি &nbsp;|&nbsp; প্রো ($200) → ৪% ডেইলি
+        </div>
+
+        <div class="testimonial">
+            <p>✨ "মাত্র $৫০ ইনভেস্ট করেছিলাম, এখন প্রতিদিন লাভ পাচ্ছি। উইথড্র সুপার ফাস্ট! সত্যিই অসাধারণ BTCM PRO."</p>
+            <span>— Sarah W. (ভারিফাইড ইউজার)</span>
+        </div>
+
+        <a href="https://btcm-pro.github.io/btcm-pro/website.html/" class="btn-download" target="_blank">
+            🚀 অফিসিয়াল ওয়েবসাইট ভিজিট করুন
+        </a>
+
+        <div class="flex-center">
+            <a href="https://raw.githubusercontent.com/btcm-pro/btcm-pro/main/app-release.apk" class="btn-secondary" download>
+                📲 অ্যান্ড্রয়েড অ্যাপ ডাউনলোড (APK)
+            </a>
+        </div>
+
+        <!-- বিশেষ নোট: প্রথম ১০০ জন বোনাস লাইন -->
+        <div class="note">
+            🎯 <strong>বিশেষ অফার:</strong> <span class="highlight">প্রথম ১০০ জন</span> অতিরিক্ত $২০ বোনাস পাবেন! <br>
+            ✅ 100% ক্লাউড-বেসড, জিরো বিদ্যুৎ বিল ও কোনো মেইনটেন্যান্স ফি নেই।
+        </div>
+
+        <div class="warning">
+            ⚠️ সতর্কতা: ক্রিপ্টো ক্লাউড মাইনিং এ মার্কেট রিস্ক আছে। বিনিয়োগের আগে নিজে গবেষণা করুন।
+        </div>
+    </div>
+
+    <div class="footer">
+        🔗 <a href="https://btcm-pro.github.io/btcm-pro/website.html/">BTCM PRO অফিসিয়াল সাইট</a><br>
+        📧 যোগাযোগ: support@btcmpro.com (সহায়তা ২৪/৭)<br>
+        © 2025 BTCM PRO টিম — উদ্ভাবনী ক্লাউড মাইনিং
+    </div>
+</div>
 </body>
 </html>

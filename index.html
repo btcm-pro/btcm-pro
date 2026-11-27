@@ -46,7 +46,7 @@
     }
 
     .wrap {
-      width: min(1200px, calc(100% - 56px));
+      width: min(1240px, calc(100% - 56px));
       margin: auto;
     }
 
@@ -101,8 +101,7 @@
       height: 48px;
       object-fit: contain;
       border-radius: 50%;
-      background: #0f1f38;
-      border: 1px solid rgba(245, 176, 39, 0.35);
+      flex-shrink: 0;
     }
 
     .brand strong {
@@ -190,9 +189,9 @@
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.15fr 0.15fr 0.9fr;
+      grid-template-columns: 1.05fr 0.09fr 1.06fr;
       align-items: center;
-      gap: 24px;
+      gap: 20px;
       position: relative;
       z-index: 2;
     }
@@ -217,7 +216,7 @@
     }
 
     .hero h1 {
-      font-size: clamp(38px, 4.6vw, 54px);
+      font-size: clamp(36px, 4.3vw, 52px);
       font-weight: 800;
       line-height: 1.16;
       letter-spacing: -0.02em;
@@ -245,10 +244,10 @@
 
     .hero-copy {
       color: var(--muted);
-      font-size: 16px;
+      font-size: 15.5px;
       line-height: 1.68;
-      max-width: 550px;
-      margin-bottom: 28px;
+      max-width: 540px;
+      margin-bottom: 26px;
     }
 
     .hero-copy strong {
@@ -258,20 +257,20 @@
     /* Coin Hashrate Cards */
     .coin-cards {
       display: flex;
-      gap: 14px;
+      gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 28px;
+      margin-bottom: 26px;
     }
 
     .coin-card {
       background: rgba(15, 31, 56, 0.88);
       border: 1px solid rgba(255, 255, 255, 0.09);
       border-radius: 8px;
-      padding: 13px 16px;
+      padding: 12px 15px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      min-width: 162px;
+      gap: 11px;
+      min-width: 152px;
       backdrop-filter: blur(8px);
       transition: border-color 0.2s, transform 0.2s;
     }
@@ -336,7 +335,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
     .slanted-line {
@@ -347,49 +346,61 @@
       border-radius: 2px;
     }
 
-    /* Right Overview Card */
+    /* Right Side Column: Telemetry + Reference Visual Side-by-Side */
+    .hero-right-panel {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
     .overview {
       background: rgba(15, 31, 56, 0.92);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 14px;
-      padding: 24px;
+      padding: 20px;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
       backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .overview-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
       border-bottom: 1px solid var(--line);
-      padding-bottom: 15px;
-      margin-bottom: 15px;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
     }
 
     .overview-head b {
-      font-size: 13px;
+      font-size: 12px;
       color: #ffffff;
     }
 
     .status {
-      font-size: 10px;
+      font-size: 9px;
       color: var(--green);
       font-weight: 800;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
     }
 
     .status:before {
       content: "";
       display: inline-block;
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       background: var(--green);
       border-radius: 50%;
-      margin-right: 6px;
+      margin-right: 5px;
     }
 
     .overview-main {
-      padding: 10px 0 18px;
+      padding: 8px 0 14px;
     }
 
     .overview-main small {
@@ -399,35 +410,54 @@
 
     .overview-main strong {
       display: block;
-      font-size: 36px;
+      font-size: 32px;
       color: #ffffff;
       letter-spacing: -0.03em;
-      margin-top: 4px;
+      margin-top: 3px;
     }
 
     .overview-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
     }
 
     .mini {
       background: rgba(8, 18, 32, 0.75);
       border: 1px solid var(--line);
       border-radius: 9px;
-      padding: 13px;
+      padding: 11px;
     }
 
     .mini span {
       display: block;
       color: var(--muted);
-      font-size: 11px;
+      font-size: 10px;
     }
 
     .mini b {
-      font-size: 17px;
+      font-size: 15px;
       color: var(--gold);
-      margin-top: 3px;
+      margin-top: 2px;
+      display: block;
+    }
+
+    .telemetry-visual-card {
+      background: rgba(15, 31, 56, 0.92);
+      border: 1px solid rgba(245, 176, 39, 0.28);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      min-height: 270px;
+    }
+
+    .telemetry-visual-card img {
+      width: 100%;
+      height: 100%;
+      min-height: 270px;
+      object-fit: cover;
       display: block;
     }
 
@@ -774,28 +804,6 @@
       color: #fff;
     }
 
-    .social {
-      display: flex;
-      gap: 10px;
-    }
-
-    .social a {
-      width: 36px;
-      height: 36px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 7px;
-      display: grid;
-      place-items: center;
-      font-size: 12px;
-      color: #ffffff;
-    }
-
-    .social a:hover {
-      background: var(--gold);
-      color: #081220;
-      border-color: var(--gold);
-    }
-
     .copyright {
       display: flex;
       justify-content: space-between;
@@ -862,7 +870,7 @@
     }
 
     /* Responsive */
-    @media (max-width: 992px) {
+    @media (max-width: 1120px) {
       .hero-grid {
         grid-template-columns: 1fr;
         text-align: center;
@@ -872,7 +880,7 @@
         justify-content: center;
       }
       .hero-copy {
-        margin: 0 auto 28px;
+        margin: 0 auto 26px;
       }
       .coin-cards,
       .hero-actions {
@@ -881,8 +889,9 @@
       .slanted-divider {
         display: none;
       }
-      .overview {
-        max-width: 520px;
+      .hero-right-panel {
+        grid-template-columns: 1fr 1fr;
+        max-width: 720px;
         margin: 0 auto;
         text-align: left;
       }
@@ -898,9 +907,12 @@
       }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
+      .hero-right-panel {
+        grid-template-columns: 1fr;
+      }
       .wrap {
-        width: min(100% - 28px, 1200px);
+        width: min(100% - 28px, 1240px);
       }
       .topbar .wrap {
         font-size: 9px;
@@ -981,47 +993,7 @@
   <header class="header">
     <div class="wrap nav">
       <a class="brand" href="#top">
-        <img src="data:image/png;base64,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イントロダクション:
-
-アッパー: PU 快適なクローズドトウ。軽量で耐久性のある防水PU素材を使用しています。快適で柔らかい。
-
-インソール: 5mm高弾性メモリーフォーム。厚手のインソール。歩きやすい。履き心地が良い。
-
-ソール: 新型の高弾性TPR。TPR製のアウトソールは耐久性と弾力性があり、優れた柔軟性、滑り止め、耐摩耗性を誇ります。
-
-スタイル: カジュアル、ローヒール、ウエスタン、ラウンドトウ。
-
-シーズン: 春、秋、冬。
-
-マッチング: ドレス、ジーンズ、パンツ、レギンスなど、さまざまな服に合わせやすい。
-
-カラー: ダークブラウン、タン、ブラック。豊富なカラーオプションがカジュアルスタイルを完成させます。
-
-機会: お出かけ、お買い物、旅行、犬の散歩、デート、学校、仕事、日常着用、休暇など。
-
-サイズの選び方:
-
-米国の標準的なミディアムフィットサイズです。サイズの中間にいる場合や、幅広・甲高の方、厚い靴下を履く場合は、1サイズ上のサイズをお勧めします。
-
-1. 【防水＆耐久性のPUアッパー】:
-
-アッパーは高品質で柔らかいPU製で、完全な閉じたトウと高いトウボックスが特徴です。トウと指を外部の衝撃や寒さからしっかり保護します。アッパーは破れにくく、傷がつきにくく、耐水性があるため、濡れた道でも足が濡れる心配がありません。湿らせた布で拭くだけで簡単に汚れが落ち、お手入れも簡単です。
-
-2. 【疲れにくい快適なフットベッド】:
-
-5mmの高反発メモリーフォームと、柔らかい人工素材で作られたインソールが足の形状に沿ってサポート。一日中歩いたり立ったりしても疲れにくく、ストレスフリーな履き心地を提供します。忙しい日常や長時間の歩行に最適な、毎日履きたくなる一足です。
-
-3. 【耐摩耗＆衝撃吸収のTPRアウトソール】:
-
-ソールには新型の高弾性TPRを使用しており、クッション性と弾力性に優れ、歩行時の衝撃をしっかり吸収します。軽量で柔軟性があり、歩く動きに合わせて自然に曲がります。滑り止め加工が施されたパターンが地面をしっかりグリップし、雨の日や濡れた路面でも安定した歩行をサポートします。
-
-4. 【クラシック＆フェミニンなデザイン】:
-
-丸みのあるラウンドトウが、トウや指にゆとりを持たせ、つま先への圧迫感を軽減。ローヒールのチャンキーヒール（太ヒール）と、履き口のなだらかな「V」字デザインが、足首をすっきりと見せ、脚長効果を期待できます。ウエスタン調のステッチがヴィンテージ感とカジュアルな華やかさをプラス。サイドの弾性ゴムゴア（サイドゴア）と頑丈なバックプルループにより、脱ぎ履きが非常にスムーズです。
-
-5. 【多彩なスタイルにマッチ】:
-
-ダークブラウン、タン、ブラックの定番3色展開。ジーンズ、オーバーコート、ドレス、タイツ、レギンス、スカートなど、季節を問わず（春・秋・冬）あらゆるコーディネートに馴染みます。日常の散歩、犬の散歩、お買い物、通学・通勤、旅行、パーティー、デートなど、カジュアルなシーンからお出かけまで幅広く大活躍します。ご家族や友人への心のこもったギフトとしても最適です。">
+        <img src="btcm-logo.png" alt="BTCM Gold Coin Logo" />
         <div>
           <strong>BTCM PRO</strong>
           <small>ADVANCED CLOUD MINING</small>
@@ -1037,7 +1009,7 @@
 
       <div class="nav-actions">
         <a class="btn btn-outline" href="#download">Log in</a>
-        <a class="btn btn-gold" href="#download">Download APK</a>
+        <a class="btn btn-gold apk-download-link" href="app-release.apk" download="app-release.apk">Download APK</a>
       </div>
     </div>
   </header>
@@ -1089,24 +1061,30 @@
         <div class="slanted-line"></div>
       </div>
 
-      <div class="overview">
-        <div class="overview-head">
-          <b>Live Cluster Telemetry</b>
-          <span class="status">99.98% UPTIME</span>
-        </div>
-        <div class="overview-main">
-          <small>Active Global Hashrate</small>
-          <strong>48.6 EH/s</strong>
-        </div>
-        <div class="overview-row">
-          <div class="mini">
-            <span>Min Entry</span>
-            <b>$10.00</b>
+      <div class="hero-right-panel">
+        <div class="overview">
+          <div class="overview-head">
+            <b>Live Cluster Telemetry</b>
+            <span class="status">99.98% UPTIME</span>
           </div>
-          <div class="mini">
-            <span>Settlement</span>
-            <b>Every 24h</b>
+          <div class="overview-main">
+            <small>Active Global Hashrate</small>
+            <strong>48.6 EH/s</strong>
           </div>
+          <div class="overview-row">
+            <div class="mini">
+              <span>Min Entry</span>
+              <b>$10.00</b>
+            </div>
+            <div class="mini">
+              <span>Settlement</span>
+              <b>Every 24h</b>
+            </div>
+          </div>
+        </div>
+
+        <div class="telemetry-visual-card">
+          <img src="btcm-telemetry-visual.jpg" alt="BTCM PRO Gold Coin and Cloud Mining Visual" />
         </div>
       </div>
     </div>
@@ -1260,7 +1238,7 @@
         <h2>Get BTCM PRO for Android</h2>
         <p>Download the Android APK package or review the technical overview before starting a contract.</p>
         <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-          <a class="btn btn-gold" href="#top">Download Android APK</a>
+          <a class="btn btn-gold apk-download-link" href="app-release.apk" download="app-release.apk">Download Android APK</a>
           <a class="btn btn-outline" href="#plans">View Contract Plans</a>
         </div>
         <div><a class="paper" href="#top">Read BTCM PRO Technical Whitepaper →</a></div>
@@ -1276,61 +1254,19 @@
     <div class="wrap">
       <div class="footer-top">
         <a class="brand" href="#top">
-          <img src="data:image/png;base64,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イントロダクション:
-
-アッパー: PU 快適なクローズドトウ。軽量で耐久性のある防水PU素材を使用しています。快適で柔らかい。
-
-インソール: 5mm高弾性メモリーフォーム。厚手のインソール。歩きやすい。履き心地が良い。
-
-ソール: 新型の高弾性TPR。TPR製のアウトソールは耐久性と弾力性があり、優れた柔軟性、滑り止め、耐摩耗性を誇ります。
-
-スタイル: カジュアル、ローヒール、ウエスタン、ラウンドトウ。
-
-シーズン: 春、秋、冬。
-
-マッチング: ドレス、ジーンズ、パンツ、レギンスなど、さまざまな服に合わせやすい。
-
-カラー: ダークブラウン、タン、ブラック。豊富なカラーオプションがカジュアルスタイルを完成させます。
-
-機会: お出かけ、お買い物、旅行、犬の散歩、デート、学校、仕事、日常着用、休暇など。
-
-サイズの選び方:
-
-米国の標準的なミディアムフィットサイズです。サイズの中間にいる場合や、幅広・甲高の方、厚い靴下を履く場合は、1サイズ上のサイズをお勧めします。
-
-1. 【防水＆耐久性のPUアッパー】:
-
-アッパーは高品質で柔らかいPU製で、完全な閉じたトウと高いトウボックスが特徴です。トウと指を外部の衝撃や寒さからしっかり保護します。アッパーは破れにくく、傷がつきにくく、耐水性があるため、濡れた道でも足が濡れる心配がありません。湿らせた布で拭くだけで簡単に汚れが落ち、お手入れも簡単です。
-
-2. 【疲れにくい快適なフットベッド】:
-
-5mmの高反発メモリーフォームと、柔らかい人工素材で作られたインソールが足の形状に沿ってサポート。一日中歩いたり立ったりしても疲れにくく、ストレスフリーな履き心地を提供します。忙しい日常や長時間の歩行に最適な、毎日履きたくなる一足です。
-
-3. 【耐摩耗＆衝撃吸収のTPRアウトソール】:
-
-ソールには新型の高弾性TPRを使用しており、クッション性と弾力性に優れ、歩行時の衝撃をしっかり吸収します。軽量で柔軟性があり、歩く動きに合わせて自然に曲がります。滑り止め加工が施されたパターンが地面をしっかりグリップし、雨の日や濡れた路面でも安定した歩行をサポートします。
-
-4. 【クラシック＆フェミニンなデザイン】:
-
-丸みのあるラウンドトウが、トウや指にゆとりを持たせ、つま先への圧迫感を軽減。ローヒールのチャンキーヒール（太ヒール）と、履き口のなだらかな「V」字デザインが、足首をすっきりと見せ、脚長効果を期待できます。ウエスタン調のステッチがヴィンテージ感とカジュアルな華やかさをプラス。サイドの弾性ゴムゴア（サイドゴア）と頑丈なバックプルループにより、脱ぎ履きが非常にスムーズです。
-
-5. 【多彩なスタイルにマッチ】:
-
-ダークブラウン、タン、ブラックの定番3色展開。ジーンズ、オーバーコート、ドレス、タイツ、レギンス、スカートなど、季節を問わず（春・秋・冬）あらゆるコーディネートに馴染みます。日常の散歩、犬の散歩、お買い物、通学・通勤、旅行、パーティー、デートなど、カジュアルなシーンからお出かけまで幅広く大活躍します。ご家族や友人への心のこもったギフトとしても最適です。">
+          <img src="btcm-logo.png" alt="BTCM Gold Coin Logo" />
           <div>
             <strong>BTCM PRO</strong>
             <small>ADVANCED CLOUD MINING</small>
           </div>
         </a>
-        <div class="social">
-          <a href="#top" aria-label="Telegram">TG</a>
-          <a href="#top" aria-label="X">X</a>
-          <a href="#top" aria-label="Discord">DC</a>
-        </div>
+
+        <a class="btn btn-gold apk-download-link" href="app-release.apk" download="app-release.apk">Download app-release.apk</a>
       </div>
+
       <div class="copyright">
         <span>© 2026 BTCM PRO. All rights reserved.</span>
-        <span>Cloud Mining Infrastructure • Terms &amp; Privacy</span>
+        <span>Cloud Mining Infrastructure</span>
       </div>
     </div>
   </footer>
@@ -1344,6 +1280,22 @@
   </div>
 
   <script>
+    // =========================================================================
+    // শুধু নিচের দুটি লাইন আপনার GitHub Username এবং Repository Name দিয়ে বদলান:
+    // =========================================================================
+    const GITHUB_USER = 'YOUR_GITHUB_USERNAME';
+    const GITHUB_REPO = 'YOUR_GITHUB_REPO';
+    const APK_FILE_NAME = 'app-release.apk';
+    // =========================================================================
+
+    (function applyApkDownloadLink() {
+      const releaseUrl = `https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/${APK_FILE_NAME}`;
+      document.querySelectorAll('.apk-download-link').forEach((link) => {
+        link.setAttribute('href', releaseUrl);
+        link.setAttribute('download', APK_FILE_NAME);
+      });
+    })();
+
     (function () {
       const toast = document.getElementById('payoutToast');
       const userEl = document.getElementById('payoutUser');

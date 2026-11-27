@@ -1,206 +1,283 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BTCM PRO - Advanced Cloud Mining</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#081220" />
+  <title>BTCM PRO | Cloud Mining Platform</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --ink: #e9eef6;
+      --muted: #94a3b8;
+      --navy: #081220;
+      --navy2: #0f1f38;
+      --gold: #f5b027;
+      --gold2: #ffbe3b;
+      --paper: #0b1422;
+      --white: #111e30;
+      --line: rgba(255, 255, 255, 0.08);
+      --green: #34d399;
+      --shadow: 0 22px 65px rgba(0, 0, 0, 0.35);
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 96px;
     }
 
     body {
-      background-color: #081220;
-      color: #ffffff;
+      background-color: var(--paper);
+      color: var(--ink);
+      line-height: 1.65;
       overflow-x: hidden;
     }
 
-    /* Background Warehouse Overlay Effect */
-    .hero-wrapper {
-      position: relative;
-      min-height: 100vh;
-      background: linear-gradient(135deg, rgba(8, 20, 38, 0.94) 0%, rgba(11, 28, 52, 0.90) 100%),
-                  url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    /* Navbar */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 22px 7%;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      position: relative;
-      z-index: 10;
-    }
-
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    a {
+      color: inherit;
       text-decoration: none;
-      color: #fff;
     }
 
-    .logo-dots {
-      display: grid;
-      grid-template-columns: repeat(4, 6px);
-      gap: 4px;
+    .wrap {
+      width: min(1200px, calc(100% - 56px));
+      margin: auto;
     }
 
-    .logo-dots span {
-      width: 6px;
-      height: 6px;
+    /* Topbar */
+    .topbar {
+      background: #060d17;
+      color: #cbd5e1;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .topbar .wrap {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar b {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    /* Navbar / Header */
+    .header {
+      background: rgba(8, 18, 32, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .nav {
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 12px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .brand img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
       border-radius: 50%;
-      background-color: #2c4c70;
+      background: #0f1f38;
+      border: 1px solid rgba(245, 176, 39, 0.35);
     }
 
-    .logo-dots span.gold {
-      background-color: #f5b027;
-    }
-
-    .logo-text h1 {
-      font-size: 19px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      line-height: 1.1;
-    }
-
-    .logo-text span {
-      font-size: 10px;
-      color: #f5b027;
-      letter-spacing: 1.5px;
-      font-weight: 600;
+    .brand strong {
       display: block;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      color: #ffffff;
+      line-height: 1.15;
     }
 
-    nav ul {
+    .brand small {
+      display: block;
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      margin-top: 3px;
+    }
+
+    .navlinks {
       display: flex;
-      list-style: none;
-      gap: 32px;
-    }
-
-    nav ul li a {
-      text-decoration: none;
+      gap: 28px;
       color: #cbd5e1;
       font-size: 14px;
       font-weight: 500;
-      transition: color 0.2s;
     }
 
-    nav ul li a:hover,
-    nav ul li a.active {
+    .navlinks a:hover,
+    .navlinks a.active {
       color: #ffffff;
     }
 
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 14px;
     }
 
-    .btn-login {
-      color: #ffffff;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-      display: flex;
+    .btn {
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
-    }
-
-    .btn-signup {
-      background-color: #f5b027;
-      color: #0b1626;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 700;
-      padding: 11px 22px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
+      justify-content: center;
       gap: 8px;
-      transition: transform 0.2s, background 0.2s;
+      padding: 12px 20px;
+      border-radius: 7px;
+      font-weight: 700;
+      font-size: 13px;
+      transition: transform 0.2s, background 0.2s, border-color 0.2s;
+      border: 1px solid transparent;
+      cursor: pointer;
     }
 
-    .btn-signup:hover {
-      background-color: #ffbe3b;
-      transform: translateY(-1px);
+    .btn-gold {
+      background-color: var(--gold);
+      color: #0b1626;
+      box-shadow: 0 8px 20px rgba(245, 176, 39, 0.22);
     }
 
-    /* Main Hero Content */
-    .hero-main {
+    .btn-gold:hover {
+      background-color: var(--gold2);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: rgba(15, 31, 56, 0.7);
+      border-color: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    /* Hero Section with Warehouse Overlay */
+    .hero {
+      position: relative;
+      background: linear-gradient(135deg, rgba(8, 20, 38, 0.94) 0%, rgba(11, 28, 52, 0.90) 100%),
+                  url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      color: #ffffff;
+      overflow: hidden;
+      padding: 56px 0 96px;
+    }
+
+    .hero-grid {
       display: grid;
       grid-template-columns: 1.15fr 0.15fr 0.9fr;
       align-items: center;
-      padding: 40px 7% 70px;
-      flex: 1;
+      gap: 24px;
       position: relative;
-      z-index: 5;
+      z-index: 2;
     }
 
-    /* Left Column */
-    .hero-left h2 {
-      font-size: 52px;
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
       font-weight: 800;
-      line-height: 1.18;
-      margin-bottom: 22px;
+      margin-bottom: 14px;
+    }
+
+    .eyebrow:before {
+      content: "";
+      width: 24px;
+      height: 2px;
+      background: var(--gold);
+    }
+
+    .hero h1 {
+      font-size: clamp(38px, 4.6vw, 54px);
+      font-weight: 800;
+      line-height: 1.16;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
       color: #ffffff;
     }
 
-    .hero-left h2 .underline-gold {
+    .hero h1 em {
+      font-style: normal;
       position: relative;
       display: inline-block;
+      color: #ffffff;
     }
 
-    .hero-left h2 .underline-gold::after {
+    .hero h1 em:after {
       content: '';
       position: absolute;
       left: 0;
-      bottom: -4px;
+      bottom: -3px;
       width: 100%;
       height: 4px;
-      background-color: #f5b027;
+      background-color: var(--gold);
       border-radius: 2px;
     }
 
-    .hero-left p {
-      color: #94a3b8;
+    .hero-copy {
+      color: var(--muted);
       font-size: 16px;
-      line-height: 1.65;
-      max-width: 540px;
-      margin-bottom: 38px;
+      line-height: 1.68;
+      max-width: 550px;
+      margin-bottom: 28px;
     }
 
-    /* Coin Hashrate Cards (Like Screenshot 2) */
+    .hero-copy strong {
+      color: #ffffff;
+    }
+
+    /* Coin Hashrate Cards */
     .coin-cards {
       display: flex;
-      gap: 16px;
+      gap: 14px;
       flex-wrap: wrap;
+      margin-bottom: 28px;
     }
 
     .coin-card {
-      background: rgba(15, 31, 56, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(15, 31, 56, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.09);
       border-radius: 8px;
-      padding: 14px 18px;
+      padding: 13px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
-      min-width: 165px;
+      min-width: 162px;
       backdrop-filter: blur(8px);
       transition: border-color 0.2s, transform 0.2s;
     }
 
     .coin-card:hover {
-      border-color: rgba(245, 176, 39, 0.5);
+      border-color: rgba(245, 176, 39, 0.55);
       transform: translateY(-2px);
     }
 
@@ -214,6 +291,7 @@
       font-weight: 800;
       font-size: 15px;
       color: #fff;
+      flex-shrink: 0;
     }
 
     .btc-bg { background: #f7931a; }
@@ -235,14 +313,26 @@
 
     .coin-info .hashrate {
       font-size: 12px;
-      color: #34d399;
+      color: var(--green);
       font-weight: 600;
-      margin-top: 3px;
+      margin-top: 2px;
     }
 
-    /* Center Slanted Gold Divider Lines */
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-note {
+      margin-top: 18px;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    /* Slanted Gold Divider Lines */
     .slanted-divider {
-      height: 460px;
+      height: 440px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -252,135 +342,715 @@
     .slanted-line {
       width: 3px;
       height: 100%;
-      background: linear-gradient(to bottom, transparent, #f5b027 20%, #f5b027 80%, transparent);
+      background: linear-gradient(to bottom, transparent, var(--gold) 20%, var(--gold) 80%, transparent);
       transform: rotate(14deg);
       border-radius: 2px;
     }
 
-    /* Right Column Illustration */
-    .hero-right {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .hero-right img {
-      width: 100%;
-      max-width: 430px;
-      border-radius: 20px;
-      filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.45));
-    }
-
-    /* Live Withdrawal Toast (From Screenshot 1) */
-    .payout-toast {
-      position: fixed;
-      bottom: 24px;
-      left: 24px;
-      background: rgba(15, 29, 48, 0.92);
+    /* Right Overview Card */
+    .overview {
+      background: rgba(15, 31, 56, 0.92);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 12px 18px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
       backdrop-filter: blur(10px);
-      z-index: 50;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
     }
 
-    .toast-check {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: rgba(52, 211, 153, 0.15);
-      color: #34d399;
+    .overview-head {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: bold;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 15px;
+      margin-bottom: 15px;
     }
 
-    .toast-text p {
-      font-size: 12px;
-      color: #94a3b8;
-    }
-
-    .toast-text strong {
+    .overview-head b {
       font-size: 13px;
       color: #ffffff;
     }
 
+    .status {
+      font-size: 10px;
+      color: var(--green);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .status:before {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .overview-main {
+      padding: 10px 0 18px;
+    }
+
+    .overview-main small {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .overview-main strong {
+      display: block;
+      font-size: 36px;
+      color: #ffffff;
+      letter-spacing: -0.03em;
+      margin-top: 4px;
+    }
+
+    .overview-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .mini {
+      background: rgba(8, 18, 32, 0.75);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 13px;
+    }
+
+    .mini span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .mini b {
+      font-size: 17px;
+      color: var(--gold);
+      margin-top: 3px;
+      display: block;
+    }
+
+    /* Stats Strip */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: -42px auto 0;
+      box-shadow: var(--shadow);
+      position: relative;
+      z-index: 5;
+    }
+
+    .stat {
+      background: var(--navy2);
+      padding: 22px 16px;
+      text-align: center;
+    }
+
+    .stat b {
+      display: block;
+      color: var(--gold);
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .stat span {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Sections */
+    .section {
+      padding: 84px 0;
+    }
+
+    .section-head {
+      text-align: center;
+      max-width: 660px;
+      margin: 0 auto 42px;
+    }
+
+    .kicker {
+      font-size: 11px;
+      color: var(--gold);
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .section h2 {
+      font-size: clamp(28px, 3vw, 38px);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin: 10px 0;
+      color: #ffffff;
+    }
+
+    .section-head p,
+    .sub {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Features */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .feature {
+      background: rgba(15, 31, 56, 0.85);
+      border: 1px solid var(--line);
+      padding: 25px 22px;
+      border-radius: 10px;
+      min-height: 190px;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .feature:hover,
+    .plan:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: rgba(245, 176, 39, 0.45);
+    }
+
+    .ficon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      background: rgba(245, 176, 39, 0.14);
+      color: var(--gold);
+      border-radius: 9px;
+      font-size: 19px;
+      margin-bottom: 18px;
+    }
+
+    .feature h3 {
+      font-size: 15px;
+      margin: 0 0 8px;
+      color: #ffffff;
+    }
+
+    .feature p {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    /* Plans Section */
+    .plans-section {
+      background: #081220;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .plan {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 25px 21px;
+      background: rgba(15, 31, 56, 0.9);
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .plan.featured {
+      border: 1.5px solid var(--gold);
+      box-shadow: 0 12px 35px rgba(245, 176, 39, 0.14);
+    }
+
+    .plan-tag {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--gold);
+      font-weight: 800;
+    }
+
+    .plan h3 {
+      font-size: 20px;
+      margin: 10px 0 4px;
+      color: #ffffff;
+    }
+
+    .minimum {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .rate {
+      font-size: 32px;
+      color: var(--gold);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 20px 0 0;
+    }
+
+    .rate small {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .plan hr {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 17px 0;
+    }
+
+    .planline {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 9px 0;
+    }
+
+    .planline b {
+      color: #ffffff;
+    }
+
+    .plan .btn {
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    /* Testimonials */
+    .testimonials {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .quote {
+      background: rgba(15, 31, 56, 0.85);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    .stars {
+      color: var(--gold);
+      letter-spacing: 3px;
+      font-size: 12px;
+    }
+
+    .quote p {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.8;
+      margin: 12px 0;
+    }
+
+    .author {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    /* Referral Banner */
+    .referral {
+      background: linear-gradient(120deg, #0f1f38 0%, #172e52 100%);
+      border: 1px solid rgba(245, 176, 39, 0.25);
+      color: #fff;
+      border-radius: 12px;
+      padding: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+    }
+
+    .referral h3 {
+      font-size: 23px;
+      margin: 0 0 6px;
+      color: #ffffff;
+    }
+
+    .referral p {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .ref-values {
+      display: flex;
+      gap: 12px;
+    }
+
+    .ref-box {
+      background: rgba(8, 18, 32, 0.75);
+      border: 1px solid rgba(245, 176, 39, 0.22);
+      border-radius: 8px;
+      padding: 14px 20px;
+      text-align: center;
+      min-width: 105px;
+    }
+
+    .ref-box b {
+      display: block;
+      color: var(--gold);
+      font-size: 24px;
+    }
+
+    .ref-box span {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* Download & Whitepaper Panel */
+    .download-panel {
+      background: rgba(15, 31, 56, 0.9);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 36px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .download-panel h2 {
+      margin: 8px 0;
+    }
+
+    .download-panel p {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 22px;
+    }
+
+    .paper {
+      display: inline-flex;
+      margin-top: 15px;
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .risk {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-top: 30px;
+      padding: 18px;
+      border-left: 3px solid var(--gold);
+      background: rgba(15, 31, 56, 0.75);
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* Footer */
+    .footer {
+      background: #060d17;
+      color: var(--muted);
+      padding: 42px 0 25px;
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 25px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .footer .brand strong {
+      color: #fff;
+    }
+
+    .social {
+      display: flex;
+      gap: 10px;
+    }
+
+    .social a {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      color: #ffffff;
+    }
+
+    .social a:hover {
+      background: var(--gold);
+      color: #081220;
+      border-color: var(--gold);
+    }
+
+    .copyright {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding-top: 20px;
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    /* Live Payout Notification */
+    .payout-notification {
+      position: fixed;
+      left: 24px;
+      bottom: 24px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      width: min(340px, calc(100% - 32px));
+      padding: 14px 17px;
+      background: rgba(15, 29, 48, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(10px);
+      transform: translateY(150%);
+      opacity: 0;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+
+    .payout-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .payout-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(52, 211, 153, 0.16);
+      color: var(--green);
+      font-size: 15px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .payout-info p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .payout-info strong {
+      color: #ffffff;
+    }
+
+    .payout-amount {
+      font-size: 13px !important;
+      font-weight: 800;
+      color: var(--green) !important;
+      margin-top: 2px !important;
+    }
+
     /* Responsive */
     @media (max-width: 992px) {
-      .hero-main {
+      .hero-grid {
         grid-template-columns: 1fr;
         text-align: center;
-        gap: 40px;
+        gap: 36px;
       }
-      .hero-left p {
-        margin: 0 auto 30px;
+      .eyebrow {
+        justify-content: center;
       }
-      .coin-cards {
+      .hero-copy {
+        margin: 0 auto 28px;
+      }
+      .coin-cards,
+      .hero-actions {
         justify-content: center;
       }
       .slanted-divider {
         display: none;
       }
-      nav {
+      .overview {
+        max-width: 520px;
+        margin: 0 auto;
+        text-align: left;
+      }
+      .navlinks {
         display: none;
+      }
+      .features,
+      .plans {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .stats {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .wrap {
+        width: min(100% - 28px, 1200px);
+      }
+      .topbar .wrap {
+        font-size: 9px;
+      }
+      .nav {
+        min-height: 70px;
+      }
+      .brand img {
+        width: 42px;
+        height: 42px;
+      }
+      .brand strong {
+        font-size: 17px;
+      }
+      .btn {
+        padding: 10px 14px;
+        font-size: 11px;
+      }
+      .hero {
+        padding: 40px 0 76px;
+      }
+      .section {
+        padding: 62px 0;
+      }
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+        margin-top: -32px;
+      }
+      .stat:last-child {
+        grid-column: span 2;
+      }
+      .features,
+      .plans,
+      .testimonials {
+        grid-template-columns: 1fr;
+      }
+      .referral {
+        display: block;
+        padding: 25px;
+      }
+      .ref-values {
+        margin-top: 20px;
+      }
+      .ref-box {
+        flex: 1;
+        min-width: 0;
+      }
+      .download-panel {
+        padding: 27px 18px;
+      }
+      .footer-top,
+      .copyright {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .payout-notification {
+        left: 16px;
+        bottom: 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *:before, *:after {
+        scroll-behavior: auto !important;
+        transition: none !important;
       }
     }
   </style>
 </head>
-<body>
+<body id="top">
+  <div class="topbar">
+    <div class="wrap">
+      <span>BTCM PRO <b>• PLATFORM OVERVIEW</b></span>
+      <span>ADVANCED CLOUD MINING</span>
+    </div>
+  </div>
 
-  <div class="hero-wrapper">
-    <!-- Top Navigation -->
-    <header>
-      <a href="#" class="logo-area">
-        <div class="logo-dots">
-          <span></span><span></span><span class="gold"></span><span class="gold"></span>
-          <span></span><span class="gold"></span><span class="gold"></span><span></span>
-          <span class="gold"></span><span class="gold"></span><span></span><span></span>
-        </div>
-        <div class="logo-text">
-          <h1>BTCM PRO</h1>
-          <span>ADVANCED CLOUD MINING</span>
+  <header class="header">
+    <div class="wrap nav">
+      <a class="brand" href="#top">
+        <img src="data:image/png;base64,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イントロダクション:
+
+アッパー: PU 快適なクローズドトウ。軽量で耐久性のある防水PU素材を使用しています。快適で柔らかい。
+
+インソール: 5mm高弾性メモリーフォーム。厚手のインソール。歩きやすい。履き心地が良い。
+
+ソール: 新型の高弾性TPR。TPR製のアウトソールは耐久性と弾力性があり、優れた柔軟性、滑り止め、耐摩耗性を誇ります。
+
+スタイル: カジュアル、ローヒール、ウエスタン、ラウンドトウ。
+
+シーズン: 春、秋、冬。
+
+マッチング: ドレス、ジーンズ、パンツ、レギンスなど、さまざまな服に合わせやすい。
+
+カラー: ダークブラウン、タン、ブラック。豊富なカラーオプションがカジュアルスタイルを完成させます。
+
+機会: お出かけ、お買い物、旅行、犬の散歩、デート、学校、仕事、日常着用、休暇など。
+
+サイズの選び方:
+
+米国の標準的なミディアムフィットサイズです。サイズの中間にいる場合や、幅広・甲高の方、厚い靴下を履く場合は、1サイズ上のサイズをお勧めします。
+
+1. 【防水＆耐久性のPUアッパー】:
+
+アッパーは高品質で柔らかいPU製で、完全な閉じたトウと高いトウボックスが特徴です。トウと指を外部の衝撃や寒さからしっかり保護します。アッパーは破れにくく、傷がつきにくく、耐水性があるため、濡れた道でも足が濡れる心配がありません。湿らせた布で拭くだけで簡単に汚れが落ち、お手入れも簡単です。
+
+2. 【疲れにくい快適なフットベッド】:
+
+5mmの高反発メモリーフォームと、柔らかい人工素材で作られたインソールが足の形状に沿ってサポート。一日中歩いたり立ったりしても疲れにくく、ストレスフリーな履き心地を提供します。忙しい日常や長時間の歩行に最適な、毎日履きたくなる一足です。
+
+3. 【耐摩耗＆衝撃吸収のTPRアウトソール】:
+
+ソールには新型の高弾性TPRを使用しており、クッション性と弾力性に優れ、歩行時の衝撃をしっかり吸収します。軽量で柔軟性があり、歩く動きに合わせて自然に曲がります。滑り止め加工が施されたパターンが地面をしっかりグリップし、雨の日や濡れた路面でも安定した歩行をサポートします。
+
+4. 【クラシック＆フェミニンなデザイン】:
+
+丸みのあるラウンドトウが、トウや指にゆとりを持たせ、つま先への圧迫感を軽減。ローヒールのチャンキーヒール（太ヒール）と、履き口のなだらかな「V」字デザインが、足首をすっきりと見せ、脚長効果を期待できます。ウエスタン調のステッチがヴィンテージ感とカジュアルな華やかさをプラス。サイドの弾性ゴムゴア（サイドゴア）と頑丈なバックプルループにより、脱ぎ履きが非常にスムーズです。
+
+5. 【多彩なスタイルにマッチ】:
+
+ダークブラウン、タン、ブラックの定番3色展開。ジーンズ、オーバーコート、ドレス、タイツ、レギンス、スカートなど、季節を問わず（春・秋・冬）あらゆるコーディネートに馴染みます。日常の散歩、犬の散歩、お買い物、通学・通勤、旅行、パーティー、デートなど、カジュアルなシーンからお出かけまで幅広く大活躍します。ご家族や友人への心のこもったギフトとしても最適です。">
+        <div>
+          <strong>BTCM PRO</strong>
+          <small>ADVANCED CLOUD MINING</small>
         </div>
       </a>
 
-      <nav>
-        <ul>
-          <li><a href="#" class="active">Home</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#plans">Plans</a></li>
-          <li><a href="#referral">Referral</a></li>
-          <li><a href="#whitepaper">Whitepaper</a></li>
-        </ul>
+      <nav class="navlinks">
+        <a href="#features">Features</a>
+        <a href="#plans">Plans</a>
+        <a href="#referral">Referral</a>
+        <a href="#whitepaper">Whitepaper</a>
       </nav>
 
       <div class="nav-actions">
-        <a href="#login" class="btn-login">Log in →</a>
-        <a href="#download" class="btn-signup">Download APK ↓</a>
+        <a class="btn btn-outline" href="#download">Log in</a>
+        <a class="btn btn-gold" href="#download">Download APK</a>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <!-- Hero Section -->
-    <section class="hero-main">
-      <!-- Left Content -->
-      <div class="hero-left">
-        <h2>
-          Start Mining <span class="underline-gold">Crypto</span><br />
-          Currency Today.
-        </h2>
-        <p>
-          It's super simple — Your mining rigs are already set up and running.
-          Start with just a <strong>$10.00</strong> minimum deposit and mine your
-          first coins using the BTCM PRO cloud mining platform!
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Institutional Cloud Infrastructure</div>
+        <h1>Start Mining <em>Crypto</em><br />Currency Today.</h1>
+        <p class="hero-copy">
+          It's super simple — Your mining rigs are already set up and running. Start with just a <strong>$10.00</strong> minimum deposit and mine your first coins using the BTCM PRO cloud mining platform!
         </p>
 
-        <!-- Hashrate Cards -->
         <div class="coin-cards">
           <div class="coin-card">
             <div class="coin-icon btc-bg">₿</div>
@@ -406,30 +1076,300 @@
             </div>
           </div>
         </div>
+
+        <div class="hero-actions">
+          <a class="btn btn-gold" href="#plans">Explore Mining Plans</a>
+          <a class="btn btn-outline" href="#download">Android APK &amp; Whitepaper</a>
+        </div>
+        <div class="hero-note">Minimum deposit $10.00 • Instant contract activation • Daily automated payouts</div>
       </div>
 
-      <!-- Slanted Yellow Divider Lines -->
-      <div class="slanted-divider">
+      <div class="slanted-divider" aria-hidden="true">
         <div class="slanted-line"></div>
         <div class="slanted-line"></div>
       </div>
 
-      <!-- Right Side Vector Illustration -->
-      <div class="hero-right">
-        <!-- উপরের তৈরি করা ছবিটি সেভ করে নিচের src তে বসিয়ে দাও -->
-        <img src="hero-mining.jpg" alt="BTCM PRO Cloud Mining Rig Illustration" />
+      <div class="overview">
+        <div class="overview-head">
+          <b>Live Cluster Telemetry</b>
+          <span class="status">99.98% UPTIME</span>
+        </div>
+        <div class="overview-main">
+          <small>Active Global Hashrate</small>
+          <strong>48.6 EH/s</strong>
+        </div>
+        <div class="overview-row">
+          <div class="mini">
+            <span>Min Entry</span>
+            <b>$10.00</b>
+          </div>
+          <div class="mini">
+            <span>Settlement</span>
+            <b>Every 24h</b>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
+
+  <div class="wrap stats">
+    <div class="stat"><b>$10.00</b><span>Minimum Deposit</span></div>
+    <div class="stat"><b>142,800+</b><span>Active Miners</span></div>
+    <div class="stat"><b>$84.2M+</b><span>Paid Out</span></div>
+    <div class="stat"><b>99.98%</b><span>Uptime SLA</span></div>
+    <div class="stat"><b>24/7</b><span>Automated Payouts</span></div>
   </div>
 
-  <!-- Live Payout Notification -->
-  <div class="payout-toast">
-    <div class="toast-check">✓</div>
-    <div class="toast-text">
-      <p>Isabella J. just withdrew</p>
-      <strong>$97.71 via ETH</strong>
+  <section class="section" id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="kicker">Platform Architecture</div>
+        <h2>Engineered for Transparent, Continuous Mining</h2>
+        <p>Dedicated ASIC and GPU clusters hosted in renewable-powered facilities with real-time contract accounting.</p>
+      </div>
+
+      <div class="features">
+        <div class="feature">
+          <div class="ficon">⚡</div>
+          <h3>Instant Hashrate Allocation</h3>
+          <p>Contracts activate immediately upon confirmation with zero hardware maintenance or configuration overhead.</p>
+        </div>
+        <div class="feature">
+          <div class="ficon">◈</div>
+          <h3>Daily Automated Rewards</h3>
+          <p>Mining yields accrue transparently and settle on schedule with full transaction history.</p>
+        </div>
+        <div class="feature">
+          <div class="ficon">⛨</div>
+          <h3>Multi-Layer Custody</h3>
+          <p>Protected account architecture, hardware-isolated reserves, and continuous cluster monitoring.</p>
+        </div>
+        <div class="feature">
+          <div class="ficon">◎</div>
+          <h3>Mobile &amp; Web Control</h3>
+          <p>Monitor active contracts, hashrate output, and withdrawals from the Android app or desktop dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section plans-section" id="plans">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="kicker">Mining Contracts</div>
+        <h2>Choose a Cloud Mining Plan</h2>
+        <p>Transparent contract terms starting from $10.00 with clear daily return rates and duration schedules.</p>
+      </div>
+
+      <div class="plans">
+        <div class="plan">
+          <div class="plan-tag">Starter</div>
+          <h3>Starter Rig</h3>
+          <div class="minimum">Minimum deposit $10.00</div>
+          <div class="rate">1.8% <small>/ day</small></div>
+          <hr />
+          <div class="planline"><span>Duration</span><b>15 Days</b></div>
+          <div class="planline"><span>Est. Total Return</span><b>127.0%</b></div>
+          <div class="planline"><span>Payout Frequency</span><b>Daily</b></div>
+          <a class="btn btn-outline" href="#download">Select Starter</a>
+        </div>
+
+        <div class="plan featured">
+          <div class="plan-tag">Most Popular</div>
+          <h3>Growth Cluster</h3>
+          <div class="minimum">Minimum deposit $100.00</div>
+          <div class="rate">2.4% <small>/ day</small></div>
+          <hr />
+          <div class="planline"><span>Duration</span><b>30 Days</b></div>
+          <div class="planline"><span>Est. Total Return</span><b>172.0%</b></div>
+          <div class="planline"><span>Payout Frequency</span><b>Daily</b></div>
+          <a class="btn btn-gold" href="#download">Select Growth</a>
+        </div>
+
+        <div class="plan">
+          <div class="plan-tag">High Output</div>
+          <h3>Pro Rack</h3>
+          <div class="minimum">Minimum deposit $500.00</div>
+          <div class="rate">3.1% <small>/ day</small></div>
+          <hr />
+          <div class="planline"><span>Duration</span><b>45 Days</b></div>
+          <div class="planline"><span>Est. Total Return</span><b>239.5%</b></div>
+          <div class="planline"><span>Payout Frequency</span><b>Daily</b></div>
+          <a class="btn btn-outline" href="#download">Select Pro Rack</a>
+        </div>
+
+        <div class="plan">
+          <div class="plan-tag">Enterprise</div>
+          <h3>Titan Vault</h3>
+          <div class="minimum">Minimum deposit $2,500.00</div>
+          <div class="rate">3.8% <small>/ day</small></div>
+          <hr />
+          <div class="planline"><span>Duration</span><b>60 Days</b></div>
+          <div class="planline"><span>Est. Total Return</span><b>328.0%</b></div>
+          <div class="planline"><span>Payout Frequency</span><b>Daily</b></div>
+          <a class="btn btn-outline" href="#download">Select Titan</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="kicker">Miner Feedback</div>
+        <h2>Trusted by Global Participants</h2>
+      </div>
+
+      <div class="testimonials">
+        <div class="quote">
+          <div class="stars">★★★★★</div>
+          <p>"Started with a small test deposit to see how settlements worked. The dashboard is clean and daily updates are easy to track."</p>
+          <div class="author">Daniel K. • Verified Miner</div>
+        </div>
+        <div class="quote">
+          <div class="stars">★★★★★</div>
+          <p>"No noisy rigs at home or electricity bills to manage. I can check contract status on my phone whenever I travel."</p>
+          <div class="author">Hannah M. • Growth Cluster</div>
+        </div>
+        <div class="quote">
+          <div class="stars">★★★★★</div>
+          <p>"Clear contract terms upfront and straightforward withdrawal tracking. The referral bonus is a nice extra."</p>
+          <div class="author">Tariq R. • Pro Rack</div>
+        </div>
+      </div>
+
+      <div class="referral" id="referral" style="margin-top: 34px;">
+        <div>
+          <div class="kicker" style="margin-bottom: 6px;">Affiliate Program</div>
+          <h3>Invite Miners &amp; Earn Tiered Rewards</h3>
+          <p>Share your referral link and earn commission bonuses on active contract purchases across your network.</p>
+        </div>
+        <div class="ref-values">
+          <div class="ref-box"><b>8%</b><span>LEVEL 1</span></div>
+          <div class="ref-box"><b>3%</b><span>LEVEL 2</span></div>
+          <div class="ref-box"><b>1%</b><span>LEVEL 3</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="download" style="padding-top: 0;">
+    <div class="wrap">
+      <div class="download-panel" id="whitepaper">
+        <div class="kicker">Mobile &amp; Documentation</div>
+        <h2>Get BTCM PRO for Android</h2>
+        <p>Download the Android APK package or review the technical overview before starting a contract.</p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <a class="btn btn-gold" href="#top">Download Android APK</a>
+          <a class="btn btn-outline" href="#plans">View Contract Plans</a>
+        </div>
+        <div><a class="paper" href="#top">Read BTCM PRO Technical Whitepaper →</a></div>
+      </div>
+
+      <div class="risk">
+        <strong>Risk Disclosure:</strong> Cryptocurrency mining and digital asset markets involve price volatility, network difficulty adjustments, and operational risks. Past performance or stated contract estimates do not guarantee future results. Only commit funds you can afford to keep allocated for the full contract term.
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-top">
+        <a class="brand" href="#top">
+          <img src="data:image/png;base64,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イントロダクション:
+
+アッパー: PU 快適なクローズドトウ。軽量で耐久性のある防水PU素材を使用しています。快適で柔らかい。
+
+インソール: 5mm高弾性メモリーフォーム。厚手のインソール。歩きやすい。履き心地が良い。
+
+ソール: 新型の高弾性TPR。TPR製のアウトソールは耐久性と弾力性があり、優れた柔軟性、滑り止め、耐摩耗性を誇ります。
+
+スタイル: カジュアル、ローヒール、ウエスタン、ラウンドトウ。
+
+シーズン: 春、秋、冬。
+
+マッチング: ドレス、ジーンズ、パンツ、レギンスなど、さまざまな服に合わせやすい。
+
+カラー: ダークブラウン、タン、ブラック。豊富なカラーオプションがカジュアルスタイルを完成させます。
+
+機会: お出かけ、お買い物、旅行、犬の散歩、デート、学校、仕事、日常着用、休暇など。
+
+サイズの選び方:
+
+米国の標準的なミディアムフィットサイズです。サイズの中間にいる場合や、幅広・甲高の方、厚い靴下を履く場合は、1サイズ上のサイズをお勧めします。
+
+1. 【防水＆耐久性のPUアッパー】:
+
+アッパーは高品質で柔らかいPU製で、完全な閉じたトウと高いトウボックスが特徴です。トウと指を外部の衝撃や寒さからしっかり保護します。アッパーは破れにくく、傷がつきにくく、耐水性があるため、濡れた道でも足が濡れる心配がありません。湿らせた布で拭くだけで簡単に汚れが落ち、お手入れも簡単です。
+
+2. 【疲れにくい快適なフットベッド】:
+
+5mmの高反発メモリーフォームと、柔らかい人工素材で作られたインソールが足の形状に沿ってサポート。一日中歩いたり立ったりしても疲れにくく、ストレスフリーな履き心地を提供します。忙しい日常や長時間の歩行に最適な、毎日履きたくなる一足です。
+
+3. 【耐摩耗＆衝撃吸収のTPRアウトソール】:
+
+ソールには新型の高弾性TPRを使用しており、クッション性と弾力性に優れ、歩行時の衝撃をしっかり吸収します。軽量で柔軟性があり、歩く動きに合わせて自然に曲がります。滑り止め加工が施されたパターンが地面をしっかりグリップし、雨の日や濡れた路面でも安定した歩行をサポートします。
+
+4. 【クラシック＆フェミニンなデザイン】:
+
+丸みのあるラウンドトウが、トウや指にゆとりを持たせ、つま先への圧迫感を軽減。ローヒールのチャンキーヒール（太ヒール）と、履き口のなだらかな「V」字デザインが、足首をすっきりと見せ、脚長効果を期待できます。ウエスタン調のステッチがヴィンテージ感とカジュアルな華やかさをプラス。サイドの弾性ゴムゴア（サイドゴア）と頑丈なバックプルループにより、脱ぎ履きが非常にスムーズです。
+
+5. 【多彩なスタイルにマッチ】:
+
+ダークブラウン、タン、ブラックの定番3色展開。ジーンズ、オーバーコート、ドレス、タイツ、レギンス、スカートなど、季節を問わず（春・秋・冬）あらゆるコーディネートに馴染みます。日常の散歩、犬の散歩、お買い物、通学・通勤、旅行、パーティー、デートなど、カジュアルなシーンからお出かけまで幅広く大活躍します。ご家族や友人への心のこもったギフトとしても最適です。">
+          <div>
+            <strong>BTCM PRO</strong>
+            <small>ADVANCED CLOUD MINING</small>
+          </div>
+        </a>
+        <div class="social">
+          <a href="#top" aria-label="Telegram">TG</a>
+          <a href="#top" aria-label="X">X</a>
+          <a href="#top" aria-label="Discord">DC</a>
+        </div>
+      </div>
+      <div class="copyright">
+        <span>© 2026 BTCM PRO. All rights reserved.</span>
+        <span>Cloud Mining Infrastructure • Terms &amp; Privacy</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="payout-notification" id="payoutToast" role="status" aria-live="polite">
+    <div class="payout-icon">✓</div>
+    <div class="payout-info">
+      <p><strong id="payoutUser">Isabella J.</strong> just withdrew</p>
+      <p class="payout-amount" id="payoutAmount">$97.71 via ETH</p>
     </div>
   </div>
 
+  <script>
+    (function () {
+      const toast = document.getElementById('payoutToast');
+      const userEl = document.getElementById('payoutUser');
+      const amountEl = document.getElementById('payoutAmount');
+      const items = [
+        { user: 'Isabella J.', amount: '$97.71 via ETH' },
+        { user: 'Marcus L.', amount: '$245.00 via BTC' },
+        { user: 'Sophia K.', amount: '$64.50 via USDT' },
+        { user: 'Liam C.', amount: '$410.20 via BTC' }
+      ];
+      let idx = 0;
+
+      function showNext() {
+        const current = items[idx % items.length];
+        userEl.textContent = current.user;
+        amountEl.textContent = current.amount;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 4200);
+        idx++;
+      }
+
+      setTimeout(showNext, 900);
+      setInterval(showNext, 7500);
+    })();
+  </script>
 </body>
 </html>
